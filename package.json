@@ -4,7 +4,7 @@
   "description": "helloworld-package",
   "main": "helloworld.js",
   "scripts": {
-    "test":
+    "test": "No test specified"
   },
   "repository": {
     "type": "git",
