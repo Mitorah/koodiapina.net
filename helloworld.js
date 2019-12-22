@@ -1,17 +1,6 @@
-<html>
+var http = require('http');
 
-<body>
-
-  <p>Before the script...</p>
-
-  <script>
-    alert( 'Hello, world!' );
-  </script>
-
-  <p>...After the script.</p>
-
-</body>
-
-
-
-</html>
+http.createServer(function (req, res) {
+  res.writeHead(200,{'Content-Type': 'text/html'});
+  res.end('Hello world!');
+}).listen(8080);
