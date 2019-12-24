@@ -3,4 +3,4 @@ new Vue({
     data: {
         message: 'Hello vue.js!'
     }
-})
+});
