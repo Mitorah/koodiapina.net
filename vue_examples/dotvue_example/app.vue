@@ -1,12 +1,14 @@
 <template>
-    <p> {{ greeting }} World!! </p>
+    <div id="app">
+    {{ greeting }} World!!
+    </div>
 </template>
 
 <script>
-module.exports = {
-    data: function () {
+export default {
+    data() {
         return {
-            greeting: 'Hello!'
+            message: 'Hello',
         }
     }
 }
