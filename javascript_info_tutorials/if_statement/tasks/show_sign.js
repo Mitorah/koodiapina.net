@@ -17,4 +17,7 @@ while (true)
     else if (result == NaN) {
         alert(`${result} is not a number! I need a number!`)
     }
+    else if (result == "") {
+        break;
+    }
 }
