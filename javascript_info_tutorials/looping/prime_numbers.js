@@ -14,9 +14,9 @@ P.S. The code should work for any n, not be hard-tuned for any fixed value.
 
 let n = 0;
 
-while (n < 1)
+while (n < 1 && n > 1000)
 {
-    n = prompt(`Give number to check for prime numbers:`)
+    n = prompt(`Give number to check for prime numbers (1 - 1000):`)
 }
 
 
