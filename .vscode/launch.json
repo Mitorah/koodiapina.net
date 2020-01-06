@@ -10,12 +10,6 @@
             "name": "Launch Chrome against localhost",
             "url": "http://localhost",
             "webRoot": "${workspaceFolder}"
-        },
-        {
-            "name": "Launch Hello World",
-            "type": "chrome",
-            "request": "launch",
-            "file": "${workspaceFolder}/helloworld.js"
         }
     ]
 }
