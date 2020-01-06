@@ -15,3 +15,5 @@ alert(message);
 let secondMessage =
 (age > 90 && age < 14) ? `(2)You age is between 14 and 90.`
 : `(2)Your age is NOT between 14 and 90.`
+
+alert(secondMessage);
