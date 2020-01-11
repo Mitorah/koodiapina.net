@@ -28,6 +28,7 @@ function min(a, b) {
 
 function pow(x, n) {
     // Easy way to use lib //return Math.pow(x, n);
+    // Or use **
     let result = x
     let i = 0;
 
