@@ -87,4 +87,23 @@ getMaxSubSum([-1, -2, -3]) = 0
 Please try to think of a fast solution: O(n2) or even O(n) if you can.
 */
 alert(`TASK 3`);
-//TODO!
+
+function getMaxSubSum(arr) {
+    let partialSum = 0;
+    let maxSum = 0;
+
+    for (item in arr) {
+        partialSum += arr[item];
+        maxSum = Math.max(maxSum, partialSum);
+        partialSum = partialSum < 0 ? 0 : partialSum;
+    }
+
+    return maxSum;
+}
+
+alert( getMaxSubSum([-1, 2, 3, -9]) ); // 5
+alert( getMaxSubSum([-1, 2, 3, -9, 11]) ); // 11
+alert( getMaxSubSum([-2, -1, 1, 2]) ); // 3
+alert( getMaxSubSum([100, -9, 2, -3, 5]) ); // 100
+alert( getMaxSubSum([1, 2, 3]) ); // 6
+alert( getMaxSubSum([-1, -2, -3]) ); // 0
