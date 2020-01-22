@@ -277,6 +277,30 @@ alert(arr[0].name); // John
 alert(arr[1].name); // Mary
 alert(arr[2].name); // Pete
 */
+alert(`Task 8 --- 
+Write the function sortByAge(users) that gets an array of 
+objects with the age property and sorts them by age.
+`)
+
+function sortByAge(arr) {
+    arr.sort((a, b) => a.age > b.age ? 1 : -1);
+}
+
+john = { name: "John", age: 25 };
+pete = { name: "Pete", age: 30 };
+mary = { name: "Mary", age: 28 };
+
+let sortedbyAge = [ pete, john, mary ];
+
+sortByAge(sortedbyAge);
+
+// now: [john, mary, pete]
+let result = "";
+for (item in sortedbyAge) {
+    result += sortedbyAge[item].name + " ";
+    result += sortedbyAge[item].age + "\n";
+}
+alert(result);
 
 /*
 --- Task 9 ---
@@ -298,6 +322,30 @@ shuffle(arr);
 All element orders should have an equal probability. For instance, [1,2,3] can be reordered as [1,2,3] or [1,3,2] or [3,1,2] etc, with equal probability of each case.
 */
 
+alert(`Task 9 --- 
+Write the function shuffle(array) that 
+shuffles (randomly reorders) elements of the array.
+`);
+
+function shuffle(arr) {
+    //Fisher-Yates shuffle. Go backwards and change index with random index before it.
+    for (let i = arr.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i - 1));
+
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
+
+let shuffleArr = [1, 2, 3, 4, 5];
+
+let howManyShuffles = +prompt(`How many shuffles?`);
+result = "";
+
+for (let i = 0; i < howManyShuffles; i++) {
+    shuffle(shuffleArr);
+    alert(i + ": " + shuffleArr);
+}
+
 /*
 --- Task 10 ---
 Write the function getAverageAge(users) that gets an array of objects with property age and returns the average age.
@@ -315,6 +363,30 @@ let arr = [ john, pete, mary ];
 alert( getAverageAge(arr) ); // (25 + 30 + 29) / 3 = 28
 
 */
+alert(`Task 10 --- 
+Write the function getAverageAge(users) that gets an array of 
+objects with property age and returns the average age.
+`)
+
+function getAverageAge(users) {
+    let sum = 0;
+    let amount = 0;
+
+    for(item in users) {
+        sum += +users[item].age;
+        amount++;
+    }
+
+    return (sum / amount);
+}
+
+john = { name: "John", age: 25 };
+pete = { name: "Pete", age: 30 };
+mary = { name: "Mary", age: 29 };
+
+averageAgeArray = [ john, pete, mary ];
+
+alert("Average age should be 28: " + getAverageAge(averageAgeArray) ); // (25 + 30 + 29) / 3 = 28
 
 /*
 --- Task 11 --- 
@@ -335,6 +407,28 @@ let strings = ["Hare", "Krishna", "Hare", "Krishna",
 alert( unique(strings) ); // Hare, Krishna, :-O
 
 */
+alert(`Task 11 --- 
+Create a function unique(arr) that should return an array with unique items of arr.
+`)
+
+function unique(arr) {
+    let uniques = [];
+
+    for (item in arr) {
+        if (!uniques.includes(arr[item])) {
+            uniques.push(arr[item]);
+        }
+    }
+
+    return uniques;
+}
+
+let strings = ["Hare", "Krishna", "Hare", "Krishna",
+  "Krishna", "Krishna", "Hare", "Hare", ":-O"
+];
+
+alert( unique(strings) ); // Hare, Krishna, :-O
+
 
 /*
 --- Task 12 ---
@@ -366,3 +460,31 @@ In this task we assume that id is unique. There may be no two array items with t
 
 Please use array .reduce method in the solution.
 */
+alert(`Task 12 ---
+Create a function groupById(arr) that creates an object from it, 
+with id as the key, and array items as values.
+`)
+
+function groupById(arr) {
+    return arr.reduce((obj, value) => {
+        obj[value.id] = value;
+        return obj;
+    },
+    {})
+}
+
+users = [
+    {id: 'john', name: "John Smith", age: 20},
+    {id: 'ann', name: "Ann Smith", age: 24},
+    {id: 'pete', name: "Pete Peterson", age: 31},
+  ];
+
+
+let usersById = groupById(users);
+
+// after the call we have:
+alert(users);
+
+for(item in usersById) {
+    alert(usersById[item]);
+}
