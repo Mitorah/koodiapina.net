@@ -26,3 +26,36 @@ The numbers and the operator are delimited with exactly one space.
 There may be error handling if you’d like to add it.
 
 */
+alert(`Calculator!`)
+
+function Calculator() {
+    this.methods = {
+        "-": (a, b) => a - b,
+        "+": (a, b) => a + b
+    };
+
+    this.calculate = function(str) {
+        let split = str.split(' '),
+        a = +split[0],
+        op = split[1],
+        b = +split[2]
+
+        if (!this.methods[op] || isNaN(a) || isNaN(b)) {
+            return NaN;
+        }
+
+        return this.methods[op](a, b);
+    };
+
+    this.addMethod = function(name, func) {
+        this.methods[name] = func;
+    };
+};
+
+let calc = new Calculator();
+
+calc.addMethod("*", (a, b) => a * b);
+alert(`5 times 6 is ` + calc.calculate("5 * 6"));
+calc.addMethod("/", (a, b) => a / b);
+alert(`20 divided by 2 is ` + calc.calculate("20 / 2"));
+
