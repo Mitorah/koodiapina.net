@@ -10,6 +10,29 @@
             <h1>Last name: {{ last_name }}</h1>
             <h1>{{ information() }}</h1>
         </div>
+
+
         <script type="text/javascript" src="vue_instance.js"></script>
+        <script type="text/javascript">
+        var _obj =  {fname = "John", lname = "Doe" };
+
+        var vm = new Vue({
+            data: _obj
+        });
+
+        console.log(vm.fname);
+        console.log(vm.$data);
+        console.log(vm.$data.fname);
+
+        var Component = new Vue.extend({
+            data: function() {
+                return _obj
+            }
+        });
+
+        var myComponentInstance = new Component();
+        console.log(myComponentInstance.lname);
+        console.log(myComponentInstance.$data);
+        </script>
     </body>
 </html>
