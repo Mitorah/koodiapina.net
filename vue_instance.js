@@ -4,6 +4,7 @@ var vm = new Vue({
         first_name: "John",
         last_name: "Doe",
         htmlcontent: "<div><h1>Vue Js Template</h1></div>"
+        
     },
 
     methods: {
