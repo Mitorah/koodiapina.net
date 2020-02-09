@@ -14,10 +14,10 @@ var vm = new Vue({
             return "My name is " + this.first_name + " " + this.last_name + ".";
         },
         changetoimg_1: function() {
-            visible_img = imgsrc_1;
+            this.visible_img = this.imgsrc_1;
         },
         changetoimg_2: function() {
-            visible_img = imgsrc_2;
+            this.visible_img = this.imgsrc_2;
         }
     }
 })
