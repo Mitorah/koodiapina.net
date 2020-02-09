@@ -7,7 +7,7 @@ var vm = new Vue({
         visible_img: "",
         imgsrc_1: "images/bowling_beer.jpg",
         imgsrc_2: "images/hots_alarak.jpg",
-        imgsize: 50%
+        imgsize: 50
     },
 
     methods: {
