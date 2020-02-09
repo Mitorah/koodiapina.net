@@ -1,4 +1,4 @@
-var vi = new VTTCue({
+var vi = new Vue({
     el: "#vue_input",
     data: {
         first_name: "",
