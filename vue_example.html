@@ -10,10 +10,11 @@
             <h1>Last name: {{ last_name }}</h1>
             <h1>{{ information() }}</h1>
             <div v-html = "htmlcontent"></div>
+            <img v-bind:src = "imgsrc" width = 300 height = 250 />
         </div>
 
-
         <script type="text/javascript" src="vue_instance.js"></script>
+
         <script type="text/javascript">
         var _obj =  {fname: "John", lname: "Doe" };
 

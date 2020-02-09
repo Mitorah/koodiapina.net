@@ -3,8 +3,8 @@ var vm = new Vue({
     data: {
         first_name: "John",
         last_name: "Doe",
-        htmlcontent: "<div><h1>Vue Js Template</h1></div>"
-        
+        htmlcontent: "<div><h1>Vue Js Template</h1></div>",
+        imgsrc: "images/bowling_beer.jpg"
     },
 
     methods: {
