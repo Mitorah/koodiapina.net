@@ -5,13 +5,11 @@
         </head>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
         
-        <div id ="vue_input">
+        <div id ="vue_input" style = "text-align: left;">
             First name: <input type = "text" v-model = "first_name" /><br/>
             Last name: <input type = "text" v-model = "last_name" /><br/>
             Age: <input type = "number" v-model = "age" /><br/>
-        </div>"
-
-        <div id = "vue_det" style = "text-align: center;">
+            <br/><br/>
             <h1>First name: {{ first_name }}</h1>
             <h1>Last name: {{ last_name }}</h1>
             <h1>Age: {{ age }}</h1>
