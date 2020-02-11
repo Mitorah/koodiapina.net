@@ -5,20 +5,19 @@
         
         <div id = "vue-calendar" style = "text-align: left;">
         Name: <input type = "text" v-model = "name" /><br/>
-        Start time: <input type = "date" v-model = "startTime" /><br/>
-        End time: <input type="date" v-model = "endTime" /><br/>
+        Start time: <input type = "date" v-model = "newStartTime" /><br/>
+        End time: <input type="date" v-model = "newEndTime" /><br/>
         <button v-on:click="addNewMeeting" v-bind:style="styleobj">Add meeting</button>
         <br/><br/><br/>
         <h1>{{ $meeting }}</h1>
 
         <ul>
-            <template v-for="item in startTimeArray">
-                {{ item }}
-            </template>"
-            <template v-for="item in endTimeArray">
-                {{ item }}
-            </template>
-            <br/>
+            <li
+            is="calendar-item"
+            v-for="(meeting, index) in meetings"
+            v-bind:key = "meeting.startTime"
+            v-bind:title = "meeting.endTime">
+            </li>
         </ul>
 
         </div>

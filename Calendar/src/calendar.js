@@ -1,18 +1,29 @@
+Vue.component('calendar-item', {
+    template: '\
+    <li>\
+        {{ startTime }}\
+        <button v-on:click="$emit(\'remove\')">Derp</button>\
+    </li>\
+    ',
+    props: ['startTime']
+})
+
 var cal = new Vue({
     el: "#vue_calendar",
     data: {
         name: "",
-        startTime: Date,
-        endTime: Date,
-        startTimeArray: [],
-        endTimeArray: []
+        newStartTime: Date,
+        newEndTime: Date,
+        meetings: []
     },
     methods: {
         addNewMeeting: function() {
-            startTimeArray.push(startTime);
-            endTimeArray.push(endTime);
-            startTime = "",
-            endTime = ""
+            this.meetings.push({
+                startTime: this.newStartTime,
+                endTime: this.newEndTime
+            })
+            this.newStartTime = "",
+            this.newEndTime = ""
         }
     }
 })
