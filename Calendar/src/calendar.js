@@ -1,11 +1,11 @@
 Vue.component('calendar-item', {
     template: '\
     <li>\
-        {{ startTime }}\
+        {{ startTime + endtime }}\
         <button v-on:click="$emit(\'remove\')">Derp</button>\
     </li>\
     ',
-    props: ['startTime']
+    props: ['startTime', 'endtime']
 })
 
 var cal = new Vue({
