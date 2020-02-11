@@ -2,8 +2,8 @@ var cal = new Vue({
     el: "#vue_calendar",
     data: {
         name: "",
-        startTime,
-        endTime,
+        startTime: Date,
+        endTime: Date,
         startTimeArray: [],
         endTimeArray: []
     },
