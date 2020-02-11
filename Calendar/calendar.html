@@ -12,9 +12,13 @@
         <h1>{{ $meeting }}</h1>
 
         <ul>
-            <template v-for="item in startTime">
+            <template v-for="item in startTimeArray">
                 {{ item }}
             </template>"
+            <template v-for="item in endTimeArray">
+                {{ item }}
+            </template>
+            <br/>
         </ul>
 
         </div>
