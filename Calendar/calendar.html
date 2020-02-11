@@ -7,11 +7,16 @@
         Name: <input type = "text" v-model = "name" /><br/>
         Start time: <input type = "date" v-model = "startTime" /><br/>
         End time: <input type="date" v-model = "endTime" /><br/>
+        <button v-on:click="addNewMeeting" v-bind:style="styleobj">Add meeting</button>
         <br/><br/><br/>
         <h1>{{ $meeting }}</h1>
-        <div>
-            <span v-for="n in 10">{{ n }}</span>
-        </div>
+
+        <ul>
+            <template v-for="item in startTime">
+                {{ item }}
+            </template>"
+        </ul>
+
         </div>
         <script type="text/javascript" src="src/calendar.js" ></script>
     </body>
