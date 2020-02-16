@@ -1,9 +1,11 @@
 plan:
     Create calendar that can:
         ✔ Visualise calendar meetings @started(20-02-16 12:18) @done(20-02-16 12:37) @lasted(19m30s)
-        ☐ Implement mechanism to add meetings
-        ☐ Implement mechanism to delete meetings
+        ✔ Implement mechanism to add meetings @started(20-02-16 14:08) @done(20-02-16 14:18) @lasted(10m6s)
+        ✔ Implement mechanism to delete meetings @started(20-02-16 13:50) @done(20-02-16 14:05) @lasted(15m42s)
         ☐ Change datatype to date
-        ☐ Create users for meetings
+        ☐ Create users to have meetings
         ☐ Compare meetings with another user to find free meeting times
+        ☐ Rework component system, so delete-button and text visualisation have different components
+
     

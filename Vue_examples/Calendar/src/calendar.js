@@ -20,9 +20,6 @@ var cal = new Vue({
        meetings: ['one', 'two','three','four'],
    },
    methods: {
-       meetingdisp: function(mt) {
-           // Click function
-       },
        addmeeting: function() {
            if (this.new_meeting != "") {
                this.meetings.push(this.new_meeting)
