@@ -8,7 +8,7 @@ Vue.component('meeting_visual_data', {
     props: ['item'],
     methods: {
         display_meeting: function(mt) {
-            this.$emit('addmeeting', mt);
+            this.$emit('deletemeeting', mt);
         }
     },
 });
