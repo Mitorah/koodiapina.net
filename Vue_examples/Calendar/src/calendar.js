@@ -1,10 +1,5 @@
 Vue.component('meeting_visual_data', {
     template: '<h5>{{ item }}<button v-on:click = "delete_button(item)">Delete</button></h5><br/>',
-    /*data: function() {
-        return {
-            counter: 0
-        }
-    },*/
     props: ['item'],
     methods: {
         delete_button: function(mt) {
@@ -17,7 +12,7 @@ var cal = new Vue({
    el: '#calendar',
    data: {
        new_meeting: "",
-       meetings: ['one', 'two','three','four'],
+       meetings: ['one', 'two', 'three', 'four'],
    },
    methods: {
        addmeeting: function() {
