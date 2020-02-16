@@ -5,12 +5,12 @@
     </head>
 
     <div id="for_example">
-        <button-counter
+        <example_data
             v-for = "(item, index) in created_array"
             v-bind:item = "item"
             v-bind:index = "index"
             v-on:show-language = "displayitem">
-        </button-counter>
+        </example_data>
     </div>
 
     <script type="text/javascript">
