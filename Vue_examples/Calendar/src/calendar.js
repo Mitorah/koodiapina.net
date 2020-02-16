@@ -18,10 +18,7 @@ var cal = new Vue({
    },
    methods: {
        addmeeting: function() {
-           if (this.new_meeting != "" && typeof(this.new_meetings) == Date) {
-               this.newmeetings.push(this.new_meeting_as_date)
-           }
-           
+           this.newmeetings.push(this.new_meeting_as_date)
            this.new_meeting_as_date = Date
        },
        deletemeeting: function(deletedmeeting) {
