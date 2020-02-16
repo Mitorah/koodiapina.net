@@ -35,7 +35,13 @@
     var vm = new Vue({
         el: "#for_example",
         data: {
+            selected_item: "",
             created_array: ["ar1", "ar2", "ar3", "ar4"]
+        },
+        methods: {
+            displayitem: function(itm) {
+                selected_item = itm
+            }
         }
     })
     </script>
