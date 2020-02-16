@@ -1,5 +1,5 @@
 Vue.component('meeting_visual_data', {
-    template: '<h5>{{ item }}<button v-on:click = "deletemeeting(item)">Delete</button></h5><br/>',
+    template: '<h5>{{ item }}<button v-on:click = "delete_button(item)">Delete</button></h5><br/>',
     data: function() {
         return {
             counter: 0
