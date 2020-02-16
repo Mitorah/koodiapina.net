@@ -25,7 +25,7 @@ var cal = new Vue({
        },
        addmeeting: function() {
            if (this.new_meeting != "") {
-               this.meetings.push(new_meeting)
+               this.meetings.push(this.new_meeting)
            }
 
            this.new_meeting = ""
