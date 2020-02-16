@@ -16,14 +16,18 @@ Vue.component('meeting_visual_data', {
 var cal = new Vue({
    el: '#calendar',
    data: {
+       new_meeting: "",
        meetings: ['one', 'two','three','four'],
    },
    methods: {
        meetingdisp: function(mt) {
            // Click function
        },
-       addmeeting: function(newmeeting) {
-           meetings.push(mt)
+       addmeeting: function() {
+           if (new_meeting != "") {
+               meetings.push(new_meeting)
+           }
+           new_meeting = ""
        },
        deletemeeting: function(deletedmeeting) {
            this.meetings.splice(this.meetings.indexOf(deletedmeeting), 1);
