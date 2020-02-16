@@ -1,4 +1,4 @@
-Vue.Component('meeting_visual_data', {
+Vue.component('meeting_visual_data', {
     template: '<h5>{{ item }}</h5><br/>',
     data: function() {
         return {
