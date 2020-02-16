@@ -1,5 +1,5 @@
 Vue.component('meeting_visual_data', {
-    template: '<h5>{{ item }}</h5><br/>',
+    template: '<h5>{{ item }}</h5><button v-on:click = "deletemeeting(item)">Delete</button><br/>',
     data: function() {
         return {
             counter: 0
@@ -8,7 +8,7 @@ Vue.component('meeting_visual_data', {
     props: ['item'],
     methods: {
         display_meeting: function(mt) {
-            this.$emit('showmeeting', mt);
+            this.$emit('addmeeting', mt);
         }
     },
 });
@@ -22,6 +22,12 @@ var cal = new Vue({
        meetingdisp: function(mt) {
            // Click function
        },
+       addmeeting: function(newmeeting) {
+           meetings.push(mt)
+       },
+       deletemeeting: function(deletedmeeting) {
+           this.meetings.splice(this.meetings.indexOf(deletedmeeting), 1);
+       }
    },
 
 });

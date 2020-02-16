@@ -1,7 +1,9 @@
 plan:
     Create calendar that can:
-        ☐ Create meeting with date
-        ☐ Create meeting with time
-        ☐ Delete meeting
-        ☐ Compare meetings with another user
+        ✔ Visualise calendar meetings @started(20-02-16 12:18) @done(20-02-16 12:37) @lasted(19m30s)
+        ☐ Implement mechanism to add meetings
+        ☐ Implement mechanism to delete meetings
+        ☐ Change datatype to date
+        ☐ Create users for meetings
+        ☐ Compare meetings with another user to find free meeting times
     
