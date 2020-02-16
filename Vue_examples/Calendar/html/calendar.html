@@ -6,7 +6,12 @@
 
     <body>
         <div id = "calendar">
-            Meeting to add: <input type = "date" v-model = "new_meeting" /><button v-on:click = "addmeeting">Add</button> <br/>
+            Meeting name: <input type = "text" v-model = "new_meeting_id" /><br/>
+            Date: <input type = "date" v-model = "new_meeting_date" /><br/>
+            Starting Time: <input type = "time" v-model = "new_meeting_start_time" />
+            Ending Time: <input type = "time" v-model = "new_meeting_end_time" />
+            <br/><button v-on:click = "addmeeting">Add new meeting</button> <br/>
+
             <meeting_visual_data
                 v-for = "(item, index) in meetings"
                 v-bind:item = "item"
