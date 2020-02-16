@@ -1,0 +1,7 @@
+plan:
+    Create calendar that can:
+        ☐ Create meeting with date
+        ☐ Create meeting with time
+        ☐ Delete meeting
+        ☐ Compare meetings with another user
+    
