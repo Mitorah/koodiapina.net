@@ -11,18 +11,16 @@ Vue.component('meeting_visual_data', {
 var cal = new Vue({
    el: '#calendar',
    data: {
-       new_meeting_as_date: Date,
-       new_meetings: [Date],
-       new_meeting: "",
-       meetings: ['one', 'two', 'three', 'four'],
+       new_meeting: null,
+       meetings: [Date],
    },
    methods: {
        addmeeting: function() {
-           this.new_meetings.push(this.new_meeting_as_date)
-           this.new_meeting_as_date = null
+           this.meetings.push(this.new_meeting)
+           this.new_meeting = null
        },
        deletemeeting: function(deletedmeeting) {
-           this.new_meetings.splice(this.meetings.indexOf(deletedmeeting), 1);
+           this.meetings.splice(this.meetings.indexOf(deletedmeeting), 1);
        }
    },
 
