@@ -25,9 +25,10 @@ var cal = new Vue({
        },
        addmeeting: function() {
            if (this.new_meeting != "") {
-               meetings.push(new_meeting)
+               this.meetings.push(new_meeting)
            }
-           new_meeting = ""
+           
+           this. new_meeting = ""
        },
        deletemeeting: function(deletedmeeting) {
            this.meetings.splice(this.meetings.indexOf(deletedmeeting), 1);
