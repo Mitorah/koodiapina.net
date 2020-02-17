@@ -12,6 +12,8 @@
             Ending Time: <input type = "time" v-model = "new_meeting_end_time" />
             <br/><button v-on:click = "addmeeting">Add new meeting</button> <br/>
 
+            
+
             <meeting_visual_data
                 v-for = "(item, index) in meetings"
                 v-bind:item = "item"

@@ -1,4 +1,4 @@
-plan:
+Project - Calendar:
     Functionalities:
         ✔ Visualise calendar meetings @started(20-02-16 12:18) @done(20-02-16 12:37) @lasted(19m30s)
         ✔ Implement mechanism to add meetings @started(20-02-16 14:08) @done(20-02-16 14:18) @lasted(10m6s)
