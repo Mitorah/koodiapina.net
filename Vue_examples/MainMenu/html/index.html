@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>Koodiapina.net</title>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    </head>
+
+    <body>
+        <div id = "dropdown">
+            <button v-on:click = "togglemenu">MENU</button><br/>
+
+            <div v-if = "showdropdown">
+                <dropdownmenu 
+                v-for = "(item, index) in menuelements"
+                v-bind:menuitem = "item"
+                v-bind:index = "index">
+                </dropdownmenu>
+            </div>
+        </div>
+    </body>
+
+    <script type = "text/javascript" src = "../src/dropdown.js"></script>
+
+</html>

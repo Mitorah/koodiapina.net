@@ -12,8 +12,6 @@
             Ending Time: <input type = "time" v-model = "new_meeting_end_time" />
             <br/><button v-on:click = "addmeeting">Add new meeting</button> <br/>
 
-            
-
             <meeting_visual_data
                 v-for = "(item, index) in meetings"
                 v-bind:item = "item"
@@ -21,8 +19,8 @@
                 v-on:delete_meeting = "deletemeeting">
             </meeting_visual_data>
                 
-            </div>
-        </body>
+        </div>
+    </body>
         
-        <script type="text/javascript" src="../src/calendar.js"></script>
+    <script type = "text/javascript" src = "../src/calendar.js"></script>
 </html>
