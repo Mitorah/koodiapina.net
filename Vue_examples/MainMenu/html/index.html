@@ -9,11 +9,12 @@
             <button v-on:click = "togglemenu">MENU</button><br/>
 
             <div v-if = "showdropdown">
-                <dropdownmenu 
+                <dropdownmenuitem
                 v-for = "(item, index) in menuelements"
                 v-bind:menuitem = "item"
-                v-bind:index = "index">
-                </dropdownmenu>
+                v-bind:index = "index"
+                v-on:openpage = "openlink">
+                </dropdownmenuitem>
             </div>
         </div>
     </body>

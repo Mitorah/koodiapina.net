@@ -1,35 +1,40 @@
-const Dropdown = Vue.component('dropdownmenu', {
-    template: '<button v-on:click = "toggleshow"> {{menuitem.name}} </button>',
+Vue.component('dropdownmenuitem', {
+    template: '<h5><button v-on:click = "openpage(menuitem.link)">{{menuitem.name}}</button></h5>',
     props: ['menuitem'],
     methods: {
-        toggleshow: function() {
-            this.$emit('togglemenu');
-        }
+        openpage: function(linktoopen) {
+            this.$emit('openpage', linktoopen);
+        },
     }
-});
+})
 
 var vmdropdown = new Vue({
     el: "#dropdown",
-    component: {
-        Dropdown,
-    },
     data: {
         showdropdown: false,
         menuelements: [
             { 
-                name: 'Calendar'
+                name: 'Calendar',
+                link: '../../Calendar/html/calendar.html'
             },
             {
-                name: 'Exercise_2'
+                name: 'Exercise_2',
+                link: 'index.html'
+
             },
             { 
-                name: 'Info' 
-            }
+                name: 'Info',
+                link: 'index.html'
+            },
         ]
     },
     methods: {
         togglemenu: function() {
             this.showdropdown = !this.showdropdown;
+            console.log("Menu toggled.");
+        },
+        openlink: function(linktoopen) {
+            window.location.href = linktoopen;
         }
     }
 });
