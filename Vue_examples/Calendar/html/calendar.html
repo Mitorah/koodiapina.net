@@ -5,22 +5,41 @@
     </head>
 
     <body>
-        <div id = "calendar">
-            Meeting name: <input type = "text" v-model = "new_meeting_id" /><br/>
-            Date: <input type = "date" v-model = "new_meeting_date" /><br/>
-            Starting Time: <input type = "time" v-model = "new_meeting_start_time" />
-            Ending Time: <input type = "time" v-model = "new_meeting_end_time" />
-            <br/><button v-on:click = "addmeeting">Add new meeting</button> <br/>
-
-            <meeting_visual_data
-                v-for = "(item, index) in meetings"
+        <div id = "calendar" style = "text-align: left;font-size: 18px;">
+            <input type="text" v-model = "new_user_id">
+            <button v-on:click = "addnewuser">Add new user</button>
+            <br/>
+            <br/>
+            
+            <select v-model = "selectedperson" style = "width: 280px;font-size: 18px;">
+                <option 
+                v-for = "(person, index) in personalmeetings"
+                v-bind:value = "person.id">
+                {{ person.id }}
+                </option>
+            </select>
+            <button v-on:click = "deleteselecteduser">Delete user</button>
+            
+            <br/>
+            <br/>
+            
+            <div v-if = "selectedperson">
+                Meeting name: <input type = "text" v-model = "new_meeting_id" /><br/>
+                Date: <input type = "date" v-model = "new_meeting_date" /><br/>
+                Starting Time: <input type = "time" v-model = "new_meeting_start_time" />
+                Ending Time: <input type = "time" v-model = "new_meeting_end_time" />
+                <br/><button v-on:click = "addpersonalmeeting">Add new meeting</button> <br/>
+                
+                <meeting_visual_data
+                v-for = "(item, index) in getpersonalmeetings()"
                 v-bind:item = "item"
                 v-bind:index = "index"
-                v-on:delete_meeting = "deletemeeting">
-            </meeting_visual_data>
-                
-        </div>
-    </body>
+                v-on:delete_meeting = "deletepersonalmeeting">
+                </meeting_visual_data>
+            </div>
+        
+    </div>
+</body>
         
     <script type = "text/javascript" src = "../src/calendar.js"></script>
     <script type = "text/javascript" src = "../src/visual_data_component.js"></script>
