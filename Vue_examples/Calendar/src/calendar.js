@@ -1,6 +1,6 @@
 var cal = new Vue ({
     el: '#calendar',
-   data: {
+    data: {
        users: [
             {
                 user_id: "First user",

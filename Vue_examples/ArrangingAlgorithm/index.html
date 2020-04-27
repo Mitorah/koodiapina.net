@@ -2,19 +2,23 @@
     <head>
         <title>Testings</title>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
-        <script type="text/javascript" src="main.js"></script>
-        <script type="module" src="src/findcombinations.js"></script>
+        
     </head>
     <body>
         <div id = "playtester">
-            <button v-on:click = "findresults()">Test</button>
-        
-        <data
-        v-for = "(item) in results"
-        >
-        <br/>
-        {{ item }}
-        </data>
+            <combinationcomponent
+            v-on:getresults = "setresults"
+            >{{ results }} </combinationcomponent>
+            
+            <data
+            v-for = "(item) in results"
+            >
+            <br/>
+            {{ item }}
+            </data>
         </div>
     </body>
+    <script type="text/javascript" src="src/findcombinations.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+        
 </html>
