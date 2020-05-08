@@ -1,22 +1,15 @@
 Vue.component('combinationcomponent', {
-    template: '<button v-on:click = "callfunction()">Calculate</button>',
+    template: '<button v-on:click = "callfunction()">Calculate build orders.</button>',
+    props: ['structurearray'],
     data: {
         componentresults: [],
     },
     methods: {
         callfunction: function() {
-            var farray = [];
-            farray.push(1)
-            farray.push(2)
-            farray.push([4,5,6])
-            farray.push(11)
-
             this.componentresults = [];
+            
+            this.findallpossiblecombinations(this.structurearray, [], this.structurearray.length);
 
-            this.findallpossiblecombinations(farray, [], farray.length);
-
-            this.componentresults.unshift(this.componentresults.length);
-        
             this.$emit('getresults', this.componentresults);
         },
         findallpossiblecombinations: function(pool, newpool, wantedlength) {
