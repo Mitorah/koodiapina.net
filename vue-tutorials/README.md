@@ -1,4 +1,4 @@
-# way-of-water
+# vue-tutorials
 
 ## Project setup
 ```
