@@ -2,14 +2,21 @@
     <div >
         <div>
         {{ resourceWindowTitle }}
+        <button @click="resources.push('')">New Resource</button>
+        <button @click="rules.push('')">New Rule</button>
 
         <ul v-for="(resourcename, index) in resources"
         v-bind:key = resourcename>
+        <tr>
+        <th>
         <ui-resource-element v-bind:title = resourcename></ui-resource-element>
+        </th>
+        <th>
         <button @click="resources.splice(index,1)">-</button>
+        </th>
+        </tr>
         </ul>
         <br>
-        <button @click="resources.push('')">New Resource</button>
         
         <ul v-for="(rulename, index) in rules"
         v-bind:key = rulename>
@@ -17,7 +24,6 @@
         <button @click="resources.splice(index,1)">-</button>
         </ul>
         <br>
-        <button @click="rules.push('')">New rule</button>
         
         
         </div>
