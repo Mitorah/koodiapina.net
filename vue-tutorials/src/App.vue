@@ -35,6 +35,7 @@
     <br/>
 
     <capitalize-string message="this sHoulD BE capitAlizeD!"></capitalize-string>
+    <capitalize-string message="tHIs ShoULd bE caPItALIzrD!"></capitalize-string>
 
 
   </div>
