@@ -1,31 +1,35 @@
 <template>
   <div>
-    <ol>
-      <li v-for='item in arrayToShow'
-      :key="item.text">
-      {{ '[' + item.text + "]: "}} <br/>
-      {{ item.value }} <br/><br/>
+  
+    <list-component></list-component>
+  
+    <br/>  
+    <br/>  
 
-      </li>
-    </ol>
+    <button-counter></button-counter><br/>
 
-    <input v-model.trim="message" @change="onMessageChanged(message)">
-    <br/><br/><br/>
-    {{ message }}
+    <br/>  
+    <br/>  
+
+    <reverse-string></reverse-string>
+
+    <br/>  
+    <br/>  
+
+    <scramble-string></scramble-string>
+
+    <br/>  
+    <br/>  
+
+    <dynamic-arguments dynamicAttribute="mousedown"></dynamic-arguments>
+    <dynamic-arguments dynamicAttribute="mouseover"></dynamic-arguments>
+    <dynamic-arguments dynamicAttribute="mouseup"></dynamic-arguments>
+
     <br/>
     <br/>
 
-  <button-counter></button-counter><br/>
-
-  <br/>  
-  <br/>  
-
-  <reverse-string></reverse-string>
-
-  <br/>  
-  <br/>  
-
-  <scramble-string></scramble-string>
+    <random-number-button></random-number-button>
+    <random-number-button></random-number-button>
 
   </div>
 </template>
@@ -34,13 +38,21 @@
 import buttoncounterVue from './components/buttoncounter.vue';
 import reversestringVue from './components/reversestring.vue';
 import scramblestringVue from './components/scramblestring.vue';
+import dynamicargumentsVue from './components/dynamicarguments.vue';
+import addtolistVue from './components/listcomponent.vue';
+import randomnumberbuttonVue from './components/randomnumberbutton.vue';
+
 
 export default {
   name: 'App',
   components: {
+    'list-component': addtolistVue,
     'button-counter': buttoncounterVue,
     'reverse-string': reversestringVue,
-    'scramble-string': scramblestringVue
+    'scramble-string': scramblestringVue,
+    'dynamic-arguments': dynamicargumentsVue,
+    'random-number-button': randomnumberbuttonVue
+  
   },
   data() {
     return {

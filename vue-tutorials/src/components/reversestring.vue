@@ -1,8 +1,8 @@
 <template>
     <div>
-        <button @click="reversemessage">Reverse
-        </button>
-        {{ message }}
+        <input v-model="message">
+        <br/>
+        <span>{{ reversedMessage }}</span>
     </div>
 </template>
 
@@ -16,6 +16,11 @@ export default {
     methods: {
         reversemessage() {
             this.message = this.message.split('').reverse().join('');        
+        }
+    },
+    computed: {
+        reversedMessage: function() {
+            return this.message.split('').reverse().join('');
         }
     }
 }

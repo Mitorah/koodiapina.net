@@ -1,7 +1,8 @@
 <template>
     <div>
-        <button @click="scramblestring">Scramble</button>
-        {{ message }}
+        <input size="50" v-model="inputMessage" @keypress="scramblestring(inputMessage)">
+        <br/>
+        <span>Scrambled: {{ scrambledMessage }}</span>
     </div>
 </template>
 
@@ -9,13 +10,14 @@
 export default {
     data() {
         return {
-            message: "This is message that will be scrambled!"
+            inputMessage: "This is message that will be scrambled!",
+            scrambledMessage: ""
         }
     },
     methods: {
-        scramblestring() {
+        scramblestring(input) {
             let result = [];
-            let splitted = this.message.split('');
+            let splitted = input    .split('');
 
             while (splitted.length > 0)
             {
@@ -24,7 +26,7 @@ export default {
                 splitted.splice(rng, 1);
             }
 
-            this.message = result.join('');
+            this.scrambledMessage = result.join('');
             
         }
     }
