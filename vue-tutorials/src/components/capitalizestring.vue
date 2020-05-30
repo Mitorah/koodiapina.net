@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  props {
+  props: {
     message: String
   },
   data() {
@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     capitalizedMessage: function() {
-      return message.toUpperCase();
+      return this.message.toUpperCase();
     }
   }
 }

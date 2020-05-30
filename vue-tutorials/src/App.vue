@@ -31,6 +31,12 @@
     <random-number-button></random-number-button>
     <random-number-button></random-number-button>
 
+    <br/>
+    <br/>
+
+    <capitalize-string message="this sHoulD BE capitAlizeD!"></capitalize-string>
+
+
   </div>
 </template>
 
@@ -41,6 +47,7 @@ import scramblestringVue from './components/scramblestring.vue';
 import dynamicargumentsVue from './components/dynamicarguments.vue';
 import addtolistVue from './components/listcomponent.vue';
 import randomnumberbuttonVue from './components/randomnumberbutton.vue';
+import capitalizestringVue from './components/capitalizestring.vue';
 
 
 export default {
@@ -51,7 +58,8 @@ export default {
     'reverse-string': reversestringVue,
     'scramble-string': scramblestringVue,
     'dynamic-arguments': dynamicargumentsVue,
-    'random-number-button': randomnumberbuttonVue
+    'random-number-button': randomnumberbuttonVue,
+    'capitalize-string': capitalizestringVue
   
   },
   data() {
