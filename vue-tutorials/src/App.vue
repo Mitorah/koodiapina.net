@@ -1,6 +1,12 @@
 <template>
   <div>
-  
+
+    <nav-bar></nav-bar>
+
+    <br/>  
+    <br/>  
+
+
     <list-component></list-component>
   
     <br/>  
@@ -35,8 +41,12 @@
     <br/>
 
     <capitalize-string message="this sHoulD BE capitAlizeD!"></capitalize-string>
-    <capitalize-string message="tHIs ShoULd bE caPItALIzrD!"></capitalize-string>
+    <capitalize-string message="tHIs ShoULd bE caPItALIzED!"></capitalize-string>
 
+    <br/>
+    <br/>
+
+    <multiple-checkboxes :idObjects=arrayForCheckbox></multiple-checkboxes>
 
   </div>
 </template>
@@ -49,7 +59,8 @@ import dynamicargumentsVue from './components/dynamicarguments.vue';
 import addtolistVue from './components/listcomponent.vue';
 import randomnumberbuttonVue from './components/randomnumberbutton.vue';
 import capitalizestringVue from './components/capitalizestring.vue';
-
+import navbarVue from './components/navbar.vue';
+import multiplecheckboxesVue from './components/multiplecheckboxes.vue';
 
 export default {
   name: 'App',
@@ -60,8 +71,9 @@ export default {
     'scramble-string': scramblestringVue,
     'dynamic-arguments': dynamicargumentsVue,
     'random-number-button': randomnumberbuttonVue,
-    'capitalize-string': capitalizestringVue
-  
+    'capitalize-string': capitalizestringVue,
+    'nav-bar': navbarVue,
+    'multiple-checkboxes': multiplecheckboxesVue,
   },
   data() {
     return {
@@ -70,6 +82,13 @@ export default {
         { text: 'second item in list', value:'hurrdurr2'},
         { text: 'third item in list', value:'hurrdurr3' },
         { text: 'fourth item in list', value:'hurrdurr4' },
+      ],
+      arrayForCheckbox: [
+        { id: "firstID", value:"FirstValue" },
+        { id: "secondID", value:"SecondValue" },
+        { id: "thirdID", value:"HurrDurr" },
+        { id: "fourthID", value:"HerpDerp" },
+        { id: "fifthID", value:"HirryHarry" },
       ],
       message: 'Page loaded at ' + Date().toLocaleString(),
     }
