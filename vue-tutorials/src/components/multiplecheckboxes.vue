@@ -2,7 +2,7 @@
     <div>
         <ol>
             <li v-for = 'item in idObjects'
-            :key='item'>
+            :key='item.id'>
             <input type="checkbox" :id=item.id :value=item v-model=checked>
             {{ item.id }}
             </li>
@@ -12,7 +12,7 @@
         <span>Checked: </span><br/>
         <ol>
             <li v-for = "item in checked"
-            :key="item">
+            :key="item.id">
             {{item.id + " -> " + item.value}}
             </li>
         </ol>

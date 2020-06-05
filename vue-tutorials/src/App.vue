@@ -1,6 +1,8 @@
 <template>
   <div>
 
+
+
     <nav-bar></nav-bar>
 
     <br/>  
@@ -46,7 +48,13 @@
     <br/>
     <br/>
 
+    <event-handler></event-handler>
+
+    <br/>
+    <br/>
+
     <multiple-checkboxes :idObjects=arrayForCheckbox></multiple-checkboxes>
+
 
   </div>
 </template>
@@ -61,6 +69,7 @@ import randomnumberbuttonVue from './components/randomnumberbutton.vue';
 import capitalizestringVue from './components/capitalizestring.vue';
 import navbarVue from './components/navbar.vue';
 import multiplecheckboxesVue from './components/multiplecheckboxes.vue';
+import eventhandlerVue from './components/eventhandler.vue';
 
 export default {
   name: 'App',
@@ -74,6 +83,7 @@ export default {
     'capitalize-string': capitalizestringVue,
     'nav-bar': navbarVue,
     'multiple-checkboxes': multiplecheckboxesVue,
+    'event-handler': eventhandlerVue,
   },
   data() {
     return {
@@ -90,7 +100,6 @@ export default {
         { id: "fourthID", value:"HerpDerp" },
         { id: "fifthID", value:"HirryHarry" },
       ],
-      message: 'Page loaded at ' + Date().toLocaleString(),
     }
   },
   methods: {
@@ -98,9 +107,7 @@ export default {
       this.arrayToShow.push({text: input, value: 0})
       this.message = '';
     }
-  }
-  
-  
+  },
 }
 </script>
 
