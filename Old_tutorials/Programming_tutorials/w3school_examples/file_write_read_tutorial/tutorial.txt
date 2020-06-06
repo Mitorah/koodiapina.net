@@ -1,4 +1,0 @@
-Example test:
-
-http://localhost:8080/summer.html
-http://localhost:8080/winter.html
