@@ -6,6 +6,12 @@
       <button @click="$emit('positive-button-event')">
         ++
         </button>
+      <button @click="$emit('modifycounter', 3.0)">
+        ++ with parameter
+      </button>
+      <button @click="$emit('modifycounter', -6.0)">
+        -- with parameter
+      </button>
       
   </div>
 </template>

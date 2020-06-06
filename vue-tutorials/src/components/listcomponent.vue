@@ -36,7 +36,7 @@ export default {
         addNewMessage(input) {
             this.dataArray.push({
                 text: input,
-                reversed: true
+                reversed: false
             });
 
             this.inputMessage = ""

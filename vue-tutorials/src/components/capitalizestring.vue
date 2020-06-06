@@ -1,21 +1,20 @@
 <template>
   <div>
+    <input type="text" v-model="inputValue"><br/>
     <span> {{ capitalizedMessage }} </span>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    message: String
-  },
   data() {
     return {
+      inputValue: ""
     }
   },
   computed: {
     capitalizedMessage: function() {
-      return this.message.toUpperCase();
+      return this.inputValue.toUpperCase();
     }
   }
 }

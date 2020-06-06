@@ -1,7 +1,7 @@
 <template>
     <div>
         <ol>
-            <li v-for = 'item in idObjects'
+            <li v-for = 'item in arrayForCheckbox'
             :key='item.id'>
             <input type="checkbox" :id=item.id :value=item v-model=checked>
             {{ item.id }}
@@ -21,11 +21,15 @@
 
 <script>
 export default {
-    props: {
-        idObjects : Array
-    },
     data() {
         return {
+            arrayForCheckbox: [
+                { id: "firstID", value:"FirstValue" },
+                { id: "secondID", value:"SecondValue" },
+                { id: "thirdID", value:"HurrDurr" },
+                { id: "fourthID", value:"HerpDerp" },
+                { id: "fifthID", value:"HirryHarry" },
+            ],
             checked : [],
         }
     },

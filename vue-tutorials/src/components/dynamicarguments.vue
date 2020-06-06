@@ -1,27 +1,17 @@
 <template>
   <div>
-      <button @[dynamicAttribute]="buttonfunction">{{ dynamicAttribute }}</button>
-      <span> {{ message }}</span>
+      <dynamic-button dynamicAttribute="mousedown"></dynamic-button>
+      <dynamic-button dynamicAttribute="mouseover"></dynamic-button>
+      <dynamic-button dynamicAttribute="mouseup"></dynamic-button>
   </div>
 </template>
 
 <script>
+import dynamicbuttonVue from './dynamicbutton.vue'
 export default {
-    props: {
-        'dynamicAttribute': String,
-    },
-    data() {
-        return {
-            message: '',
-        }
-    },
-    methods: {
-        buttonfunction() {
-            this.message = this.dynamicAttribute + "!"
-        }
+    components: {
+        'dynamic-button': dynamicbuttonVue
     }
-
-
 }
 </script>
 

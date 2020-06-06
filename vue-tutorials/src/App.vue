@@ -1,60 +1,17 @@
 <template>
   <div>
 
-
-
-    <nav-bar></nav-bar>
-
-    <br/>  
-    <br/>  
-
-
-    <list-component></list-component>
-  
-    <br/>  
-    <br/>  
-
-    <button-counter></button-counter><br/>
-
-    <br/>  
-    <br/>  
-
-    <reverse-string></reverse-string>
-
-    <br/>  
-    <br/>  
-
-    <scramble-string></scramble-string>
-
-    <br/>  
-    <br/>  
-
-    <dynamic-arguments dynamicAttribute="mousedown"></dynamic-arguments>
-    <dynamic-arguments dynamicAttribute="mouseover"></dynamic-arguments>
-    <dynamic-arguments dynamicAttribute="mouseup"></dynamic-arguments>
+    <button
+    v-for="item in componentTabs"
+    :key="item.title"
+    @click="currentTab = item.value">
+    {{ item.title }}
+    </button>
 
     <br/>
     <br/>
 
-    <random-number-button></random-number-button>
-    <random-number-button></random-number-button>
-
-    <br/>
-    <br/>
-
-    <capitalize-string message="this sHoulD BE capitAlizeD!"></capitalize-string>
-    <capitalize-string message="tHIs ShoULd bE caPItALIzED!"></capitalize-string>
-
-    <br/>
-    <br/>
-
-    <event-handler></event-handler>
-
-    <br/>
-    <br/>
-
-    <multiple-checkboxes :idObjects=arrayForCheckbox></multiple-checkboxes>
-
+    <component :is="currentTab"></component>
 
   </div>
 </template>
@@ -87,19 +44,19 @@ export default {
   },
   data() {
     return {
-      arrayToShow: [
-        { text: 'first item in list', value:'hurrdurr1' },
-        { text: 'second item in list', value:'hurrdurr2'},
-        { text: 'third item in list', value:'hurrdurr3' },
-        { text: 'fourth item in list', value:'hurrdurr4' },
-      ],
-      arrayForCheckbox: [
-        { id: "firstID", value:"FirstValue" },
-        { id: "secondID", value:"SecondValue" },
-        { id: "thirdID", value:"HurrDurr" },
-        { id: "fourthID", value:"HerpDerp" },
-        { id: "fifthID", value:"HirryHarry" },
-      ],
+      currentTab: "",
+      componentTabs: [
+        { title: "List", value: "list-component"},
+        { title: "Button", value: "button-counter"},
+        { title: "Reverse", value: "reverse-string"},
+        { title: "Scramble", value: "scramble-string"},
+        { title: "Dynamic", value: "dynamic-arguments"},
+        { title: "RNG", value: "random-number-button"},
+        { title: "Capitalize", value: "capitalize-string"},
+        { title: "Nav", value: "nav-bar"},
+        { title: "Checkboxes", value: "multiple-checkboxes"},
+        { title: "Events", value: "event-handler"},
+      ]
     }
   },
   methods: {

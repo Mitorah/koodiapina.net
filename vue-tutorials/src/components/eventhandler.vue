@@ -2,7 +2,8 @@
   <div>
         <button-event-sender
         v-on:positive-button-event="counter++"
-        v-on:negative-button-event="counter--">
+        v-on:negative-button-event="counter--"
+        v-on:modifycounter="modifycounter">
         </button-event-sender>
         {{ counter }}
   </div>
@@ -20,6 +21,11 @@ export default {
             counter: 0
         }
     },
+    methods: {
+        modifycounter(value) {
+            this.counter += value
+        }
+    }
 
 }
 </script>
