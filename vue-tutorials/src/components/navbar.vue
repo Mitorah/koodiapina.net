@@ -30,7 +30,11 @@ export default {
                 {
                     textlabel: "second item",
                     destination: "second link"
-                }
+                },
+                {
+                    textlabel: "third",
+                    destination: "third place"
+                },
             ]
         }
     }
