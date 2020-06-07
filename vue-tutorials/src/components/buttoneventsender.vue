@@ -6,10 +6,10 @@
       <button @click="$emit('positive-button-event')">
         ++
         </button>
-      <button @click="$emit('modifycounter', 3.0)">
+      <button @click="$emit('modifycounter', 5.0)">
         ++ with parameter
       </button>
-      <button @click="$emit('modifycounter', -6.0)">
+      <button @click="$emit('modifycounter', -5.0)">
         -- with parameter
       </button>
       
