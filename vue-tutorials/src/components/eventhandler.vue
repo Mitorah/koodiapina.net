@@ -3,8 +3,9 @@
         <button-event-sender
         v-on:positive-button-event="counter++"
         v-on:negative-button-event="counter--"
-        v-on:modifycounter="modifycounter">
+        v-on:modify-counter="modifycounter">
         </button-event-sender>
+        <br/>
         {{ counter }}
   </div>
 </template>

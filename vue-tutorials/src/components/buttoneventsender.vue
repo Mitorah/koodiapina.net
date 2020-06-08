@@ -1,18 +1,19 @@
 <template>
   <div>
       <button @click="$emit('negative-button-event')">
-        ---
-        </button>
-      <button @click="$emit('modifycounter', -2.0)">
-        -- with parameter
-      </button><br/>
+        --
+      </button>
       <button @click="$emit('positive-button-event')">
         ++
         </button>
-      <button @click="$emit('modifycounter', 2.0)">
-        ++ with parameter
-      </button><br/>
-      
+      <br/>
+      <br/>
+      <input type="number" v-model="modifier" placeholder="Positive or negative">
+      <br/>
+      <br/>
+      <button @click="$emit('modify-counter', modifierAsNumber)">
+      With parameter
+      </button>
   </div>
 </template>
 
@@ -20,9 +21,15 @@
 export default {
     data() {
         return {
-            counter: 0
+            counter: 0,
+            modifier: null
         }
     },
+    computed: {
+      modifierAsNumber() {
+        return Number(this.modifier)
+      }
+    }
 }
 </script>
 
