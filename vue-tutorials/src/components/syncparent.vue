@@ -1,19 +1,30 @@
 <template>
     <div>
-        sync-parent not implemented
-        <sync-child></sync-child>
+        <sync-child-boolean v-model="childBoolean">
+        </sync-child-boolean>
+        Boolean in parent: {{ childBoolean }}
+        <br/>
+        <br/>
+        <sync-child-string v-model="childString">
+        </sync-child-string>
+        String in parent: {{ childString }}
+
+
     </div>
 </template>
 
 <script>
-import syncchildVue from './syncchild.vue'
+import syncchildVue from './syncchildboolean.vue'
+import syncchildstringVue from './syncchildstring.vue'
 export default {
     components: {
-        'sync-child': syncchildVue,
+        'sync-child-boolean': syncchildVue,
+        'sync-child-string': syncchildstringVue,
     },
     data() {
         return {
-
+            childBoolean: true,
+            childString: "New string"
         }
     }
 
