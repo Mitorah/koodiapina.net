@@ -27,7 +27,6 @@ import capitalizestringVue from './components/capitalizestring.vue';
 import navbarVue from './components/navbar.vue';
 import multiplecheckboxesVue from './components/multiplecheckboxes.vue';
 import eventhandlerVue from './components/eventhandler.vue';
-import syncparentVue from './components/syncparent.vue';
 
 export default {
   name: 'App',
@@ -42,7 +41,6 @@ export default {
     'nav-bar': navbarVue,
     'multiple-checkboxes': multiplecheckboxesVue,
     'event-handler': eventhandlerVue,
-    'sync-parent': syncparentVue,
   },
   data() {
     return {
@@ -58,7 +56,6 @@ export default {
         { title: "Nav", value: "nav-bar"},
         { title: "Checkboxes", value: "multiple-checkboxes"},
         { title: "Events", value: "event-handler"},
-        { title: "Sync", value: "sync-parent"},
       ]
     }
   },

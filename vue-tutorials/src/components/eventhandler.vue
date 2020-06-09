@@ -7,15 +7,20 @@
         </button-event-sender>
         <br/>
         {{ counter }}
+        <br/>
+        <br/>
+        <sync-parent></sync-parent>
   </div>
 </template>
 
 <script>
 import buttoneventsenderVue from './buttoneventsender.vue'
+import syncparentVue from './syncparent.vue'
 
 export default {
     components: {
-        'button-event-sender': buttoneventsenderVue
+        'button-event-sender': buttoneventsenderVue,
+        'sync-parent': syncparentVue,
     },
     data() {
         return {
