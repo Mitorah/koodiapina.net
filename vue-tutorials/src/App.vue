@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import firebasemainVue from './firebase-tutorial/components/firebasemain.vue';
 import buttoncounterVue from './components/buttoncounter.vue';
 import reversestringVue from './components/reversestring.vue';
 import scramblestringVue from './components/scramblestring.vue';
@@ -31,6 +32,7 @@ import eventhandlerVue from './components/eventhandler.vue';
 export default {
   name: 'App',
   components: {
+    'firebase-main': firebasemainVue,
     'list-component': addtolistVue,
     'button-counter': buttoncounterVue,
     'reverse-string': reversestringVue,
@@ -46,6 +48,7 @@ export default {
     return {
       currentTab: "",
       componentTabs: [
+        { title: "Firebase", value: "firebase-main"},
         { title: "List", value: "list-component"},
         { title: "Button", value: "button-counter"},
         { title: "Reverse", value: "reverse-string"},

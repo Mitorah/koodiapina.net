@@ -7,7 +7,7 @@
         <br/>
         <sync-child-string v-model="childString">
         </sync-child-string>
-        String in parent: {{ childString }}
+        String in parent: {{ childString }}  
 
 
     </div>

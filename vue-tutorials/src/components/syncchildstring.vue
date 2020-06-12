@@ -1,6 +1,6 @@
 <template>
   <div>
-      Message in child: {{ message }}
+      String in child: {{ message }}
       <br/>
       <input
       type="text"
