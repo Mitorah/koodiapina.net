@@ -1,12 +1,13 @@
 <template>
     <div>
-        <select v-model="selected">
-            <option v-for='(item, index) in arrayOfItems'
+        Not functional
+        <v-select v-model="selected">
+            <v-option v-for='(item, index) in arrayOfItems'
             :key='item.value'
             :index='index'>
             <nav-bar-item :navBarItem="item"></nav-bar-item>
-            </option>
-        </select>
+            </v-option>
+        </v-select>
     </div>
 </template>
 

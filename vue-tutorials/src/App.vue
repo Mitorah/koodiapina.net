@@ -1,12 +1,12 @@
 <template>
   <div>
 
-    <button
+    <v-btn
     v-for="item in componentTabs"
     :key="item.title"
     @click="currentTab = item.value">
     {{ item.title }}
-    </button>
+    </v-btn>
 
     <br/>
     <br/>
@@ -24,7 +24,7 @@ import scramblestringVue from './components/scramblestring.vue';
 import dynamicargumentsVue from './components/dynamicarguments.vue';
 import addtolistVue from './components/listcomponent.vue';
 import randomnumberbuttonVue from './components/randomnumberbutton.vue';
-import capitalizestringVue from './components/capitalizestring.vue';
+import modifystringcapitalisationVue from './components/modifystringcapitalisation.vue';
 import navbarVue from './components/navbar.vue';
 import multiplecheckboxesVue from './components/multiplecheckboxes.vue';
 import eventhandlerVue from './components/eventhandler.vue';
@@ -39,7 +39,7 @@ export default {
     'scramble-string': scramblestringVue,
     'dynamic-arguments': dynamicargumentsVue,
     'random-number-button': randomnumberbuttonVue,
-    'capitalize-string': capitalizestringVue,
+    'modify-string-capitalisation': modifystringcapitalisationVue,
     'nav-bar': navbarVue,
     'multiple-checkboxes': multiplecheckboxesVue,
     'event-handler': eventhandlerVue,
@@ -55,7 +55,7 @@ export default {
         { title: "Scramble", value: "scramble-string"},
         { title: "Dynamic", value: "dynamic-arguments"},
         { title: "RNG", value: "random-number-button"},
-        { title: "Capitalize", value: "capitalize-string"},
+        { title: "Capitalize", value: "modify-string-capitalisation"},
         { title: "Nav", value: "nav-bar"},
         { title: "Checkboxes", value: "multiple-checkboxes"},
         { title: "Events", value: "event-handler"},

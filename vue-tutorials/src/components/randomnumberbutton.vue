@@ -1,10 +1,19 @@
 <template>
     <div>
-        <button @click="generateRandomNumber">RNG</button>
-        <span>: {{ randomGeneratedNumber }}</span>
-        <span v-if="isPositiveNumber > 0"> This is positive number.</span>
-        <span v-else-if="isPositiveNumber < 0"> This is negative number.</span>
-        <span v-else> This is zero.</span>
+        <v-btn @click="generateRandomNumber">RNG</v-btn>
+        <v-col sm="1">
+        <v-text-field v-model="randomGeneratedNumber">
+        </v-text-field>
+        </v-col>
+        <v-col sm="2">
+        <v-text-field readonly v-model="isPositiveText" v-if="isPositiveNumber > 0">
+        </v-text-field>
+        <v-text-field readonly v-model="isNegativeText"  v-else-if="isPositiveNumber < 0">
+        </v-text-field>
+        <v-text-field readonly v-model="isZero" v-else> This is zero.
+        </v-text-field>
+
+        </v-col>
     </div>
 </template>
 
@@ -13,6 +22,9 @@ export default {
     data() {
         return {
             randomGeneratedNumber: 1,
+            isPositiveText: "This is positive number",
+            isNegativeText: "This is negative number",
+            isZero: "This number is zero.",
         }
     },
     methods: {
@@ -23,7 +35,7 @@ export default {
     computed: {
         isPositiveNumber: function() {
             return Math.sign(this.randomGeneratedNumber);
-        }
+        },
     }
 }
 </script>

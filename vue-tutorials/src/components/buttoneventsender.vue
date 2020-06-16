@@ -1,19 +1,22 @@
 <template>
   <div>
-      <button @click="$emit('negative-button-event')">
+      <v-row>
+      <v-btn @click="$emit('negative-button-event')">
         --
-      </button>
-      <button @click="$emit('positive-button-event')">
+      </v-btn>
+      <v-btn @click="$emit('positive-button-event')">
         ++
-        </button>
-      <br/>
-      <br/>
-      <input type="number" v-model="modifier" placeholder="Positive or negative">
-      <br/>
-      <br/>
-      <button @click="$emit('modify-counter', modifierAsNumber)">
-      With parameter
-      </button>
+      </v-btn>
+      </v-row>
+      <v-row>
+          <v-col>
+            <v-text-field type="number" v-model="modifier" label="Positive or negative">
+            </v-text-field>
+            <v-btn @click="$emit('modify-counter', modifierAsNumber)">
+            With parameter
+            </v-btn>
+          </v-col>
+      </v-row>
   </div>
 </template>
 

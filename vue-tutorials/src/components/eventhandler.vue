@@ -1,12 +1,19 @@
 <template>
   <div>
-        <button-event-sender
-        v-on:positive-button-event="counter++"
-        v-on:negative-button-event="counter--"
-        v-on:modify-counter="modifycounter">
-        </button-event-sender>
+        <v-row>
+
+        <v-col cols="2">
+            <button-event-sender
+            v-on:positive-button-event="counter++"
+            v-on:negative-button-event="counter--"
+            v-on:modify-counter="modifycounter">
+            </button-event-sender>
+        </v-col>
+        <v-col cols="2">
+        <v-text-field readonly label="Result" v-model="counter"></v-text-field>
+        </v-col>
+        </v-row>
         <br/>
-        {{ counter }}
         <br/>
         <br/>
         <sync-parent></sync-parent>

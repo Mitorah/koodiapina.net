@@ -1,8 +1,12 @@
 <template>
     <div>
-        <input size="50" v-model="inputMessage" @keypress="scramblestring(inputMessage)">
+        <v-col sm="2">
+        <v-text-field label="Write here!" v-model="inputMessage" @keypress="scramblestring(inputMessage)">
+        </v-text-field>
+        <v-text-field label="Scrambled" readonly v-model="scrambledMessage">
+        </v-text-field>
+        </v-col>
         <br/>
-        <span>Scrambled: {{ scrambledMessage }}</span>
     </div>
 </template>
 
@@ -10,7 +14,7 @@
 export default {
     data() {
         return {
-            inputMessage: "This is message that will be scrambled!",
+            inputMessage: "",
             scrambledMessage: ""
         }
     },

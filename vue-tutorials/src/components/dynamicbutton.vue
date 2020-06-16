@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button @[dynamicAttribute]="buttonfunction">{{ dynamicAttribute }}</button>
+        <v-btn @[dynamicAttribute]="buttonfunction">{{ dynamicAttribute }}</v-btn>
         <span> {{ message }}</span>
     </div>
 </template>

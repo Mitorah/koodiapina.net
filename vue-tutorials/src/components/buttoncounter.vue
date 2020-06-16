@@ -1,5 +1,5 @@
 <template>
-    <button @click="addclick">{{"Number of clicks:" + clicks}}</button>
+    <v-btn @click="addclick">{{"Number of clicks:" + clicks}}</v-btn>
 </template>
 
 <script>

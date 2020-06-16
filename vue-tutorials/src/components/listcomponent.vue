@@ -1,20 +1,21 @@
 <template>
     <div>
+        <v-col sm="2">
+        <v-text-field label="Add new item:" v-model="inputMessage" @change="addNewMessage(inputMessage)">
+        </v-text-field>
+        </v-col>
+        
         <ol>
             <li v-for = '(item, index) in dataArray'
             :key = 'item.value'>
             <reverse-string-computed :message=item.text :reversed=item.reversed></reverse-string-computed>
-            <button @click="deleteMessage(index)">Delete</button>
-            <button v-if="item.reversed" @click="toggleReverse(index)">Correct</button>
-            <button v-else @click="toggleReverse(index)">Reverse</button>
+            <v-btn @click="deleteMessage(index)">Delete</v-btn>
+            <v-btn v-if="item.reversed" @click="toggleReverse(index)">Correct</v-btn>
+            <v-btn v-else @click="toggleReverse(index)">Reverse</v-btn>
             <br/>
             </li>
         </ol>
         <br/>
-        <br/>
-        <span>Add new item: </span>
-        <input v-model="inputMessage" @change="addNewMessage(inputMessage)">
-
     </div>
 </template>
 
