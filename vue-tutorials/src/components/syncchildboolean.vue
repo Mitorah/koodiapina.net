@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <v-app>
         Boolean in child: {{ checked }}
         <br/>
         <input
@@ -7,7 +7,7 @@
         v-bind:checked="checked"
         @change="$emit('change', $event.target.checked)"
         >
-    </div>
+    </v-app>
 </template>
 
 <script>

@@ -1,8 +1,5 @@
 <template>
-    <div>
-        <span v-if="reversed">{{ reversedMessage }}</span>
-        <span v-else>{{ message }}</span>
-    </div>
+        <v-text-field readonly v-model="handledMessage"></v-text-field>
 </template>
 
 <script>
@@ -16,7 +13,10 @@ export default {
         }
     },
     computed: {
-        reversedMessage: function() {
+        handledMessage() {
+            return this.reversed ? this.reversedMessage : this.message
+        },
+        reversedMessage() {
             return this.message.split('').reverse().join('');
         }
     }

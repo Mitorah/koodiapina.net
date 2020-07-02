@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-app>
         <v-row>
 
         <v-col cols="2">
@@ -17,7 +17,7 @@
         <br/>
         <br/>
         <sync-parent></sync-parent>
-  </div>
+  </v-app>
 </template>
 
 <script>

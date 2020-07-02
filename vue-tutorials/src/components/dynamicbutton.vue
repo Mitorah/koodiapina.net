@@ -1,8 +1,8 @@
 <template>
-    <div>
+<v-col dense sm="1">
         <v-btn @[dynamicAttribute]="buttonfunction">{{ dynamicAttribute }}</v-btn>
-        <span> {{ message }}</span>
-    </div>
+        <v-text-field readonly v-model="message"></v-text-field>
+</v-col>
 </template>
 
 <script>

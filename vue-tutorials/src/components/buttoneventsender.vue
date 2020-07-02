@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-app>
       <v-row>
       <v-btn @click="$emit('negative-button-event')">
         --
@@ -17,7 +17,7 @@
             </v-btn>
           </v-col>
       </v-row>
-  </div>
+  </v-app>
 </template>
 
 <script>

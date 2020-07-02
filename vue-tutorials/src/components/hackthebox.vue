@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <v-app>
         {{
         getresult(
         parseparameter(),
@@ -13,7 +13,7 @@
 
         <!-- {{ makeInviteCode() }} -->
         {{ awaitHttp() }}
-    </div>
+    </v-app>
 </template>
 
 <script>

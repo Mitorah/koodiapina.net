@@ -1,9 +1,11 @@
 <template>
-  <div>
-      <dynamic-button dynamicAttribute="mousedown"></dynamic-button>
-      <dynamic-button dynamicAttribute="mouseover"></dynamic-button>
-      <dynamic-button dynamicAttribute="mouseup"></dynamic-button>
-  </div>
+  <v-app>
+      <v-col>
+        <dynamic-button dynamicAttribute="mousedown"></dynamic-button>
+        <dynamic-button dynamicAttribute="mouseover"></dynamic-button>
+        <dynamic-button dynamicAttribute="mouseup"></dynamic-button>
+      </v-col>
+  </v-app>
 </template>
 
 <script>

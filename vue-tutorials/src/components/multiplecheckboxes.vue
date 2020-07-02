@@ -1,32 +1,37 @@
 <template>
-    <div>
-
+    <v-app>
         <v-col sm="4">
-        <ol>
-            <v-list height=32 v-for = 'item in arrayForCheckbox'
-            :key='item.id'>
-                    <v-row align="center">
-                        <v-checkbox :id=item.id :value=item v-model=checked></v-checkbox>
-                        <v-text-field readonly v-model="item.id"></v-text-field>
-                        <v-text-field readonly v-model="item.value"></v-text-field>
-                    </v-row>
-            </v-list>
-        </ol>
-        </v-col>
-        <v-col sm="4">
-        <!-- ToDo: remove numbers -->
-        <br/><span>Checked: </span><br/>
-        <ol>
-            <v-list min-width=50 max-width=600 height=42 v-for = "item in checked"
-            :key="item.id">
-            <v-row>
-                <v-text-field readonly label="ID" v-model="item.id"></v-text-field>
-                <v-text-field readonly label="Value" v-model="item.value"></v-text-field>
+            <v-row align="left">
+            <v-col v-for = 'item in arrayForCheckbox'
+            :key='item.id'
+            height=32 >
+                <v-card
+                outlined>
+                    <v-list-item one-line width="400">
+                        <v-card-actions>
+                            <v-checkbox :id=item.id :value=item v-model=checked></v-checkbox>
+                            <v-list-item-title v-text="item.id + ' - ' + item.value"></v-list-item-title>
+                        </v-card-actions>
+                    </v-list-item>
+                </v-card>
+                </v-col>
             </v-row>
-            </v-list>
-        </ol>
         </v-col>
-    </div>
+            <v-title>Checked</v-title>
+            
+            <v-row>
+                <v-col v-for = "(item, index) in checked"
+                :key="item.id"
+                :index="index"
+                cols="32"
+                sm="1">
+                    <v-card width="200">
+                        <v-list-item-title v-text="item.id" ></v-list-item-title>
+                        <v-list-item-subcontent v-text="item.value"></v-list-item-subcontent>
+                    </v-card>
+                </v-col>
+            </v-row>
+    </v-app>
 </template>
 
 <script>
@@ -39,10 +44,16 @@ export default {
                 { id: "thirdID", value:"HurrDurr" },
                 { id: "fourthID", value:"HerpDerp" },
                 { id: "fifthID", value:"HirryHarry" },
+                { id: "sixthID", value:"SkördiFördi" },
             ],
             checked : [],
         }
     },
+    computed: {
+        combinedValue(arrayIndex) {
+            return this.arrayForCheckbox[arrayIndex].id + ", " + this.arrayForCheckbox[arrayIndex].value
+        }
+    }
 }
 </script>
 

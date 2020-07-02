@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <v-app>
     <v-col sm="2">
     <v-text-field v-model="inputValue"></v-text-field>
     <v-text-field readonly label="Capitalised" v-model="capitalizedMessage"></v-text-field>
     <v-text-field readonly label="Lower cased" v-model="lowercasedMessage"></v-text-field>
     </v-col>
-  </div>
+  </v-app>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-app>
       String in child: {{ message }}
       <br/>
       <input
@@ -7,7 +7,7 @@
       v-bind:message="message"
       @input="$emit('input', $event.target.value)"
       >
-  </div>
+  </v-app>
 </template>
 
 <script>

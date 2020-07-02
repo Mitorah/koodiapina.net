@@ -1,5 +1,9 @@
 <template>
-    <v-btn @click="addclick">{{"Number of clicks:" + clicks}}</v-btn>
+    <v-app>
+        <v-col>
+            <v-btn @click="addclick">{{"Number of clicks:" + clicks}}</v-btn>
+        </v-col>
+    </v-app>
 </template>
 
 <script>

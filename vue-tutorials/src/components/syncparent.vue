@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <v-app>
         <sync-child-boolean v-model="childBoolean">
         </sync-child-boolean>
         Boolean in parent: {{ childBoolean }}
@@ -10,7 +10,7 @@
         String in parent: {{ childString }}  
 
 
-    </div>
+    </v-app>
 </template>
 
 <script>

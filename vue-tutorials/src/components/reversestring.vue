@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <v-app>
         <v-col sm="2">
         <v-text-field v-model="message">
         </v-text-field>
@@ -7,7 +7,7 @@
         </v-text-field>
         </v-col>
         <br/>
-    </div>
+    </v-app>
 </template>
 
 <script>
