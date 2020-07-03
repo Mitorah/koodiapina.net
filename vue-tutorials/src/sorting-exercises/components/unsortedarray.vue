@@ -1,8 +1,17 @@
 <template>
-    <div> 
-        <v-btn 
-        @click="initialiseArray(); $emit('array-changed', unSortedArray)">
-        Generate values</v-btn>
+    <div>
+        <v-col dense>
+            <v-row>
+                <v-col cols="12" md="4">
+                    <v-text-field v-model="arraySize" label="Amount of values in array"></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <v-btn
+                    @click="initialiseArray(); $emit('array-changed', unSortedArray)">
+                    Generate {{ arraySize }} values</v-btn>
+                </v-col>
+            </v-row>
+        </v-col>
     </div>
 </template>
 
@@ -10,12 +19,13 @@
 export default {
     data() {
         return {
+            arraySize: 5,
             unSortedArray: []
         }
     },
     methods: {
         initialiseArray() {
-            this.unSortedArray = this.createUnsortedArray(20)
+            this.unSortedArray = this.createUnsortedArray(Number(this.arraySize))
         },
         createUnsortedArray(numberOfElements) {
             var unsortedArray = []

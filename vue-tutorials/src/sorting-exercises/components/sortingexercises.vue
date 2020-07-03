@@ -6,7 +6,10 @@
                     This will contain sorting exercises.
                 </v-card-title>
                 <v-row>
-                    <compare-and-sort></compare-and-sort>
+                    <bubble-sort></bubble-sort>
+                </v-row>
+                <v-row>
+                    <heap-sort></heap-sort>
                 </v-row>
             </v-card>
         </v-col>
@@ -14,10 +17,12 @@
 </template>
 
 <script>
-import compareandsortVue from './compareandsort.vue'
+import compareandsortVue from './bubblesort.vue'
+import heapsortVue from './heapsort.vue'
 export default {
     components: {
-        'compare-and-sort': compareandsortVue
+        'bubble-sort': compareandsortVue,
+        'heap-sort': heapsortVue
     },
     data() {
         return {

@@ -1,21 +1,25 @@
 <template>
-    <v-app>
-        <v-col>
-            <v-row>
-            <unsorted-array @array-changed="updateArray">
-            </unsorted-array>
-            </v-row>
-            <v-row>
-            Unsorted: {{ unsortedArray }}
-            </v-row>
-            <v-row>
-            Sorted: {{sortedArray}}
-            </v-row>
-            <v-row>
-            <v-btn @click="sortArray">Sort by compare</v-btn>
-            </v-row>
-        </v-col> 
-    </v-app>
+        <v-row>
+            <v-col cols="12" md="4">
+                <unsorted-array @array-changed="initialiseUnsortedArray">
+                </unsorted-array>
+            </v-col>
+            <v-col cols="12" md="2">
+                <v-row>
+                    <v-btn @click="sortArray">Bubble sort</v-btn>
+                </v-row>
+            </v-col>
+            <v-col cols="12" md="2">
+                <v-row>
+                    Unsorted: {{ unsortedArray }}
+                </v-row>
+            </v-col>
+            <v-col cols="12" md="2">
+                <v-row>
+                    Sorted: {{sortedArray}}
+                </v-row>
+            </v-col>
+        </v-row>
 </template>
 
 <script>
@@ -26,12 +30,12 @@ export default {
     },
     data() {
         return {
-            unsortedArray: [], // [12,2,6,4,3,8,5,9,11,41,212,6,-6],
+            unsortedArray: [],
             sortedArray: []
         }
     },
     methods: {
-        updateArray(array) {
+        initialiseUnsortedArray(array) {
             this.unsortedArray = array
         },
         sortArray() {
