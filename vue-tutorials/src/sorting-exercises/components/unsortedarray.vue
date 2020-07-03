@@ -19,7 +19,7 @@
 export default {
     data() {
         return {
-            arraySize: 5,
+            arraySize: 25,
             unSortedArray: []
         }
     },

@@ -39,20 +39,47 @@ export default {
             this.unsortedArray = array
         },
         sortArray() {
-            this.sortedArray = this.unsortedArray.slice()
+            this.recursiveSortArray(this.unsortedArray.slice(), 0, 10)
+
+            // This is old code. The recursive version supports delays, so the actual sorting can be visualised.
+            // this.sortedArray = this.unsortedArray.slice()
 
             
-            for (let i = 1; i < this.sortedArray.length; i++) {
-                if (this.sortedArray[i] < this.sortedArray[i-1]) {
-                    var firstIndexValue = this.sortedArray[i]
-                    this.sortedArray[i] = this.sortedArray[i-1]
-                    this.sortedArray[i-1] = firstIndexValue
+            // for (let i = 1; i < this.sortedArray.length; i++) {
+            //     if (this.sortedArray[i] < this.sortedArray[i-1]) {
+            //         var firstIndexValue = this.sortedArray[i]
+            //         this.sortedArray[i] = this.sortedArray[i-1]
+            //         this.sortedArray[i-1] = firstIndexValue
                     
-                    i = 0
-                }
-            }
+            //         i = 0
+            //     }
+            // }
 
-            return this.sortedArray
+            // return this.sortedArray
+        },
+        recursiveSortArray(array, i, delay) {
+            this.sortedArray = array.slice()
+
+            i = i == 0 ? i = 1 : i
+
+            if (array[i] < array[i-1]) {
+                var cachedValue = array[i]
+                array[i] = array[i-1]
+                array[i-1] = cachedValue
+
+                i = 0
+                window.setTimeout(() => 
+                    this.recursiveSortArray(array, i, delay)
+                , delay)
+            }
+            else if (i < array.length - 1) {
+                i++
+                window.setTimeout(() => 
+                    this.recursiveSortArray(array, i, delay)
+                ,delay)
+            }
+            else
+                return
         }
     }
 }
