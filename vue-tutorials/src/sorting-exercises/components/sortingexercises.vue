@@ -1,23 +1,26 @@
 <template>
     <v-app>
-        <v-card>
-            <v-card-title>
-                This will contain sorting exercises.
-            </v-card-title>
-            <unsorted-array></unsorted-array>
-        </v-card>
+        <v-col>
+            <v-card>
+                <v-card-title>
+                    This will contain sorting exercises.
+                </v-card-title>
+                <v-row>
+                    <compare-and-sort></compare-and-sort>
+                </v-row>
+            </v-card>
+        </v-col>
     </v-app>
 </template>
 
 <script>
-import unsortedarrayVue from './unsortedarray.vue'
+import compareandsortVue from './compareandsort.vue'
 export default {
     components: {
-        'unsorted-array': unsortedarrayVue
+        'compare-and-sort': compareandsortVue
     },
     data() {
         return {
-
         }
     }
 
