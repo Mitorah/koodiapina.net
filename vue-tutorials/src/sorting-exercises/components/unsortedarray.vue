@@ -1,20 +1,26 @@
 <template>
-    <v-app>
-        <!-- {{ createUnsortedArray(1000) }} -->
-    </v-app>
+    <div> 
+        <v-btn 
+        @click="initialiseArray(); $emit('array-changed', unSortedArray)">
+        Generate values</v-btn>
+    </div>
 </template>
 
 <script>
 export default {
     data() {
         return {
+            unSortedArray: []
         }
     },
     methods: {
+        initialiseArray() {
+            this.unSortedArray = this.createUnsortedArray(20)
+        },
         createUnsortedArray(numberOfElements) {
             var unsortedArray = []
 
-            for(let i = 0; i < numberOfElements; i++) {
+            for(let i = 1; i < numberOfElements + 1; i++) {
                 unsortedArray.push(i)
             }
 

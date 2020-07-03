@@ -2,10 +2,14 @@
     <v-app>
         <v-col>
             <v-row>
-            {{unsortedArray}}
+            <unsorted-array @array-changed="updateArray">
+            </unsorted-array>
             </v-row>
             <v-row>
-            {{sortedArray}}
+            Unsorted: {{ unsortedArray }}
+            </v-row>
+            <v-row>
+            Sorted: {{sortedArray}}
             </v-row>
             <v-row>
             <v-btn @click="sortArray">Sort by compare</v-btn>
@@ -15,17 +19,21 @@
 </template>
 
 <script>
+import unsortedarrayVue from './unsortedarray.vue'
 export default {
-    props: {
-        arrayToSort: Array
+    components: {
+        'unsorted-array': unsortedarrayVue
     },
     data() {
         return {
-            unsortedArray: [12, 2,6,4,3,8,5,9,11,41,212,6,-6],
+            unsortedArray: [], // [12,2,6,4,3,8,5,9,11,41,212,6,-6],
             sortedArray: []
         }
     },
     methods: {
+        updateArray(array) {
+            this.unsortedArray = array
+        },
         sortArray() {
             this.sortedArray = this.unsortedArray.slice()
 
