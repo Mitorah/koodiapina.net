@@ -37,11 +37,13 @@ import modifystringcapitalisationVue from './components/modifystringcapitalisati
 import multiplecheckboxesVue from './components/multiplecheckboxes.vue';
 import eventhandlerVue from './components/eventhandler.vue';
 import timeconverterVue from './components/timeconverter.vue';
+import sortingExercisesVue from './sorting-exercises/components/sortingexercises.vue';
 
 export default {
   name: 'App',
   components: {
     'firebase-main': firebasemainVue,
+    'sorting-algorithms': sortingExercisesVue,
     'list-component': addtolistVue,
     'button-counter': buttoncounterVue,
     'reverse-string': reversestringVue,
@@ -59,6 +61,7 @@ export default {
       currentTab: "",
       componentTabs: [
         { title: "Firebase", value: "firebase-main"},
+        { title: "Sorting", value: "sorting-algorithms"},
         { title: "List", value: "list-component"},
         { title: "Button", value: "button-counter"},
         { title: "Reverse", value: "reverse-string"},
