@@ -1,21 +1,15 @@
 <template>
   <v-app>
-        <v-row>
-
-        <v-col cols="2">
-            <button-event-sender
-            v-on:positive-button-event="counter++"
-            v-on:negative-button-event="counter--"
-            v-on:modify-counter="modifycounter">
-            </button-event-sender>
-        </v-col>
-        <v-col cols="2">
-        <v-text-field readonly label="Result" v-model="counter"></v-text-field>
-        </v-col>
-        </v-row>
-        <br/>
-        <br/>
-        <br/>
+        <v-card max-width="420">
+            <v-card-actions>
+            <v-text-field readonly   label="Result" v-model="counter"></v-text-field>
+            </v-card-actions>
+                <button-event-sender
+                v-on:positive-button-event="counter++"
+                v-on:negative-button-event="counter--"
+                v-on:modify-counter="modifycounter">
+                </button-event-sender>
+        </v-card>
         <sync-parent></sync-parent>
   </v-app>
 </template>

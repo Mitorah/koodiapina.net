@@ -1,15 +1,19 @@
 <template>
     <v-app>
-        <sync-child-boolean v-model="childBoolean">
-        </sync-child-boolean>
-        Boolean in parent: {{ childBoolean }}
-        <br/>
-        <br/>
-        <sync-child-string v-model="childString">
-        </sync-child-string>
-        String in parent: {{ childString }}  
-
-
+        <v-card max-width="420">
+            <v-card-text>
+                <sync-child-boolean v-model="childBoolean">
+                </sync-child-boolean>
+            Boolean in parent: {{ childBoolean }}
+            </v-card-text>
+        </v-card>
+        <v-card max-width="420">
+            <v-card-text>
+                <sync-child-string v-model="childString">
+                </sync-child-string>
+                String in parent: {{ childString }}  
+            </v-card-text>
+        </v-card>
     </v-app>
 </template>
 

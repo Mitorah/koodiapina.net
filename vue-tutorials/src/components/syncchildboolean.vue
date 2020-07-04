@@ -1,13 +1,12 @@
 <template>
-    <v-app>
+    <div>
         Boolean in child: {{ checked }}
-        <br/>
         <input
         type="checkbox"
         v-bind:checked="checked"
         @change="$emit('change', $event.target.checked)"
         >
-    </v-app>
+    </div>
 </template>
 
 <script>

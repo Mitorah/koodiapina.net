@@ -1,13 +1,12 @@
 <template>
-  <v-app>
-      String in child: {{ message }}
-      <br/>
-      <input
-      type="text"
-      v-bind:message="message"
-      @input="$emit('input', $event.target.value)"
-      >
-  </v-app>
+    <div>
+        String in child: {{ message }}
+        <input
+        type="text"
+        v-bind:message="message"
+        @input="$emit('input', $event.target.value)"
+        >
+    </div>
 </template>
 
 <script>
