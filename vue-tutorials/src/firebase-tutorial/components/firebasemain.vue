@@ -1,12 +1,141 @@
 <template>
     <v-app>
-        FIREBASE MAIN
+        <v-card-text readonly>IsAnonymous: {{this.isAnonymous}}</v-card-text>
+        <v-card-text readonly>UserID: {{this.userID}}</v-card-text>
+        <v-btn @click="showAuthentication = !showAuthentication">Authenticate</v-btn>
+        <v-btn :disabled="!this.firebaseRef" @click="showCreateCard = !showCreateCard">Create new item</v-btn>
+        <v-btn :disabled="!this.firebaseRef" @click="readDataCards">Read data</v-btn>
+        <v-navigation-drawer width="300" right absolute temporary v-model="showAuthentication">
+            {{userID }}
+            <authentication-card @auth-init="initialiseDatabase"></authentication-card>
+        </v-navigation-drawer>
+        
+        <v-navigation-drawer width="300" right absolute temporary v-model="showCreateCard">
+            <v-row justify="center">
+                <v-col cols="auto">
+                    <new-data-card @data-submitted="writeCardData"></new-data-card>
+                </v-col>
+            </v-row>
+        </v-navigation-drawer>
+
+        <v-row>
+            <v-col cols="auto" justify="center">
+                <data-card 
+                v-for="item in allItems"
+                :key="item.key"
+                :itemdata="item"
+                @remove-item="deleteCardData"
+                ></data-card>
+            </v-col>
+        </v-row>
     </v-app>
 </template>
 
 <script>
-export default {
+import datacardVue from './datacard.vue'
+import newdatacardVue from './newdatacard.vue'
+import authenticationVue from './authentication.vue'
+import * as firebase from 'firebase/app'
+import 'firebase'
 
+export default {
+    components: {
+        'data-card': datacardVue,
+        'new-data-card': newdatacardVue,
+        'authentication-card': authenticationVue
+    },
+    data() {
+        return {
+            isAnonymous: "",
+            userID: "",
+
+            showAuthentication: false,
+            showCreateCard: false,
+            allItems: [],
+
+            firebaseConfig: "",
+            firebaseRef: "",
+        }
+    },
+    methods: {
+        initialiseDatabase() {
+            console.log("initialising database")
+
+              this.firebaseConfig = {
+                apiKey: "AIzaSyATT7h1RtkmotHFYaHuHcRELdXGuPrtRf4",
+                authDomain: "datacardexample.firebaseapp.com",
+                databaseURL: "https://datacardexample.firebaseio.com",
+                projectId: "datacardexample",
+                storageBucket: "datacardexample.appspot.com",
+                messagingSenderId: "391709456117",
+                appId: "1:391709456117:web:58298a7ab7dc0bbe4437bc"
+            };
+
+            this.firebaseRef = firebase.ref
+
+            // Initialize Firebase, if not initialised already
+            if (this.firebaseRef == null) {
+                this.firebaseRef = firebase.initializeApp(this.firebaseConfig)
+
+                firebase.auth().signInAnonymously()
+
+                firebase.auth().onAuthStateChanged(this.setUserValues)
+            }
+
+            this.showAuthentication = false
+        },
+        readDataCards() {
+            this.allItems = []
+            
+            firebase.database().ref("datacards/").once('value')
+            .then(this.readSnapshotData)
+            .catch(function(error){
+                console.log(error.code + ": " + error.message)
+            })
+        },
+        readSnapshotData(snapshot) {
+            snapshot.forEach(this.addSnapshotDataToArray)
+        },
+        addSnapshotDataToArray(item) {
+            this.allItems.push({
+                key: item.val().key,
+                name: item.val().name,
+                description: item.val().description
+            })
+        },
+        writeCardData(newData) {
+            this.showCreateCard = false;
+            
+            var newDataCard = firebase.database().ref('datacards/').push()
+
+            newDataCard.set({
+                key: newDataCard.key,
+                name: newData.name,
+                description: newData.description
+            })
+            .catch(function(error) {
+                console.log(error.code + ": " + error.message)
+            })
+
+            this.allItems.push({
+                key: newDataCard.key,
+                name: newData.name,
+                description: newData.description
+            })
+        },
+        deleteCardData(itemKey) {
+            firebase.database().ref('datacards/').child(itemKey).remove(this.readDataCards)
+            .catch(function(error){
+                if (error) {
+                    console.log(error.code + ": " + error.message)
+                }
+            })
+        },
+        setUserValues(user) {
+            this.userID = user.uid
+            this.isAnonymous = user.isAnonymous
+        }
+    }
 }
 </script>
 
