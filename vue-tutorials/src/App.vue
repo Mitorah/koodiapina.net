@@ -38,6 +38,7 @@ import multiplecheckboxesVue from './components/multiplecheckboxes.vue';
 import eventhandlerVue from './components/eventhandler.vue';
 import timeconverterVue from './components/timeconverter.vue';
 import sortingExercisesVue from './sorting-exercises/components/sortingexercises.vue';
+import mixinexampleVue from './components/mixinexample.vue';
 
 export default {
   name: 'App',
@@ -54,6 +55,7 @@ export default {
     'multiple-checkboxes': multiplecheckboxesVue,
     'event-handler': eventhandlerVue,
     'time-converter': timeconverterVue,
+    'inherit-components': mixinexampleVue,
   },
   data() {
     return {
@@ -72,6 +74,7 @@ export default {
         { title: "Checkboxes", value: "multiple-checkboxes"},
         { title: "Events", value: "event-handler"},
         { title: "TimeConverter", value: "time-converter"},
+        { title: "Inheriting", value: "inherit-components"},
       ]
     }
   },
