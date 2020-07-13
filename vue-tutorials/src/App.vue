@@ -39,10 +39,12 @@ import eventhandlerVue from './components/eventhandler.vue';
 import timeconverterVue from './components/timeconverter.vue';
 import sortingExercisesVue from './sorting-exercises/components/sortingexercises.vue';
 import mixinexampleVue from './components/mixinexample.vue';
+import wayOfWaterVue from './way-of-water/way-of-water.vue';
 
 export default {
   name: 'App',
   components: {
+    'way-of-water': wayOfWaterVue,
     'firebase-main': firebasemainVue,
     'sorting-algorithms': sortingExercisesVue,
     'list-component': addtolistVue,
@@ -62,6 +64,7 @@ export default {
       sideNav: false,
       currentTab: "",
       componentTabs: [
+        { title: "WayOfWater", value: "way-of-water"},
         { title: "Firebase", value: "firebase-main"},
         { title: "Sorting", value: "sorting-algorithms"},
         { title: "List", value: "list-component"},
