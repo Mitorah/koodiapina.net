@@ -1,16 +1,7 @@
-<template>
-  
-</template>
-
 <script>
-import structureBaseVue from './structure-base.vue'
-export default {
-    mixin: [structureBaseVue],
-    data() {
-        return {
+import StructureBase from './structure-base.vue'
 
-        }
-    },
+export default class StructureVuori extends StructureBase {
     getOutputDataFromStructure(inputData) {
         inputData.food = 0
         inputData.diamond = 0

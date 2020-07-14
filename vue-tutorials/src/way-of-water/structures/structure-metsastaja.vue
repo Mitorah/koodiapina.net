@@ -1,29 +1,18 @@
-<template>
-  
-</template>
-
 <script>
-import structureBaseVue from './structure-base.vue'
-export default {
-    mixin: [structureBaseVue],
-    data() {
-        return {
-            structureActions: []
-        }
-    },
-    methods: {
-        getOutputFromStructure(inputData) {
-            if (storedData.cleanWater == 0 && inputData.cleanWater > 0) {
-                storedData.cleanWater++
-                inputData.cleanWater--
-            }
-            else if (storedData.cleanWater > 0) {
-                storedData.cleanWater--
-                inputData.food++
-            }
+import StructureBase from './structure-base.vue'
 
-            return inputData
+export default class StructureMetsastaja extends StructureBase {
+    getOutputFromStructure(inputData) {
+        if (storedData.cleanWater == 0 && inputData.cleanWater > 0) {
+            storedData.cleanWater++
+            inputData.cleanWater--
         }
+        else if (storedData.cleanWater > 0) {
+            storedData.cleanWater--
+            inputData.food++
+        }
+
+        return inputData
     }
 }
 </script>
