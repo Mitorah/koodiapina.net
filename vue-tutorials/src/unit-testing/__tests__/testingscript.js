@@ -1,18 +1,37 @@
-import { mount } from '@vue/test-utils'
-import testedComponent from './testedclass.vue'
+import { shallowMount } from '@vue/test-utils'
+import TestedComponent from './testedclass.vue'
+import Vuetify from 'vuetify'
+import Vue from 'vue'
 
-const wrapper = mount(testedComponent)
+Vue.use(Vuetify)
+Vue.config.ignoredElements = [
+    'v-col',
+    'v-row',
+    'v-text-field',
+    'v-btn'
+]
 
-console.log(wrapper)
+const wrapper = shallowMount(TestedComponent)
 
-describe('testedComponent', () => {
-    
+describe('TestedComponent', () => {
 
     it('has created hook', () => {
-        expect(typeof testedComponent.created).toBe('function')
+        expect(typeof TestedComponent.created).toBe('function')
+    })
+
+    it('has created function', () => {
+        expect(typeof wrapper.vm.changeMessage).toBe('function')
     })
 
     it ('renders correct text', () => {
         expect(wrapper.text ()).toBe('Bye')
+    })
+
+    it ('changes message', () => {
+        var newMessage = "This is new message"
+        wrapper.vm.changeMessage(newMessage)
+        // TestedComponent.changeMessage(newMessage)
+        expect(wrapper.vm.message).toBe(newMessage)
+
     })
 })

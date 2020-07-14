@@ -6,11 +6,16 @@
 export default {
     data () {
         return {
-            message: "Hello"        
+            message: "Hello"
         }
     },
     created() {
         this.message = "Bye"
+    },
+    methods: {
+        changeMessage(newName) {
+            this.message = newName
+        }
     }
 }
 </script>
