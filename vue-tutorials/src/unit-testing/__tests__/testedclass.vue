@@ -1,5 +1,5 @@
 <template>
-    <v-app>{{ message }}</v-app>
+    <div>{{message}}</div>
 </template>
 
 <script>
