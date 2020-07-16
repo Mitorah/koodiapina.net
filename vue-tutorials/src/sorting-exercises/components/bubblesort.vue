@@ -40,22 +40,6 @@ export default {
         },
         sortArray() {
             this.recursiveSortArray(this.unsortedArray.slice(), 0, 10)
-
-            // This is old code. The recursive version supports delays, so the actual sorting can be visualised.
-            // this.sortedArray = this.unsortedArray.slice()
-
-            
-            // for (let i = 1; i < this.sortedArray.length; i++) {
-            //     if (this.sortedArray[i] < this.sortedArray[i-1]) {
-            //         var firstIndexValue = this.sortedArray[i]
-            //         this.sortedArray[i] = this.sortedArray[i-1]
-            //         this.sortedArray[i-1] = firstIndexValue
-                    
-            //         i = 0
-            //     }
-            // }
-
-            // return this.sortedArray
         },
         recursiveSortArray(array, i, delay) {
             this.sortedArray = array.slice()
