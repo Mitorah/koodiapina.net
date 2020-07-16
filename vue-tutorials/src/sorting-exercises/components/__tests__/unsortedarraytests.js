@@ -1,4 +1,4 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import UnsortedArray from '../unsortedarray.vue'
 import Vuetify from 'vuetify'
 import Vue from 'vue'

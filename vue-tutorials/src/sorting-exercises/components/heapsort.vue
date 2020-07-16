@@ -31,7 +31,7 @@ export default {
     data() {
         return {
             unsortedArray: [],
-            sortedArray: []
+            sortedArray: [],
         }
     },
     methods: {
@@ -40,21 +40,6 @@ export default {
         },
         sortArray() {
             this.sortedArray = this.recursiveSortArray(this.unsortedArray.slice(), 0, 1, 10)
-            
-            // This is old code. The recursive version supports delays, so the actual sorting can be visualised.
-            // this.sortedArray = this.unsortedArray.slice()
-
-            // var cachedSwapValue = 0
-
-            // for (let i = 0; i < this.sortedArray.length; i++) {
-            //     for (let j = i+1; j < this.sortedArray.length; j++) {
-            //         if (this.sortedArray[j] < this.sortedArray[i]) {
-            //             cachedSwapValue = this.sortedArray[i]
-            //             this.sortedArray[i] = this.sortedArray[j]
-            //             this.sortedArray[j] = cachedSwapValue
-            //         }
-            //     }
-            // }
         },
         recursiveSortArray(array, i, j, delay) {
             if (array[j] > array[i]) {
