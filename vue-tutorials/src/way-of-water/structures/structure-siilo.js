@@ -1,21 +1,19 @@
-<script>
 import StructureBase from './structure-base.vue'
 
 export default class StructureSiilo extends StructureBase {
     slots = 3
     turnActions = [""]
     structureActions = [
-        "asd"
-        // this.storeNothing,
-        // this.storeOneFood,
-        // this.storeTwoFoods,
-        // this.storeThreeFoods,
-        // this.storeOneDiamond,
-        // this.storeTwoDiamonds,
-        // this.storeThreeDiamonds,
-        // this.storeOneFoodOneDiamond,
-        // this.storeOneFoodTwoDiamonds,
-        // this.storeTwoFoodOneDiamond
+        this.storeNothing,
+        this.storeOneFood,
+        this.storeTwoFoods,
+        this.storeThreeFoods,
+        this.storeOneDiamond,
+        this.storeTwoDiamonds,
+        this.storeThreeDiamonds,
+        this.storeOneFoodOneDiamond,
+        this.storeOneFoodTwoDiamonds,
+        this.storeTwoFoodOneDiamond
     ]
 
 
@@ -111,8 +109,3 @@ export default class StructureSiilo extends StructureBase {
     //     return this.tryToStoreItems(inputData, 2, 1)
     // }
 }
-</script>
-
-<style>
-
-</style>

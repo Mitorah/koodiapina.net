@@ -1,4 +1,3 @@
-<script>
 import StructureBase from './structure-base.vue'
 
 export default class StructureMeri  extends StructureBase {
@@ -17,8 +16,3 @@ export default class StructureMeri  extends StructureBase {
         }
     }
 }
-</script>
-
-<style>
-
-</style>

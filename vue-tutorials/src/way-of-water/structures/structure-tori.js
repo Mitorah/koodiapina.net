@@ -1,4 +1,3 @@
-<script>
 import StructureBase from './structure-base.vue'
 
 export default class StructureTori extends StructureBase {
@@ -32,8 +31,3 @@ export default class StructureTori extends StructureBase {
         return inputData
     }
 }
-</script>
-
-<style>
-
-</style>

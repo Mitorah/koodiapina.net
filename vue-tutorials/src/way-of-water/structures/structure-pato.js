@@ -1,4 +1,3 @@
-<script>
 import StructureBase from './structure-base.vue'
 
 export default class StructurePato extends StructureBase {
@@ -78,8 +77,3 @@ export default class StructurePato extends StructureBase {
         return this.tryToStoreWater(inputData, 1, 1)
     }
 }
-</script>
-
-<style>
-
-</style>

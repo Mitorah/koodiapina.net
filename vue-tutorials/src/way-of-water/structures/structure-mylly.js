@@ -1,8 +1,8 @@
-<script>
-import StructureBase from './structure-base.vue'
+import StructureBase from './structure-base'
 
 export default class StructureMylly extends StructureBase {
-    getOutputDataFromStucture(inputData) {
+    
+    getOutputDataFromStructure(inputData) {
         if (inputData.cleanWater >= 1) {
             inputData.cleanWater--
 
@@ -18,8 +18,3 @@ export default class StructureMylly extends StructureBase {
         return inputData
     }
 }
-</script>
-
-<style>
-
-</style>

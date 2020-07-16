@@ -1,5 +1,5 @@
-<script>
 export default class StructureBase {
+    
     turnActions = [""]
     structureActions = [""]
     turnData = {
@@ -10,31 +10,26 @@ export default class StructureBase {
         diamond: 0,
         food: 0
         }
+        
     storedData = {
         cleanWater: 0,
         dirtyWater: 0,
         diamond: 0,
         food: 0
         }
-
+        
     constructor() {
-        console.log("StructureBase - constructor")
+        console.log("Structurebase constructor")
     }
 
     generateGameActions(totalTurns) {
-        console.log("structure-base: " + totalTurns)
-        // for(let i = 0; i < totalTurns; i++) {
-            //     this.turnAction.push(this.structureActions[0])
-        // }
+        for(let i = 0; i < totalTurns; i++) {
+                this.turnAction.push(this.structureActions[0])
+        }
     }
 
-    getOutputDataFromStructure(inputData) {
-        // Overwrite in inheritedObject
-        console.log(inputData)
-    }
+    // getOutputDataFromStructure(inputData) {
+    //     // Overwrite in inheritedObject
+    //     console.log("Input data received: " + inputData)
+    // }
 }
-</script>
-
-<style>
-
-</style>

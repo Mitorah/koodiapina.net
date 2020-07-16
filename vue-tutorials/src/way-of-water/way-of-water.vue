@@ -12,6 +12,7 @@
 <script>
 
 import generatebuildordersVue from './generatebuildorders.vue'
+import StructureMylly from './structures/structure-mylly'
 
 export default {
     components: {
@@ -28,14 +29,23 @@ export default {
             this.generatedOrders = buildOrders
         },
         simulateGame() {
-            // var turnData = {
-            //     currentTurn: 0,
-            //     foodUsedPerTurn: 0,
-            //     cleanWater: 0,
-            //     dirtyWater: 0,
-            //     diamond: 0,
-            //     food: 0
-            // }
+            var turnData = {
+                currentTurn: 0,
+                foodUsedPerTurn: 0,
+                cleanWater: 2,
+                dirtyWater: 0,
+                diamond: 0,
+                food: 0
+            }
+
+            const newStructure = new StructureMylly()
+
+            console.log("Before: " + turnData.cleanWater)
+
+            turnData = newStructure.getOutputDataFromStructure(turnData)
+
+            console.log("After: " + turnData.cleanWater)
+
         },
     }
 }
