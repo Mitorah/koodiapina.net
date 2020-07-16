@@ -1,12 +1,10 @@
 <template>
     <v-app>
-        <v-card-text readonly>IsAnonymous: {{this.isAnonymous}}</v-card-text>
-        <v-card-text readonly>UserID: {{this.userID}}</v-card-text>
+        <v-card-text readonly>{{this.userInfo}}</v-card-text>
         <v-btn @click="showAuthentication = !showAuthentication">Authenticate</v-btn>
-        <v-btn :disabled="!this.firebaseRef" @click="showCreateCard = !showCreateCard">Create new item</v-btn>
-        <v-btn :disabled="!this.firebaseRef" @click="readDataCards">Read data</v-btn>
+        <v-btn :disabled="!this.firebaseDatabase" @click="showCreateCard = !showCreateCard">Create new item</v-btn>
+        <v-btn :disabled="!this.firebaseDatabase" @click="readDataCards">Read data</v-btn>
         <v-navigation-drawer width="300" right absolute temporary v-model="showAuthentication">
-            {{userID }}
             <authentication-card @auth-init="initialiseDatabase"></authentication-card>
         </v-navigation-drawer>
         
@@ -46,21 +44,21 @@ export default {
     },
     data() {
         return {
-            isAnonymous: "",
-            userID: "",
+            userInfo: {
+                isAnonymous: "",
+                userID: "",
+            },
 
             showAuthentication: false,
             showCreateCard: false,
             allItems: [],
 
             firebaseConfig: "",
-            firebaseRef: "",
+            firebaseDatabase: "",
         }
     },
     methods: {
         initialiseDatabase() {
-            console.log("initialising database")
-
               this.firebaseConfig = {
                 apiKey: "AIzaSyATT7h1RtkmotHFYaHuHcRELdXGuPrtRf4",
                 authDomain: "datacardexample.firebaseapp.com",
@@ -71,23 +69,20 @@ export default {
                 appId: "1:391709456117:web:58298a7ab7dc0bbe4437bc"
             };
 
-            this.firebaseRef = firebase.ref
+            firebase.initializeApp(this.firebaseConfig)
 
-            // Initialize Firebase, if not initialised already
-            if (this.firebaseRef == null) {
-                this.firebaseRef = firebase.initializeApp(this.firebaseConfig)
+            firebase.auth().signInAnonymously()
 
-                firebase.auth().signInAnonymously()
+            firebase.auth().onAuthStateChanged(this.setUserValues)
 
-                firebase.auth().onAuthStateChanged(this.setUserValues)
-            }
+
 
             this.showAuthentication = false
         },
         readDataCards() {
             this.allItems = []
             
-            firebase.database().ref("datacards/").once('value')
+            this.firebaseDatabase.ref("datacards/").once('value')
             .then(this.readSnapshotData)
             .catch(function(error){
                 console.log(error.code + ": " + error.message)
@@ -106,7 +101,7 @@ export default {
         writeCardData(newData) {
             this.showCreateCard = false;
             
-            var newDataCard = firebase.database().ref('datacards/').push()
+            var newDataCard = this.firebaseDatabase.ref('datacards/').push()
 
             newDataCard.set({
                 key: newDataCard.key,
@@ -124,7 +119,7 @@ export default {
             })
         },
         deleteCardData(itemKey) {
-            firebase.database().ref('datacards/').child(itemKey).remove(this.readDataCards)
+            this.firebaseDatabase.ref('datacards/').child(itemKey).remove(this.readDataCards)
             .catch(function(error){
                 if (error) {
                     console.log(error.code + ": " + error.message)
@@ -132,8 +127,9 @@ export default {
             })
         },
         setUserValues(user) {
-            this.userID = user.uid
-            this.isAnonymous = user.isAnonymous
+            this.userInfo.userID = user.uid
+            this.userInfo.isAnonymous = user.isAnonymous
+            this.firebaseDatabase = firebase.database()
         }
     }
 }

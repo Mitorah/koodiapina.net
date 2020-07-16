@@ -58,6 +58,7 @@ export default {
     'event-handler': eventhandlerVue,
     'time-converter': timeconverterVue,
     'inherit-components': mixinexampleVue,
+    
   },
   data() {
     return {
