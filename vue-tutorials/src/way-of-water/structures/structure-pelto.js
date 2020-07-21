@@ -1,11 +1,10 @@
-import StructureBase from './structure-base.vue'
+import StructureBase from './structure-base'
 
 export default class StructurePelto extends StructureBase {
-    structureActions = [
-        structureAction
-    ]
 
-    getOutputFromStructure(inputData) {
+    structureName = "Pelto"
+
+    getOutputDataFromStructure(inputData) {
         if (inputData.cleanWater >= 2) {
             inputData.cleanWater -= 2
             
@@ -13,6 +12,7 @@ export default class StructurePelto extends StructureBase {
 
             if (createdFood == 2) {
                 inputData.dirtyWater++
+                inputData.thisTurnActions.push(`${this.structureName} created ${ createdFood }`)
             }
 
             inputData.food += createdFood

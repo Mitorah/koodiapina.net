@@ -1,18 +1,29 @@
-import StructureBase from './structure-base.vue'
+import StructureBase from './structure-base'
 
 export default class StructureMeri  extends StructureBase {
     
     getOutputDataFromStructure(inputData) {
         this.storedData.dirtyWater += inputData.dirtyWater
+        this.turnActions.push(`${this.structureName} now has 
+            ${this.storedData.dirtyWater} (${ inputData.dirtyWater } new)`)
 
-        this.checkLosingConditions()
+        inputData.food -= Math.ceil(inputData.currentTurn)
+
+        inputData = this.checkLosingConditions(inputData)
 
         return inputData
     }
     
-    checkLosingConditions() {
+    checkLosingConditions(inputData) {
         if (this.storedData.dirtyWater >= 6) {
-            // Lost the game
+            inputData.gameLost = true
+            inputData.gameLostReason = "Too much dirty water."
         }
+        if (inputData.food < 0) {
+            inputData.gameLost = true
+            inputData.gameLostReason = "Not enought food."
+        }
+
+        return inputData
     }
 }
