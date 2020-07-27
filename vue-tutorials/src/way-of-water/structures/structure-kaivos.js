@@ -14,6 +14,5 @@ export default class StructureKaivos extends StructureBase {
             inputData.dirtyWater += 2
             inputData.diamond += 1
         }
-        else if (inputData.cleanWater > 1 && inputData.)
     }
 }
