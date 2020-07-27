@@ -5,6 +5,8 @@ export default class StructurePelto extends StructureBase {
     structureName = "Pelto"
 
     getOutputDataFromStructure(inputData) {
+        inputData = super.getOutputDataFromStructure(inputData)
+
         if (inputData.cleanWater >= 2) {
             inputData.cleanWater -= 2
             

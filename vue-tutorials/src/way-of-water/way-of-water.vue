@@ -4,64 +4,66 @@
             <generate-builds @save-orders="saveGeneratedBuildOrders"></generate-builds>
         </v-col>
         <v-col cols="auto">
-            <v-btn @click="simulateGames">Simulate game</v-btn>
+            <v-btn @click="simulateAllGames">Simulate game</v-btn>
         </v-col>
-        <v-row>
-        <v-col
-        cols="auto"
-        >
-        Winning results ({{winningResults.length}})
-        <!-- <simulation-result
-        v-for = 'data in winningResults'
-        :key = 'data.key'
-        :TurnData = 'data'>
-        </simulation-result> -->
+        <v-col cols="auto">
+            <v-btn @click="sortResultsByCleanWater(true)">Sort by clean water (increasing)</v-btn>
+            <v-btn @click="sortResultsByCleanWater(false)">Sort by clean water (decreasing)</v-btn>
+            <v-btn @click="sortResultsByDirtyWater(true)">Sort by dirty water (increasing)</v-btn>
+            <v-btn @click="sortResultsByDirtyWater(false)">Sort by dirty water (decreasing)</v-btn>
         </v-col>
-        <v-col
-        cols="auto">
-        Losing results ({{losingResults.length}})
-        <!-- <simulation-result
-        v-for = 'data in losingResults'
-        :key = 'data.key'
-        :TurnData = 'data'>
-        </simulation-result> -->
-        </v-col>
-        </v-row>
+
+        <individual-simulation-results :winningResults="winningResults" :losingResults="losingResults">
+
+        </individual-simulation-results>
+        
     </v-app>
 </template>
 
 <script>
 
 import generatebuildordersVue from './generatebuildorders.vue'
-// import simulationresultcardVue from './simulationresultcard.vue'
+import individualsimulationresultsVue from './individualsimulationresults.vue'
 import StructureVuori from './structures/structure-vuori'
 import StructureMeri from './structures/structure-meri'
 
 export default {
     components: {
         'generate-builds': generatebuildordersVue,
-        // 'simulation-result': simulationresultcardVue
+        'individual-simulation-results': individualsimulationresultsVue
     },
     data() {
         return {
-            buildOrdersGenerated: false,
-
             generatedBuildOrders: [[]],
-            winningResults: [{}],
-            losingResults: [[{}]]
+            winningResults: [],
+            losingResults: []
         }
     },
     methods: {
         saveGeneratedBuildOrders(buildOrders) {
             this.generatedBuildOrders = buildOrders
-            this.buildOrdersGenerated = true
         },
-        simulateGames() {
+        simulateAllGames() {
             this.winningResults = []
+            this.losingResults = []
 
+            // for(let i = 0; i < 20000; i++) {
             for(let i = 0; i < this.generatedBuildOrders.length; i++) {
                 this.simulateGame(this.generatedBuildOrders[i])
             }
+
+            var sorted = 
+            this.winningResults.
+            sort(function(b, a) {
+                var lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
+                var lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
+                
+                var result = lastAItem.cleanWater - lastBItem.cleanWater
+                return result != 0 ? result : lastAItem.dirtyWater - lastBItem.dirtyWater
+            })
+
+            this.winningResults = sorted
+
         },
         simulateGame(generatedBuildOrder) {
             var howManyTurnsToSimulate = generatedBuildOrder.length
@@ -77,7 +79,10 @@ export default {
                 gameLost: false,
                 gameLostReason: ""
             }
-            var buildOrderNames = []
+            var buildOrderNames = generatedBuildOrder.map(function (item) {
+                return item.structureName
+            })
+            
             var gameResult = {
                 StructureNames: buildOrderNames,
                 SimulationLostTheGame: false,
@@ -97,13 +102,22 @@ export default {
             do {
                 turnData = Vuori.getOutputDataFromStructure(turnData)
 
+                // Increase turns for each loop to demonstrate when player builds a new structure.
                 for (let i = 0; i < turnData.currentTurn; i++) {
                     if (i < generatedBuildOrder.length) {
                         turnData = generatedBuildOrder[i].getOutputDataFromStructure(turnData)
                     }
+
+                    // Check if the simulation has failed between structure simulations
+                    if (turnData.gameLost) {
+                        break;
+                    }
                 }
 
-                turnData = Meri.getOutputDataFromStructure(turnData)
+                // Don't run the simulation for Meri if the game has been lost already.
+                if (!turnData.gameLost) {
+                    turnData = Meri.getOutputDataFromStructure(turnData)
+                }
 
                 gameResult.DataForSimulatedTurns.push(Object.assign({}, turnData))
                 gameResult.SimulationLostTheGame = turnData.gameLost
@@ -111,6 +125,7 @@ export default {
 
             }while(turnData.currentTurn < howManyTurnsToSimulate && !gameResult.SimulationLostTheGame)
 
+            // Store simulation result to correct array depending if the game was succesful
             if (!gameResult.SimulationLostTheGame) {
                 this.winningResults.push(Object.assign({}, gameResult))
             }
@@ -118,15 +133,60 @@ export default {
                 this.losingResults.push(Object.assign({}, gameResult))
             }
         },
-        startSimulatedTurn() {
+        sortResultsByCleanWater(increasing) {
+            var lastAItem = ""
+            var lastBItem = ""
 
-        },
-        simulateTurn() {
+            var sorted = []
+            
+            sorted = this.winningResults.sort(function(a, b) {
+                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
+                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
 
-        },
-        endSimulatedTurn() {
+                return increasing ? lastAItem.cleanWater - lastBItem.cleanWater : lastBItem.cleanWater - lastAItem.cleanWater
+            })
 
+            this.winningResults = sorted
+
+            sorted = []
+
+            sorted = this.losingResults.sort(function(a, b) {
+                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
+                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
+
+                return increasing ? lastAItem.cleanWater - lastBItem.cleanWater : lastBItem.cleanWater - lastAItem.cleanWater
+            })
+
+            this.losingResults = sorted
         },
+        sortResultsByDirtyWater(increasing) {
+            var lastAItem = ""
+            var lastBItem = ""
+
+            var sorted = []
+
+            sorted = this.winningResults.sort(function(a,b) {
+                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
+                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
+
+                return increasing ? lastAItem.dirtyWater - lastBItem.dirtyWater : lastBItem.dirtyWater - lastAItem.dirtyWater
+            })
+
+            this.winningResults = []
+            this.winningResults = sorted
+            sorted = []
+
+            sorted = this.losingResults.sort(function(a,b) {
+                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
+                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
+
+                return increasing ? lastAItem.dirtyWater - lastBItem.dirtyWater : lastBItem.dirtyWater - lastAItem.dirtyWater
+            })
+
+
+            this.losingResults = []
+            this.losingResults = sorted
+        }   
     }
 }
 </script>

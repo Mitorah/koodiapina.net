@@ -10,6 +10,7 @@ export default class StructureKaivo extends StructureBase {
             ]
 
     getOutputDataFromStructure(inputData) {
+        inputData = super.getOutputDataFromStructure(inputData)
         // First try to get value out from the structure, if possible
         if (this.storedData.cleanWater > 0) {
             inputData.thisTurnActions.push(`Got clean water from ${this.structureName}.`)
@@ -31,8 +32,8 @@ export default class StructureKaivo extends StructureBase {
             if (typeof this.turnActions[inputData.currentTurn] === "function") {
                 inputData = this.turnActions[inputData.currentTurn](inputData)
             }
-            else {inputData
-                console.error(`${this.turnActions[inputData.currentTurn]} was not a function.`)
+            else {
+                console.error(`${inputData.currentTurn}/${this.turnActions.length}: ${this.turnActions[inputData.currentTurn]} was not a function.`)
             }
             
             return inputData

@@ -5,6 +5,8 @@ export default class StructureMylly extends StructureBase {
     structureName = "Mylly"
     
     getOutputDataFromStructure(inputData) {
+        inputData = super.getOutputDataFromStructure(inputData)
+
         if (inputData.cleanWater >= 1) {
             inputData.cleanWater--
 

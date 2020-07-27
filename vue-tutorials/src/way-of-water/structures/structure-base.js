@@ -28,6 +28,8 @@ export default class StructureBase {
     }
 
     generateGameActions(totalTurns) {
+        this.turnActions = []
+        
         // Push empty action here since there is no turn 0
         this.turnActions.push(() => {})
 
@@ -52,6 +54,7 @@ export default class StructureBase {
 
     getOutputDataFromStructure(inputData) {
         // Overwrite in inheritedObject
+        inputData.thisTurnStructures.push(this.structureName)
         return inputData
     }
 }

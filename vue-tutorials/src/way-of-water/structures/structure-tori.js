@@ -9,11 +9,14 @@ export default class StructureTori extends StructureBase {
     ]
 
     getOuputDataFromStructure(inputData) {
+        inputData = super.getOutputDataFromStructure(inputData)
+
         return this.turnActions[inputData.currentTurn](inputData)
     }
 
     useCleanWater(inputData) {
         if (inputData.cleanWater > 0) {
+
             inputData.cleanWater--
             inputData.dirtyWater++
 
@@ -34,6 +37,7 @@ export default class StructureTori extends StructureBase {
 
     useDirtyWater(inputData) {
         if (inputData.dirtyWater > 0) {
+            
             inputData.dirtyWater--
             inputData.thisTurnActions.push(`${this.structureName} used a dirty water.`)
         }

@@ -4,11 +4,14 @@ export default class StructureVuori extends StructureBase {
     structureName = "Vuori"
     
     getOutputDataFromStructure(inputData) {
+        
         inputData.currentTurn++
         inputData.food = 0
         inputData.diamond = 0
         inputData.thisTurnActions = []
         inputData.thisTurnStructures = []
+        
+        inputData = super.getOutputDataFromStructure(inputData)
         
         var cleanWaterToBeAdded = Math.ceil(inputData.cleanWater / 2) + 4
 

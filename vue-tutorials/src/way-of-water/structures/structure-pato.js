@@ -11,19 +11,23 @@ export default class StructurePato extends StructureBase {
         (data) => this.storeTwoDirtyWaters(data),
         (data) => this.storeCleanAndDirtyWater(data)
     ]
+    structureActionHappened = false
 
     getOutputDataFromStructure(inputData) {
+        inputData = super.getOutputDataFromStructure(inputData)
+
         return this.turnActions[inputData.currentTurn](inputData)
     }
 
     tryToStoreWater(inputData, cleanWaterToStore, dirtyWaterToStore) {
         
         if (this.storedData.cleanWater + this.storedData.dirtyWater >= this.slots) {
-            inputData.thisTurnActions.push(`${this.structureName} was full of slots and did nothing.`)
+            inputData.thisTurnActions.push(`${this.structureName} is full (${this.storedData.cleanWater}/${this.storedData.dirtyWater} (clean/dirty)).`)
         }
         else {
             if (this.storedData.cleanWater < cleanWaterToStore) {
                 if (inputData.cleanWater > 0) {
+                    this.structureActionHappened = true
                     inputData.cleanWater--
                     this.storedData.cleanWater++
                     inputData.thisTurnActions.push(`${this.structureName} stored clean water.`)
@@ -33,6 +37,7 @@ export default class StructurePato extends StructureBase {
 
             if (this.storedData.dirtyWater < dirtyWaterToStore) {
                 if (inputData.dirtyWater > 0) {
+                    this.structureActionHappened = true
                     inputData.dirtyWater--
                     this.storedData.dirtyWater++
                     inputData.thisTurnActions.push(`${this.structureName} stored dirty water.`)
@@ -45,7 +50,6 @@ export default class StructurePato extends StructureBase {
     }
     
     tryToReleaseWater(inputData, cleanWaterToStore, dirtyWaterToStore) {
-        var structureActionHappened = false
         var waterToBeReleased = 0
         
         if (this.storedData.cleanWater > cleanWaterToStore) {
@@ -53,18 +57,18 @@ export default class StructurePato extends StructureBase {
             inputData.cleanWater += waterToBeReleased
             this.storedData.cleanWater = cleanWaterToStore
             inputData.thisTurnActions.push(`${this.structureName} released ${ waterToBeReleased } clean water.`)
-            structureActionHappened = true
+            this.structureActionHappened = true
         }
 
         if (this.storedData.dirtyWater > dirtyWaterToStore) {
-            waterToBeReleased = this.storedData.cleanWater - cleanWaterToStore
+            waterToBeReleased = this.storedData.cleanWater - dirtyWaterToStore
             inputData.dirtyWater += waterToBeReleased
             this.storedData.dirtyWater = dirtyWaterToStore
             inputData.thisTurnActions.push(`${this.structureName} released ${ waterToBeReleased } dirty water.`)
-            structureActionHappened = true
+            this.structureActionHappened = true
         }
 
-        if (!structureActionHappened) {
+        if (!this.structureActionHappened) {
             inputData.thisTurnActions.push(`${this.structureName} did nothing.`)
         }
 

@@ -2,37 +2,49 @@
     <v-card
     class="mx-auto"
     min-width="340"
-    max-width="340">
-    <v-toolbar>
-        <v-btn icon @click="ShowItem = !ShowItem">
-            <v-icon>{{ ShowItem ? 'mdi-chevron-up' : 'mdi-chevron-down'}}</v-icon>
-        </v-btn>
-        <v-spacer></v-spacer>
-        {{ BuildName }}
-        <v-spacer></v-spacer>
-    </v-toolbar>
-    <v-expand-transition>
-        <div v-show="ShowItem">
-            <v-divider></v-divider>
-            <v-card-text
-            v-for = "turn in ComputedTurnData"
-            :key = "turn.key">
-                <v-col>
-                    CurrentTurn: {{ turn.CurrentTurn }}
-                    cleanWater: {{ turn.CleanWater }}
-                    dirtyWater: {{ turn.DirtyWater }}
-                </v-col>
-                <v-col cols="auto">
-                    TurnActionData: {{ turn.TurnActionData }}
-                </v-col>
-                <v-col cols="auto">
-                    BuiltStructures: {{ turn.BuiltStructures }}
-                </v-col>
-            </v-card-text>
-
-        </div>
-    </v-expand-transition>
-
+    max-width="840">
+        <v-toolbar>
+            <v-btn @click="ShowAllTurns = ShowItem ? false : ShowAllTurns; ShowItem = !ShowItem">
+            {{ CompactLastResultData }} - {{ BuildName }}
+            </v-btn>
+            <v-btn icon @click="ShowItem = true; ShowAllTurns = !ShowAllTurns">
+                <v-icon>{{ ShowAllTurns ? 'mdi-collapse-all' : 'mdi-expand-all'}}</v-icon> 
+            </v-btn>
+        </v-toolbar>
+    
+        <v-expand-transition>
+            <div 
+            v-show="ShowItem || ShowAllTurns">
+                <v-divider></v-divider>
+                <v-card
+                min-width="340"
+                max-width="840"
+                v-for = "turn in ComputedTurnData"
+                :key = "turn.key">
+                    <v-toolbar>
+                        <v-btn rounded color="blue" @click="turn.ShowItem = !turn.ShowItem;">
+                        {{turn.CleanWater}}/{{turn.DirtyWater}}  {{ turn.BuiltStructures }}
+                        </v-btn>
+                    </v-toolbar>
+                    <v-expand-transition>
+                        <div
+                        v-if="turn.ShowItem || ShowAllTurns">
+                            <v-card-text>
+                                CurrentTurn: {{ turn.CurrentTurn }}
+                                CleanWater: {{ turn.CleanWater }}
+                                DirtyWater: {{ turn.DirtyWater }}
+                            </v-card-text>
+                            <v-card-text>
+                                TurnActionData: {{ turn.TurnActionData }}
+                            </v-card-text>
+                            <v-card-text>
+                                BuiltStructures: {{ turn.BuiltStructures }}
+                            </v-card-text>
+                        </div>
+                    </v-expand-transition>
+                </v-card>
+            </div>
+        </v-expand-transition>
     </v-card>
 </template>
 
@@ -44,6 +56,7 @@ export default {
     data() {
         return {
             ShowItem: false,
+            ShowAllTurns: false,
             BuildName: "",
 
             thisTurnData: [],
@@ -52,12 +65,16 @@ export default {
     computed: {
         ComputedTurnData() {
             return this.SetSimulationResult(this.TurnData)
+        },
+        CompactLastResultData() {
+            var lastData = this.ComputedTurnData[this.ComputedTurnData.length - 1]
+            return `${this.ComputedTurnData.length}: ${lastData.CleanWater}/${lastData.DirtyWater}`
         }
     },
     methods: {
         SetSimulationResult(simulationResultData) {
-            this.BuildName = "Simulation results"
-
+            this.thisTurnData = []
+            
             if (simulationResultData == null ||
                 simulationResultData.DataForSimulatedTurns == null) {
                     simulationResultData.DataForSimulatedTurns = {
@@ -65,9 +82,12 @@ export default {
                     }
                 }
 
+            this.BuildName = simulationResultData.StructureNames
+
 
             for (let i = 0; i < simulationResultData.DataForSimulatedTurns.length; i++) {
                 var addedTurn = {
+                    ShowItem: false,
                     CurrentTurn: simulationResultData.DataForSimulatedTurns[i].currentTurn,
                     CleanWater: simulationResultData.DataForSimulatedTurns[i].cleanWater,
                     DirtyWater: simulationResultData.DataForSimulatedTurns[i].dirtyWater,

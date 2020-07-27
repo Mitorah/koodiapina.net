@@ -4,6 +4,8 @@ export default class StructureMetsastaja extends StructureBase {
     structureName = "Metsästäjä"
 
     getOutputDataFromStructure(inputData) {
+        inputData = super.getOutputDataFromStructure(inputData)
+
         if (this.storedData.cleanWater == 0 && inputData.cleanWater > 0) {
             this.storedData.cleanWater++
             inputData.cleanWater--

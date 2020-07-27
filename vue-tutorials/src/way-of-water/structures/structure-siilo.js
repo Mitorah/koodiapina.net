@@ -18,13 +18,15 @@ export default class StructureSiilo extends StructureBase {
     ]
         
     getOutputDataFromStructure(inputData) {
+        inputData = super.getOutputDataFromStructure(inputData)
+
         return this.turnActions[inputData.currentTurn](inputData)
     }
 
     tryToStoreItems(inputData, amountOfFoodToStore, amountOfDiamondsToStore) {
         if (inputData.diamond + inputData.food >= this.slots) {
             // Slots full
-            inputData.thisTurnActions.push(`${this.structureName} had full slots and did nothing.`)
+            inputData.thisTurnActions.push(`${this.structureName} was full and did nothing.`)
         }
         else {
             if (this.storedData.food < amountOfFoodToStore) {

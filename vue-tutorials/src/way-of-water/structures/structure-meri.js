@@ -1,11 +1,13 @@
 import StructureBase from './structure-base'
 
 export default class StructureMeri  extends StructureBase {
+    structureName ="Meri"
     
     getOutputDataFromStructure(inputData) {
-        this.storedData.dirtyWater += inputData.dirtyWater
-        this.turnActions.push(`${this.structureName} now has 
-            ${this.storedData.dirtyWater} (${ inputData.dirtyWater } new)`)
+        inputData = super.getOutputDataFromStructure(inputData)
+
+        this.storedData.dirtyWater = inputData.dirtyWater
+        inputData.thisTurnActions.push(`${this.structureName} now has ${this.storedData.dirtyWater} (${ inputData.dirtyWater } new) dirty water.`)
 
         inputData.food -= Math.ceil(inputData.currentTurn)
 
@@ -17,12 +19,15 @@ export default class StructureMeri  extends StructureBase {
     checkLosingConditions(inputData) {
         if (this.storedData.dirtyWater >= 6) {
             inputData.gameLost = true
-            inputData.gameLostReason = "Too much dirty water."
+            inputData.gameLostReason = `Too much dirty water (${this.storedData.dirtyWater}).`
+            inputData.thisTurnActions.push(`Game was lost, since there was too much dirty water.`)
         }
-        if (inputData.food < 0) {
-            inputData.gameLost = true
-            inputData.gameLostReason = "Not enought food."
-        }
+        //This causes every game to lose.
+        // if (inputData.food < 0) {
+        //     inputData.gameLost = true
+        //     inputData.gameLostReason = "Not enough food."
+        //     inputData.thisTurnActions.push(`Game was lost, since there wasn't enough food.`)
+        // }
 
         return inputData
     }
