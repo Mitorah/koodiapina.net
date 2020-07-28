@@ -39,6 +39,7 @@ import eventhandlerVue from './components/eventhandler.vue';
 import timeconverterVue from './components/timeconverter.vue';
 import sortingExercisesVue from './sorting-exercises/components/sortingexercises.vue';
 import mixinexampleVue from './components/mixinexample.vue';
+import dragdropwindowVue from './dragdrop/dragdropwindow.vue';
 
 export default {
   name: 'App',
@@ -56,6 +57,7 @@ export default {
     'event-handler': eventhandlerVue,
     'time-converter': timeconverterVue,
     'inherit-components': mixinexampleVue,
+    'drag-drop-window': dragdropwindowVue,
     
   },
   data() {
@@ -75,7 +77,8 @@ export default {
         { title: "Checkboxes", value: "multiple-checkboxes"},
         { title: "Events", value: "event-handler"},
         { title: "TimeConverter", value: "time-converter"},
-        { title: "Inheriting", value: "inherit-components"},
+        { title: "Inheriting", value: "inherit-compone1nts"},
+        { title: "Drag&Drop", value: "drag-drop-window"},
       ]
     }
   },
