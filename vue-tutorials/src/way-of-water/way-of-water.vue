@@ -2,24 +2,24 @@
     <v-app>
         <v-col cols="auto">
             <generate-builds @save-orders="saveGeneratedBuildOrders"></generate-builds>
-        </v-col>
-        <v-col cols="auto">
             <v-btn @click="simulateAllGames">Simulate game</v-btn>
         </v-col>
-        <v-col cols="auto">
-            <v-btn @click="sortResultsByCleanWater(true)">Sort by clean water (increasing)</v-btn>
-            <v-btn @click="sortResultsByCleanWater(false)">Sort by clean water (decreasing)</v-btn>
+        <v-divider dense></v-divider>
+        <v-divider dense></v-divider>
+        <v-divider dense></v-divider>
+        <v-col
+        cols="auto">
+            <v-btn
+            v-for = "cmp in simulationResultVisuals"
+            :key="cmp"
+            @click="currentResult = cmp">
+            {{cmp}}
+            </v-btn>
         </v-col>
-        <v-col cols="auto">
-            <v-btn @click="sortResultsByDirtyWater(true)">Sort by dirty water (increasing)</v-btn>
-            <v-btn @click="sortResultsByDirtyWater(false)">Sort by dirty water (decreasing)</v-btn>
-        </v-col>
-        
-        <v-row>
-            <individual-simulation-results :winningResults="winningResults" :losingResults="losingResults">
-            </individual-simulation-results>
-            <graphical-simulation-results :winningResults="winningResults" :losingResults="losingResults" ></graphical-simulation-results>
-        </v-row>
+        <v-divider dense></v-divider>
+        <v-divider dense></v-divider>
+        <v-divider dense></v-divider>
+        <component :winningResults="winningResults" :losingResults="losingResults" :is="currentResult"></component>
     </v-app>
 </template>
 
@@ -41,7 +41,12 @@ export default {
         return {
             generatedBuildOrders: [[]],
             winningResults: [],
-            losingResults: []
+            losingResults: [],
+            currentResult: "",
+            simulationResultVisuals: [
+                'individual-simulation-results',
+                'graphical-simulation-results'
+            ]
         }
     },
     methods: {
@@ -137,60 +142,6 @@ export default {
             else {
                 this.losingResults.push(Object.assign({}, gameResult))
             }
-        },
-        sortResultsByCleanWater(increasing) {
-            var lastAItem = ""
-            var lastBItem = ""
-
-            var sorted = []
-            
-            sorted = this.winningResults.sort(function(a, b) {
-                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
-                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
-
-                return increasing ? lastAItem.cleanWater - lastBItem.cleanWater : lastBItem.cleanWater - lastAItem.cleanWater
-            })
-
-            this.winningResults = sorted
-
-            sorted = []
-
-            sorted = this.losingResults.sort(function(a, b) {
-                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
-                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
-
-                return increasing ? lastAItem.cleanWater - lastBItem.cleanWater : lastBItem.cleanWater - lastAItem.cleanWater
-            })
-
-            this.losingResults = sorted
-        },
-        sortResultsByDirtyWater(increasing) {
-            var lastAItem = ""
-            var lastBItem = ""
-
-            var sorted = []
-
-            sorted = this.winningResults.sort(function(a,b) {
-                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
-                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
-
-                return increasing ? lastAItem.dirtyWater - lastBItem.dirtyWater : lastBItem.dirtyWater - lastAItem.dirtyWater
-            })
-
-            this.winningResults = []
-            this.winningResults = sorted
-            sorted = []
-
-            sorted = this.losingResults.sort(function(a,b) {
-                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
-                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
-
-                return increasing ? lastAItem.dirtyWater - lastBItem.dirtyWater : lastBItem.dirtyWater - lastAItem.dirtyWater
-            })
-
-
-            this.losingResults = []
-            this.losingResults = sorted
         }   
     }
 }

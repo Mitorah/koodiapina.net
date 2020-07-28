@@ -1,7 +1,15 @@
 <template>
     <v-app>
-        <!-- <v-row> -->
-            <v-col cols="auto" max-width="200">
+            <v-col cols="auto">
+                <v-btn @click="sortResultsByCleanWater(true)">Sort by clean water (increasing)</v-btn>
+                <v-btn @click="sortResultsByCleanWater(false)">Sort by clean water (decreasing)</v-btn>
+            </v-col>
+            <v-col cols="auto">
+                <v-btn @click="sortResultsByDirtyWater(true)">Sort by dirty water (increasing)</v-btn>
+                <v-btn @click="sortResultsByDirtyWater(false)">Sort by dirty water (decreasing)</v-btn>
+            </v-col>
+        <v-row>
+            <v-col cols="auto">
                 Winning results ({{winningResults.length}}) {{winningArrayPageNumber}}
                 <v-btn icon @click="updateWinningPageCount(-1)">
                     <v-icon>{{"mdi-minus-box"}}</v-icon>
@@ -16,7 +24,7 @@
                 </simulation-result-card>
             </v-col>
 
-            <v-col cols="auto" max-width ="200">
+            <v-col cols="auto">
                 Losing results ({{losingResults.length}}) {{losingArrayPageNumber}}
                 <v-btn icon @click="updateLosingPageCount(-1)">
                     <v-icon>{{"mdi-minus-box"}}</v-icon>
@@ -30,7 +38,7 @@
                 :TurnData = 'data'>
                 </simulation-result-card>
             </v-col>
-        <!-- </v-row> -->
+        </v-row>
     </v-app>
 </template>
 
@@ -99,6 +107,60 @@ export default {
         },
         clampValue(value, min, max) {
             return Math.max(Math.min(value, max), min)
+        },
+        sortResultsByCleanWater(increasing) {
+            var lastAItem = ""
+            var lastBItem = ""
+
+            var sorted = []
+            
+            sorted = this.winningResults.sort(function(a, b) {
+                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
+                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
+
+                return increasing ? lastAItem.cleanWater - lastBItem.cleanWater : lastBItem.cleanWater - lastAItem.cleanWater
+            })
+
+            this.winningResults = sorted
+
+            sorted = []
+
+            sorted = this.losingResults.sort(function(a, b) {
+                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
+                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
+
+                return increasing ? lastAItem.cleanWater - lastBItem.cleanWater : lastBItem.cleanWater - lastAItem.cleanWater
+            })
+
+            this.losingResults = sorted
+        },
+        sortResultsByDirtyWater(increasing) {
+            var lastAItem = ""
+            var lastBItem = ""
+
+            var sorted = []
+
+            sorted = this.winningResults.sort(function(a,b) {
+                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
+                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
+
+                return increasing ? lastAItem.dirtyWater - lastBItem.dirtyWater : lastBItem.dirtyWater - lastAItem.dirtyWater
+            })
+
+            this.winningResults = []
+            this.winningResults = sorted
+            sorted = []
+
+            sorted = this.losingResults.sort(function(a,b) {
+                lastAItem = a.DataForSimulatedTurns[a.DataForSimulatedTurns.length - 1]
+                lastBItem = b.DataForSimulatedTurns[b.DataForSimulatedTurns.length - 1]
+
+                return increasing ? lastAItem.dirtyWater - lastBItem.dirtyWater : lastBItem.dirtyWater - lastAItem.dirtyWater
+            })
+
+
+            this.losingResults = []
+            this.losingResults = sorted
         }
     }
 }
