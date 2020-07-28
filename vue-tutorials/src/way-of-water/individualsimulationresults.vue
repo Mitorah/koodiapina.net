@@ -1,7 +1,7 @@
 <template>
     <v-app>
-        <v-row>
-            <v-col cols="auto">
+        <!-- <v-row> -->
+            <v-col cols="auto" max-width="200">
                 Winning results ({{winningResults.length}}) {{winningArrayPageNumber}}
                 <v-btn icon @click="updateWinningPageCount(-1)">
                     <v-icon>{{"mdi-minus-box"}}</v-icon>
@@ -16,7 +16,7 @@
                 </simulation-result-card>
             </v-col>
 
-            <v-col cols="auto">
+            <v-col cols="auto" max-width ="200">
                 Losing results ({{losingResults.length}}) {{losingArrayPageNumber}}
                 <v-btn icon @click="updateLosingPageCount(-1)">
                     <v-icon>{{"mdi-minus-box"}}</v-icon>
@@ -30,7 +30,7 @@
                 :TurnData = 'data'>
                 </simulation-result-card>
             </v-col>
-        </v-row>
+        <!-- </v-row> -->
     </v-app>
 </template>
 

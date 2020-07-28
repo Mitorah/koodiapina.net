@@ -9,14 +9,17 @@
         <v-col cols="auto">
             <v-btn @click="sortResultsByCleanWater(true)">Sort by clean water (increasing)</v-btn>
             <v-btn @click="sortResultsByCleanWater(false)">Sort by clean water (decreasing)</v-btn>
+        </v-col>
+        <v-col cols="auto">
             <v-btn @click="sortResultsByDirtyWater(true)">Sort by dirty water (increasing)</v-btn>
             <v-btn @click="sortResultsByDirtyWater(false)">Sort by dirty water (decreasing)</v-btn>
         </v-col>
-
-        <individual-simulation-results :winningResults="winningResults" :losingResults="losingResults">
-
-        </individual-simulation-results>
         
+        <v-row>
+            <individual-simulation-results :winningResults="winningResults" :losingResults="losingResults">
+            </individual-simulation-results>
+            <graphical-simulation-results :winningResults="winningResults" :losingResults="losingResults" ></graphical-simulation-results>
+        </v-row>
     </v-app>
 </template>
 
@@ -26,11 +29,13 @@ import generatebuildordersVue from './generatebuildorders.vue'
 import individualsimulationresultsVue from './individualsimulationresults.vue'
 import StructureVuori from './structures/structure-vuori'
 import StructureMeri from './structures/structure-meri'
+import graphicalsimulationresultsVue from './graphicalsimulationresults.vue'
 
 export default {
     components: {
         'generate-builds': generatebuildordersVue,
-        'individual-simulation-results': individualsimulationresultsVue
+        'individual-simulation-results': individualsimulationresultsVue,
+        'graphical-simulation-results': graphicalsimulationresultsVue
     },
     data() {
         return {
