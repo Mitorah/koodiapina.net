@@ -37,6 +37,8 @@
 
 <script type="text/babel">
 import {VueNestable, VueNestableHandle } from 'vue-nestable'
+import FunctionOne from './items/function_1'
+import FunctionTwo from './items/function_2'
 
 export default {
     components: {
@@ -52,10 +54,8 @@ export default {
 
             functionArray: [],
             firstPersonArray: [
-                {id:0, name:"First name"},
-                {id:1, name:"Second name"},
-                {id:2, name:"Third name"},
-                {id:3, name:"Fourth name"},
+                {id:0, name:"First name", data: new FunctionOne()},
+                {id:1, name:"Second name", data: new FunctionTwo()},
             ],
             secondPersonArray: [
                 {id:4, name:"First name 2"},
@@ -67,11 +67,14 @@ export default {
     },
     methods: {
         runDataCollect() {
-        this.functionArray.forEach(element => {
-            this.data = element.returningFunction(this.data)
+        this.data.description = ""
+        this.firstPersonArray.forEach(element => {
+            this.data = element.data.returningFunction(this.data)
         })
+        
+        this.result = this.data.description
 
-        this.result = "Finished"//this.data.description
+        console.log(this.firstPersonArray)
         },
     }
 }
