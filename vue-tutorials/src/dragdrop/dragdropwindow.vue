@@ -1,49 +1,63 @@
 <template>
     <v-app>
-        <v-btn @click="runDataCollect">Run Data</v-btn>
-        {{ result }}
-    <v-divider></v-divider>
-    <v-divider></v-divider>
-    <v-row>
-        <v-col>
-        <vue-nestable 
-        v-model="firstPersonArray"
-        cross-list
-        group="cross">
-            <vue-nestable-handle
-            slot-scope = "{ item }"
-            :item="item">
-            {{ item.name }}
-            </vue-nestable-handle>
-
-        </vue-nestable>
-        </v-col>
-
-        <v-col>
-        <vue-nestable 
-        v-model="secondPersonArray"
-        cross-list
-        group="cross">
-            <vue-nestable-handle
-            slot-scope = "{ item }"
-            :item="item">
-            {{ item.name }}
-            </vue-nestable-handle>
-        </vue-nestable>
-        </v-col>
-    </v-row>
+        <v-container>
+            <v-row
+            no-gutters
+            style="height:150px;">
+                <v-col
+                cols="auto">
+                <synchronize-to-cloud @databaseUpdate="setDatabase" :structureDatabase="firstPersonArray"></synchronize-to-cloud>
+                <v-spacer></v-spacer>
+                <v-btn @click="runDataCollect">Run Data</v-btn>
+                <v-spacer></v-spacer>
+                {{ result }}
+                </v-col>
+            </v-row>
+            <v-row
+            no-gutters
+            style="height:150px">
+                <v-col
+                align="start">
+                    <vue-nestable 
+                    v-model="firstPersonArray"
+                    cross-list
+                    group="structureactions">
+                        <vue-nestable-handle
+                        slot-scope = "{ item }"
+                        :item="item">
+                        {{ item.name}}
+                        </vue-nestable-handle>
+                    </vue-nestable>
+                </v-col>
+                <v-col
+                align="end">
+                    <vue-nestable 
+                    v-model="secondPersonArray"
+                    cross-list
+                    group="structureactions">
+                        <vue-nestable-handle
+                        slot-scope = "{ item }"
+                        :item="item">
+                        {{ item.name }}
+                        </vue-nestable-handle>
+                    </vue-nestable>
+                </v-col>
+            </v-row>
+        </v-container>
     </v-app>
 </template>
 
 <script type="text/babel">
 import {VueNestable, VueNestableHandle } from 'vue-nestable'
-import FunctionOne from './items/function_1'
-import FunctionTwo from './items/function_2'
+// import FunctionOne from './items/function_1'
+// import FunctionTwo from './items/function_2'
+import synchronisetocloudVue from './synchronisetocloud.vue'
 
 export default {
     components: {
         VueNestable,
-        VueNestableHandle
+        VueNestableHandle,
+        'synchronize-to-cloud': synchronisetocloudVue
     },
     data() {
         return {
@@ -54,8 +68,12 @@ export default {
 
             functionArray: [],
             firstPersonArray: [
-                {id:0, name:"First name", data: new FunctionOne()},
-                {id:1, name:"Second name", data: new FunctionTwo()},
+                {id:0, name:"First name"},
+                {id:1, name:"Second name"},
+                {id:2, name:"Third name"},
+                {id:3, name:"Fourth name"},
+                {id:4, name:"Fifth name"},
+                {id:5, name:"Sixth name"},
             ],
             secondPersonArray: [
                 {id:4, name:"First name 2"},
@@ -76,13 +94,16 @@ export default {
 
         console.log(this.firstPersonArray)
         },
+        setDatabase(value) {
+            this.firstPersonArray = value
+        }
     }
 }
 </script>
 
 <style>
 /*
-* Style for nestable
+* Style for nestable straight from the example
 */
 .nestable {
   position: relative;

@@ -59,7 +59,7 @@ export default {
     },
     methods: {
         initialiseDatabase() {
-              this.firebaseConfig = {
+            this.firebaseConfig = {
                 apiKey: "AIzaSyATT7h1RtkmotHFYaHuHcRELdXGuPrtRf4",
                 authDomain: "datacardexample.firebaseapp.com",
                 databaseURL: "https://datacardexample.firebaseio.com",
