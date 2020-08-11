@@ -15,8 +15,8 @@
     "firestone": "^0.1.1",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5",
-    "vue-nestable": "^2.5.3",
     "vue-graph": "^0.8.7",
+    "vue-nestable": "^2.5.3",
     "vuetify": "^2.3.6"
   },
   "devDependencies": {
