@@ -61,7 +61,7 @@ export default class StructurePato extends StructureBase {
         }
 
         if (this.storedData.dirtyWater > dirtyWaterToStore) {
-            waterToBeReleased = this.storedData.cleanWater - dirtyWaterToStore
+            waterToBeReleased = this.storedData.dirtyWater - dirtyWaterToStore
             inputData.dirtyWater += waterToBeReleased
             this.storedData.dirtyWater = dirtyWaterToStore
             inputData.thisTurnActions.push(`${this.structureName} released ${ waterToBeReleased } dirty water.`)

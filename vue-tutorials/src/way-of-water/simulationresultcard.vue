@@ -30,15 +30,15 @@
                         <div
                         v-if="turn.ShowItem || ShowAllTurns">
                             <v-card-text>
-                                CurrentTurn: {{ turn.CurrentTurn }}
-                                CleanWater: {{ turn.CleanWater }}
-                                DirtyWater: {{ turn.DirtyWater }}
-                            </v-card-text>
-                            <v-card-text>
                                 TurnActionData: {{ turn.TurnActionData }}
                             </v-card-text>
                             <v-card-text>
                                 BuiltStructures: {{ turn.BuiltStructures }}
+                            </v-card-text>
+                            <v-card-text>
+                                Turn: {{ turn.CurrentTurn }}
+                                CleanWater: {{ turn.CleanWater }}
+                                DirtyWater: {{ turn.DirtyWater }}
                             </v-card-text>
                         </div>
                     </v-expand-transition>

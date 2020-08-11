@@ -11,6 +11,7 @@ export default class StructureKaivo extends StructureBase {
 
     getOutputDataFromStructure(inputData) {
         inputData = super.getOutputDataFromStructure(inputData)
+        
         // First try to get value out from the structure, if possible
         if (this.storedData.cleanWater > 0) {
             inputData.thisTurnActions.push(`Got clean water from ${this.structureName}.`)
