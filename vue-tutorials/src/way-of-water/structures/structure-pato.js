@@ -15,7 +15,7 @@ export default class StructurePato extends StructureBase {
 
     getOutputDataFromStructure(inputData) {
         inputData = super.getOutputDataFromStructure(inputData)
-
+        
         return this.turnActions[inputData.currentTurn](inputData)
     }
 

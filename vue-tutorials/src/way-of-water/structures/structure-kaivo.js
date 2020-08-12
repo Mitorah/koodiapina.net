@@ -2,7 +2,6 @@ import StructureBase from './structure-base'
 
 export default class StructureKaivo extends StructureBase {
     structureName = "Kaivo"
-    turnActions = []
     structureActions = [
                 (data) => this.storeCleanWater(data),
                 (data) => this.storeDirtyWater(data),
