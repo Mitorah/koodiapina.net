@@ -1,20 +1,39 @@
 <template>
     <v-app>
-    <v-container>
         <v-row no-gutters>
-            <v-col v-for = "lands in landobjects"
-            :key="lands.name">
-                <land-button
-                :key="lands.name"
-                :landid="lands.mana"
-                :landname="lands.name"
-                @addlands="addlands"
-                @removelands="removelands"
-                ></land-button>
+            <v-col>
+                <v-card max-width="500">
+                    <v-list-item-content>
+                        <v-list-item-title align="center">
+                        Total: {{totalMana}}
+                        </v-list-item-title>
+                    <v-spacer></v-spacer>
+                        <v-list-item-title align="center">
+                        <show-lands v-if="totalMana > 0" :manaData="mana"></show-lands>
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-card>
             </v-col>
+
+            <v-col>
+                <v-virtual-scroll 
+                :items="landobjects"
+                :item-height="80"
+                max-width="400"
+                height="600">
+                    <template v-slot= "{item}">
+                        <land-button
+                        :landname="item.name"
+                        :landid="item.mana"
+                        @addlands="addlands"
+                        @removelands="removelands"
+                        >
+                        </land-button>
+                    </template>
+                </v-virtual-scroll>
+            </v-col>
+            
         </v-row>
-    </v-container>
-        <show-lands :manaData="mana"></show-lands>
     </v-app>
 </template>
 
@@ -47,17 +66,20 @@ export default {
                 g: 0,
                 b: 0,
                 w: 0
-            }
+            },
+
+            totalMana: 0
         }
     },
     methods: {
         addlands(values) {
-            console.log(values)
+            this.totalMana++
             values.split('').forEach(element => {
                 this.mana[element] += 1
             });
         },
         removelands(values) {
+            this.totalMana--
             values.split('').forEach(element => {
                 this.mana[element] -= 1
             });

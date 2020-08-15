@@ -1,30 +1,23 @@
 <template>
-    <v-app>
-        <v-col
-        cols="auto">
-        <v-btn @click="showMana()">Pie chart</v-btn>
         <graph-pie
         :width="500"
         :height="500"
-        :text-align="'right'"
+                :padding-top="100"
+                :padding-bottom="100"
+                :padding-left="100"
+                :padding-right="100"
         :values="ManaResultValues"
         :names="ManaResultNames"
-        :active-index="[]"
-        :shape="'donut'"
         :show-total-value="true"
         :active-event="'click'"
         :show-text-type="'outside'"
         >
-        <tooltip :names="ManaResultNames"></tooltip>
-        <legends :names="ManaResultNames"></legends>
         </graph-pie>
-        </v-col>
-    </v-app>
-
 </template>
 
 <script>
 import GraphPie from 'vue-graph/src/components/pie'
+
 export default {
     components: {
         'graph-pie': GraphPie
@@ -36,35 +29,40 @@ export default {
         return {
             // ManaResultNames: [],
             // ManaResultValues: []
+            ManaNameConvert: {
+                u: "Blue",
+                r: "Red",
+                b: "Black",
+                w: "White",
+                g: "Green"
+            },
+            ManaColorConvert: {
+                u: '#EC2500',
+                r: '#ECE100',
+                b: '#EC9800',
+                w: '#9EDE00',
+                g: '#9EDE00'
+            }
         }
     },
     computed: {
         ManaResultValues() {
             var values = []
             for(let value in this.manaData) {
-                values.push(this.manaData[value])
-            }
+                if (this.manaData[value] > 0)
+                    values.push(this.manaData[value])
+            }            
             return values
         },
         ManaResultNames() {
             var names = []
             for (let value in this.manaData) {
-                names.push(value)
+                if(this.manaData[value] > 0)
+                    names.push(this.ManaNameConvert[value])
             }
             return names
         },
-    },
-    // methods: {
-    //     showMana() {
-    //         this.ManaResultValues = []
-    //         this.ManaResultNames= []
-    //         for(let value in this.manaData) {
-    //             this.ManaResultNames.push(value)
-    //             this.ManaResultValues.push(this.manaData[value])
-    //         }
-    //     }
-    // }
-
+    }
 }
 </script>
 
