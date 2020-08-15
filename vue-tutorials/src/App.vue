@@ -40,6 +40,7 @@ import timeconverterVue from './components/timeconverter.vue';
 import sortingExercisesVue from './sorting-exercises/components/sortingexercises.vue';
 import mixinexampleVue from './components/mixinexample.vue';
 import wayOfWaterVue from './way-of-water/way-of-water.vue';
+import manabase_calculatorVue from './mtg/manabase_calculator.vue';
 
 export default {
   name: 'App',
@@ -58,6 +59,7 @@ export default {
     'event-handler': eventhandlerVue,
     'time-converter': timeconverterVue,
     'inherit-components': mixinexampleVue,
+    'manabase-calculator': manabase_calculatorVue,
     
   },
   data() {
@@ -79,6 +81,7 @@ export default {
         { title: "Events", value: "event-handler"},
         { title: "TimeConverter", value: "time-converter"},
         { title: "Inheriting", value: "inherit-components"},
+        { title: "Manabase", value: "manabase-calculator"},
       ]
     }
   },
