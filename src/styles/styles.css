@@ -1,0 +1,16 @@
+.el-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    
+    .el-header {
+        border: 1px solid #ccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    .el-main {
+        border: 1px solid #ccc;
+    }
+}
