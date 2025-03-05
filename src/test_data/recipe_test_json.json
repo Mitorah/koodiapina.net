@@ -1,0 +1,331 @@
+{
+    "ingredientLists": [
+    {
+    "title": "Perunat:",
+    "ingredients": [
+    {
+    "amount": null,
+    "isDeliverable": true,
+    "title": "1 kg perunoita",
+    "productInformation": null
+    },
+    {
+    "amount": "0.5 tl",
+    "isDeliverable": false,
+    "title": "suolaa",
+    "productInformation": null
+    },
+    {
+    "amount": "3 rkl",
+    "isDeliverable": false,
+    "title": "voita",
+    "productInformation": null
+    }
+    ]
+    },
+    {
+    "title": "Pata:",
+    "ingredients": [
+    {
+    "amount": "1 ",
+    "isDeliverable": true,
+    "title": "sipuli",
+    "productInformation": null
+    },
+    {
+    "amount": "2 ",
+    "isDeliverable": true,
+    "title": "valkosipulinkynsi",
+    "productInformation": null
+    },
+    {
+    "amount": "3 ",
+    "isDeliverable": true,
+    "title": "porkkana",
+    "productInformation": null
+    },
+    {
+    "amount": "1 pkt",
+    "isDeliverable": true,
+    "title": "porsaan ulkofileetä",
+    "productInformation": null
+    },
+    {
+    "amount": "1 rkl",
+    "isDeliverable": false,
+    "title": "öljyä",
+    "productInformation": null
+    },
+    {
+    "amount": "2 rkl",
+    "isDeliverable": false,
+    "title": "voita",
+    "productInformation": null
+    },
+    {
+    "amount": "1.5 tl",
+    "isDeliverable": false,
+    "title": "suolaa",
+    "productInformation": null
+    },
+    {
+    "amount": "0.5 tl",
+    "isDeliverable": false,
+    "title": "mustapippuria",
+    "productInformation": null
+    },
+    {
+    "amount": "2 tl",
+    "isDeliverable": false,
+    "title": "kuivattua rakuunaa",
+    "productInformation": null
+    },
+    {
+    "amount": "2 rkl",
+    "isDeliverable": false,
+    "title": "soijakastiketta",
+    "productInformation": null
+    },
+    {
+    "amount": "1 rkl",
+    "isDeliverable": false,
+    "title": "valkoviinietikkaa",
+    "productInformation": null
+    },
+    {
+    "amount": "2 rkl",
+    "isDeliverable": false,
+    "title": "(dijon)sinappia",
+    "productInformation": null
+    },
+    {
+    "amount": "1 prk",
+    "isDeliverable": true,
+    "title": "ruokakermaa + 1 dl vettä",
+    "productInformation": null
+    }
+    ]
+    },
+    {
+    "title": "Salaatti:",
+    "ingredients": [
+    {
+    "amount": "1 ps",
+    "isDeliverable": true,
+    "title": "salaattia",
+    "productInformation": null
+    },
+    {
+    "amount": "1 ",
+    "isDeliverable": true,
+    "title": "kurkku",
+    "productInformation": null
+    },
+    {
+    "amount": "0.5 rkl",
+    "isDeliverable": false,
+    "title": "valkoviinietikkaa",
+    "productInformation": null
+    },
+    {
+    "amount": "1 rkl",
+    "isDeliverable": false,
+    "title": "öljyä",
+    "productInformation": null
+    },
+    {
+    "amount": null,
+    "isDeliverable": false,
+    "title": "ripaus mustapippuria",
+    "productInformation": null
+    }
+    ]
+    }
+    ],
+    "nutritionInfo": {
+    "carbohydratesPer100g": 190.43499999999997,
+    "carbohydratesTotal": 202.45,
+    "fatPer100g": 88.22,
+    "fatTotal": 88.65,
+    "kcalPer100g": 2239.5,
+    "kcalTotal": 2310.9,
+    "proteinPer100g": 161.97499999999997,
+    "proteinTotal": 163.56999999999996
+    },
+    "pantryItems": [
+    {
+    "title": "suolaa"
+    },
+    {
+    "title": "voita"
+    },
+    {
+    "title": "öljyä"
+    },
+    {
+    "title": "mustapippuria"
+    },
+    {
+    "title": "kuivattua rakuunaa"
+    },
+    {
+    "title": "soijakastiketta"
+    },
+    {
+    "title": "valkoviinietikkaa"
+    },
+    {
+    "title": "(dijon)sinappia"
+    },
+    {
+    "title": "ripaus mustapippuria"
+    }
+    ],
+    "steps": [
+    {
+    "_key": "658bd944b05f",
+    "_type": "block",
+    "style": "normal",
+    "markDefs": [],
+    "level": 1,
+    "listItem": "number",
+    "children": [
+    {
+    "_type": "span",
+    "text": "Laita vesi kiehumaan perunoita varten. Kuori ja pilko perunat. Keitä kypsäksi suolalla maustetussa vedessä.",
+    "_key": "d503cdfd8a270",
+    "marks": []
+    }
+    ]
+    },
+    {
+    "_key": "c655cee44650",
+    "_type": "block",
+    "style": "normal",
+    "markDefs": [],
+    "level": 1,
+    "listItem": "number",
+    "children": [
+    {
+    "_type": "span",
+    "text": "Kuori ja hienonna sipuli ja valkosipulinkynnet. Kuori, huuhtele ja kuutioi porkkanat pieniksi kuutioiksi.",
+    "_key": "324ad497f7a90",
+    "marks": []
+    }
+    ]
+    },
+    {
+    "_key": "96211ba78458",
+    "_type": "block",
+    "style": "normal",
+    "markDefs": [],
+    "level": 1,
+    "listItem": "number",
+    "children": [
+    {
+    "_type": "span",
+    "text": "Poista porsaan ulkofileestä kalvoinen osa. Leikkaa noin 1 cm x 1 cm kuutioiksi.",
+    "_key": "e24e39dab0560",
+    "marks": []
+    }
+    ]
+    },
+    {
+    "_key": "9f45d1c607b9",
+    "_type": "block",
+    "style": "normal",
+    "markDefs": [],
+    "level": 1,
+    "listItem": "number",
+    "children": [
+    {
+    "_type": "span",
+    "text": "Kuumenna paistinpannu, öljy ja voi. Lisää possut pannulle ja paista käännellen noin 4-5 minuuttia.",
+    "_key": "a7e8e812e3e90",
+    "marks": []
+    }
+    ]
+    },
+    {
+    "_key": "c923be6fbc28",
+    "_type": "block",
+    "style": "normal",
+    "markDefs": [],
+    "level": 1,
+    "listItem": "number",
+    "children": [
+    {
+    "_type": "span",
+    "text": "Lisää sipulit ja porkkanat pannulle. Jatka paistamista muutama minuutti. Mausta suolalla, mustapippurilla, kuivatulla rakuunalla, soijakastikkeella, valkoviinietikalla ja (dijon)sinapilla.",
+    "_key": "60079459f31f0",
+    "marks": []
+    }
+    ]
+    },
+    {
+    "_key": "fe7908c58bbe",
+    "_type": "block",
+    "style": "normal",
+    "markDefs": [],
+    "level": 1,
+    "listItem": "number",
+    "children": [
+    {
+    "_type": "span",
+    "text": "Kaada pannulle ruokakerma, huuhtele purkki vedellä ja lisää myös vesi sekaan. Kuumenna kiehuvaksi ja hauduta noin 18-20 minuuttia, tai kunnes possu on sopivan mureaa. Lisää tarvittaessa vettä.",
+    "_key": "05c86726ed780",
+    "marks": []
+    }
+    ]
+    },
+    {
+    "_key": "79fd1cec6b7e",
+    "_type": "block",
+    "style": "normal",
+    "markDefs": [],
+    "level": 1,
+    "listItem": "number",
+    "children": [
+    {
+    "_type": "span",
+    "text": "Huuhtele ja revi salaatti kulhoon. Pese ja pilko kurkku sekaan. Mausta valkoviinietikalla, öljyllä ja mustapippurilla.",
+    "_key": "76697fb1efa20",
+    "marks": []
+    }
+    ]
+    },
+    {
+    "_key": "98026910e20c",
+    "_type": "block",
+    "style": "normal",
+    "markDefs": [],
+    "level": 1,
+    "listItem": "number",
+    "children": [
+    {
+    "_type": "span",
+    "text": "Valuta kypsät perunat hyvin ja murskaa esimerkiksi survimella. Sekoita perunoihin voi. Lisää tarvittaessa suolaa.",
+    "_key": "0d0ab0912fcb0",
+    "marks": []
+    }
+    ]
+    },
+    {
+    "_key": "601eb1c97cbd",
+    "_type": "block",
+    "style": "normal",
+    "markDefs": [],
+    "level": 1,
+    "listItem": "number",
+    "children": [
+    {
+    "_type": "span",
+    "text": "Tarjoile possupata murskattujen perunoiden ja salaatin kanssa.",
+    "_key": "5c3a190222f90",
+    "marks": []
+    }
+    ]
+    }
+    ],
+    "tips": []
+    }
