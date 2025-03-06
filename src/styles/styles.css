@@ -13,4 +13,7 @@
     .el-main {
         border: 1px solid #ccc;
     }
+    .el-card {
+        white-space: pre-line
+    }
 }
