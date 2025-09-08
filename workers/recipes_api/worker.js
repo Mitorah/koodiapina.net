@@ -46,7 +46,7 @@ export default {
 
     // Fetch paginated recipes
     const recipesRes = await env.DB.prepare(
-      'SELECT recipe_guid, title, added_date, details, instructions FROM recipes ORDER BY added_date DESC LIMIT ? OFFSET ?'
+      'SELECT recipe_guid, title, added_date, details, instructions FROM recipes WHERE instructions IS NOT NULL ORDER BY added_date DESC LIMIT ? OFFSET ?'
     ).bind(limit, offset).all();
 
     // Format response
