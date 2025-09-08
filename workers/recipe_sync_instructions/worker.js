@@ -125,9 +125,13 @@ export default {
         return new Response('Instructions JSON is undefined', { status: 500 });
       }
       // Update row
+      let instructionsToSave = instructionsJson;
+      if (typeof instructionsJson === 'object') {
+        instructionsToSave = JSON.stringify(instructionsJson);
+      }
       await env.DB.prepare(
         'UPDATE recipes SET instructions = ? WHERE recipe_guid = ?'
-      ).bind(JSON.stringify(instructionsJson), row.recipe_guid).run();
+      ).bind(instructionsToSave, row.recipe_guid).run();
       await env.DB.prepare(
         'INSERT INTO fetch_log (timestamp, count, status, error, details) VALUES (?, ?, ?, ?, ?)' 
       ).bind(

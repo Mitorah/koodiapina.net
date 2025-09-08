@@ -126,20 +126,27 @@ export default {
       // Limit to 20 new recipes per invocation and batch insert
       const batch = newRecipes.slice(0, 20);
       if (batch.length > 0) {
-  const now = getFinlandTimeISO();
+        const now = getFinlandTimeISO();
         const values = batch.map(() => '(?, ?, ?, ?)').join(', ');
         const sql = `INSERT OR IGNORE INTO recipes (recipe_guid, title, added_date, details) VALUES ${values}`;
-        const binds = batch.flatMap(r => [
-          r.id,
-          r.title,
-          now,
-          JSON.stringify({
+        const binds = batch.flatMap(r => {
+          let detailsObj = {
             preparationTime: r.preparationTime,
             serves: r.serves,
             allergens: Array.isArray(r.allergens) ? r.allergens.map(a => ({ id: a.id, title: a.title })) : [],
             diets: Array.isArray(r.diets) ? r.diets.map(d => ({ id: d.id, title: d.title })) : []
-          })
-        ]);
+          };
+          let detailsToSave = detailsObj;
+          if (typeof detailsObj === 'object') {
+            detailsToSave = JSON.stringify(detailsObj);
+          }
+          return [
+            r.id,
+            r.title,
+            now,
+            detailsToSave
+          ];
+        });
         const result = await env.DB.prepare(sql).bind(...binds).run();
         var inserted = result.success ? batch.length : 0;
       } else {
