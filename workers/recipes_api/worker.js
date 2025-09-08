@@ -46,15 +46,31 @@ export default {
 
     // Fetch paginated recipes
     const recipesRes = await env.DB.prepare(
-      'SELECT recipe_guid, title, added_date, details FROM recipes ORDER BY added_date DESC LIMIT ? OFFSET ?'
+      'SELECT recipe_guid, title, added_date, details, instructions FROM recipes ORDER BY added_date DESC LIMIT ? OFFSET ?'
     ).bind(limit, offset).all();
 
     // Format response
+    // Parse details and instructions fields if they are strings
+    const recipes = (recipesRes.results || []).map(r => {
+      let details = r.details;
+      let instructions = r.instructions;
+      try {
+        if (typeof details === 'string') details = JSON.parse(details);
+      } catch (e) {
+        // leave as string if parsing fails
+      }
+      try {
+        if (typeof instructions === 'string') instructions = JSON.parse(instructions);
+      } catch (e) {
+        // leave as string if parsing fails
+      }
+      return { ...r, details, instructions };
+    });
     return new Response(JSON.stringify({
       page,
       limit,
       total,
-      recipes: recipesRes.results || []
+      recipes
     }), {
       headers: {
         'Content-Type': 'application/json',
