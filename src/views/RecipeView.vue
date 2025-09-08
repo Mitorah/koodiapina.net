@@ -58,26 +58,14 @@ export default {
             showCard: false
         };
     },
-    created() {
-        // Parse details from JSON if needed
-        if (this.recipe && typeof this.recipe.details === 'string') {
-            try {
-                this.recipe.details = JSON.parse(this.recipe.details);
-            } catch (e) {
-                // If parsing fails, leave as is
-                console.error('Failed to parse recipe.details:', e);
-            }
-        }
-    },
     computed: {
         recipeTitle() {
             return this.recipe_title ?? 'foo'
         },
         ingredients() {
-            // Returns a parsed array of ingredient objects for all ingredient lists in details
-            if (!this.recipe || !this.recipe.details || !this.recipe.details.ingredientLists) return [];
+            if (!this.recipe || !this.recipe.instructions || !this.recipe.instructions.ingredientLists) return [];
             const parsed = [];
-            this.recipe.details.ingredientLists.forEach(list => {
+            this.recipe.instructions.ingredientLists.forEach(list => {
                 list.ingredients.forEach(ingredient => {
                     parsed.push({
                         group: list.title,
@@ -91,30 +79,28 @@ export default {
             return parsed;
         },
         pantryItems() {
-                // Returns a parsed array of pantry item objects from details
-                if (!this.recipe || !this.recipe.details || !this.recipe.details.pantryItems) return [];
-                return this.recipe.details.pantryItems.map(ingredient => ({
-                    title: ingredient.title,
-                    amount: ingredient.amount ?? '',
-                    isDeliverable: ingredient.isDeliverable ?? false,
-                    productInformation: ingredient.productInformation ?? null
-                }));
+            if (!this.recipe || !this.recipe.instructions || !this.recipe.instructions.pantryItems) return [];
+            return this.recipe.instructions.pantryItems.map(ingredient => ({
+                title: ingredient.title,
+                amount: ingredient.amount ?? '',
+                isDeliverable: ingredient.isDeliverable ?? false,
+                productInformation: ingredient.productInformation ?? null
+            }));
         },
         steps() {
-                // Returns a parsed array of step objects from details
-                if (!this.recipe || !this.recipe.details || !this.recipe.details.steps) return [];
-                const parsed = [];
-                this.recipe.details.steps.forEach(step => {
-                    if (step.children && Array.isArray(step.children)) {
-                        step.children.forEach(child => {
-                            parsed.push({
-                                group: step.title ?? '',
-                                text: child.text ?? ''
-                            });
+            if (!this.recipe || !this.recipe.instructions || !this.recipe.instructions.steps) return [];
+            const parsed = [];
+            this.recipe.instructions.steps.forEach(step => {
+                if (step.children && Array.isArray(step.children)) {
+                    step.children.forEach(child => {
+                        parsed.push({
+                            group: step.title ?? '',
+                            text: child.text ?? ''
                         });
-                    }
-                });
-                return parsed;
+                    });
+                }
+            });
+            return parsed;
         },
         groupedIngredients() {
             // Group ingredients by their 'group' field

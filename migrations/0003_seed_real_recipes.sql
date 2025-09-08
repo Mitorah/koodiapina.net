@@ -1,5 +1,5 @@
 -- Seed real recipe data into the recipes table
-INSERT INTO recipes (recipe_guid, title, added_date, details, instructions)
+INSERT INTO recipes (recipe_guid, title, added_date, instructions, details)
 VALUES
 (
     '004679b8-ac0b-471a-a0b2-33aefc602063', 
