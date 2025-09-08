@@ -9,15 +9,27 @@ export default {
     // Optional: add filtering by title, diet, allergens, etc.
     // const title = url.searchParams.get('title');
 
+    const allowedOrigins = [
+      'https://koodiapina-net.pages.dev',
+      'https://www.koodiapina.net'
+    ];
+    const origin = request.headers.get('Origin');
+    const corsOrigin = allowedOrigins.includes(origin) ? origin : '';
+
     // CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
-          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': corsOrigin,
           'Access-Control-Allow-Methods': 'GET, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type',
         }
       });
+    }
+
+    // Restrict access to allowed origins
+    if (origin && !allowedOrigins.includes(origin)) {
+      return new Response('Forbidden', { status: 403 });
     }
 
     // Count total recipes
@@ -38,7 +50,7 @@ export default {
     }), {
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': corsOrigin,
       }
     });
   }
