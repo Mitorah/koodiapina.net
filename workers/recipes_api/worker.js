@@ -9,26 +9,34 @@ export default {
     // Optional: add filtering by title, diet, allergens, etc.
     // const title = url.searchParams.get('title');
 
-    const allowedOrigins = [
-      'https://koodiapina-net.pages.dev',
-      'https://www.koodiapina.net'
-    ];
     const origin = request.headers.get('Origin');
-    const corsOrigin = allowedOrigins.includes(origin) ? origin : '';
+    // Detect local development by checking for localhost in the request URL
+    const isLocal = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+    let allowedOrigin = '';
+    if (isLocal) {
+      allowedOrigin = '*';
+    } else if (
+      origin && (
+        /^https?:\/\/[a-z0-9-]+\.koodiapina-net\.pages\.dev$/.test(origin) ||
+        origin === 'https://www.koodiapina.net'
+      )
+    ) {
+      allowedOrigin = origin;
+    }
 
     // CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
-          'Access-Control-Allow-Origin': corsOrigin,
+          'Access-Control-Allow-Origin': allowedOrigin,
           'Access-Control-Allow-Methods': 'GET, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type',
         }
       });
     }
 
-    // Restrict access to allowed origins
-    if (origin && !allowedOrigins.includes(origin)) {
+    // Restrict access to allowed origins (except local dev)
+    if (!isLocal && origin && !allowedOrigin) {
       return new Response('Forbidden', { status: 403 });
     }
 
@@ -50,7 +58,7 @@ export default {
     }), {
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': corsOrigin,
+        'Access-Control-Allow-Origin': allowedOrigin,
       }
     });
   }
