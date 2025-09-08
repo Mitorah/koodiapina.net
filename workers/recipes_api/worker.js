@@ -9,6 +9,17 @@ export default {
     // Optional: add filtering by title, diet, allergens, etc.
     // const title = url.searchParams.get('title');
 
+    // CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        }
+      });
+    }
+
     // Count total recipes
     const totalRes = await env.DB.prepare('SELECT COUNT(*) as count FROM recipes').first();
     const total = totalRes?.count || 0;
@@ -25,7 +36,10 @@ export default {
       total,
       recipes: recipesRes.results || []
     }), {
-      headers: { 'Content-Type': 'application/json' }
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      }
     });
   }
 }
