@@ -3,46 +3,66 @@
         <el-header>
             {{ title }}
         </el-header>
-        <el-card v-for="(recipe, index) in dummy_recipes" :key="index">
-            <RecipeView :recipe="recipe" :recipe_title="recipe.title"/>
+        <el-card v-for="recipe in recipes" :key="recipe.recipe_guid">
+            <RecipeView :recipe="recipe" :recipe_title="recipe.title" />
         </el-card>
+        <el-footer>
+            <el-pagination
+                :current-page="page"
+                :page-size="limit"
+                :total="total"
+                @current-change="handlePageChange"
+                layout="prev, pager, next"
+            />
+        </el-footer>
     </el-container>
 </template>
 
 <script>
 import RecipeView from './RecipeView.vue';
-import json_dummy_data from '../test_data/recipe_test_json.json'
+import { fetchRecipes as fetchRecipesApi } from '../utils/api.js';
 
 export default {
-    name: 'Recipes',
-    components: {
-        RecipeView
+  name: 'Recipes',
+  components: {
+    RecipeView
+  },
+  data() {
+    return {
+      recipes: [],
+      page: 1,
+      limit: 20,
+      total: 0,
+      loading: false
+    };
+  },
+  computed: {
+    title() {
+      return 'Recipes';
+    }
+  },
+  methods: {
+    async fetchRecipes(page = 1) {
+      this.loading = true;
+      try {
+        const data = await fetchRecipesApi(page, this.limit);
+        this.recipes = data.recipes || [];
+        this.page = data.page;
+        this.limit = data.limit;
+        this.total = data.total;
+      } catch (err) {
+        console.error('Failed to fetch recipes:', err);
+      } finally {
+        this.loading = false;
+      }
     },
-    data() {
-        return {
-        };
-    },
-    computed: {
-        title() {
-            return 'Recipes';
-        },
-        dummy_recipes() {
-            let recipes = []
-            
-            for (let i = 0; i < 10; i++) {
-                var foo = this.dummy_data()
-                foo.title = 'Recipe title'
-                recipes.push(foo)
-            }
-            return recipes
-        },
-    },
-    methods: {
-        dummy_data() {
-            return Object(json_dummy_data)
-        }
-    },
-
+    handlePageChange(newPage) {
+      this.fetchRecipes(newPage);
+    }
+  },
+  mounted() {
+    this.fetchRecipes(this.page);
+  }
 };
 </script>
 

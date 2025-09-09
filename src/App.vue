@@ -16,27 +16,27 @@
 </template>
 
 <script>
-import MainWindow from './views/MainWindow.vue'
-import AIWindow from './views/AIWindow.vue'
+//import MainWindow from './views/MainWindow.vue'
+//import AIWindow from './views/AIWindow.vue'
 import Recipes from './views/Recipes.vue'
 
 export default {
   name: 'App',
   components: {
-    MainWindow,
-    AIWindow,
+    // MainWindow,
+    // AIWindow,
     Recipes
   },
   data() {
     return {
-      activeTab: 'main',
+      activeTab: 'recipes',
       tabs: [],
     }
   },
   mounted() {
     this.tabs = [
-      { label: 'Main Window', name: 'main', component: 'MainWindow' },
-      { label: 'AI Window', name: 'ai', component: 'AIWindow' },
+      // { label: 'Main Window', name: 'main', component: 'MainWindow' },
+      // { label: 'AI Window', name: 'ai', component: 'AIWindow' },
       { label: 'Recipes', name: 'recipes', component: 'Recipes' }
     ]
   },

@@ -17,3 +17,19 @@
         white-space: pre-line
     }
 }
+
+/* Ingredient group styles for RecipeView.vue */
+.ingredient-group {
+    margin-bottom: 1em;
+}
+.ingredient-group-title {
+    font-weight: bold;
+    margin-top: 1em;
+    font-size: 1.1em;
+    color: #2c3e50;
+}
+.ingredient-item {
+    margin-left: 1em;
+    font-size: 1em;
+    color: #333;
+}

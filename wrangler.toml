@@ -1,0 +1,10 @@
+name = "koodiapina-net"
+main = "workers/recipes_api/worker.js"
+compatibility_date = "2025-09-08"
+
+[env.local]
+[[d1_databases]]
+binding = "DB"
+database_name = "koodiapina_local"
+database_id = "6617b859-12c5-4002-bdf5-34c96cd18c6d"
+
