@@ -16,21 +16,12 @@
         size="240px"
         @close="drawerVisible = false"
       >
-          <div style="display: flex; flex-direction: column; width: 100%;">
+          <div class="drawer-menu">
             <div
               v-for="tab in tabs"
               :key="tab.name"
               @click="selectTab(tab.name)"
-              :style="{
-                padding: '16px',
-                cursor: 'pointer',
-                fontWeight: activeTab === tab.name ? 'bold' : 'normal',
-                color: activeTab === tab.name ? '#409EFF' : '#333',
-                background: activeTab === tab.name ? '#f5f7fa' : 'transparent',
-                borderRadius: '4px',
-                marginBottom: '4px',
-                textAlign: 'left'
-              }"
+              :class="['drawer-menu-item', { active: activeTab === tab.name }]"
             >
               {{ tab.label }}
             </div>

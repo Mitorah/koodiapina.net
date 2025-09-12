@@ -33,3 +33,27 @@
     font-size: 1em;
     color: #333;
 }
+
+/* Drawer menu styles */
+.drawer-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.drawer-menu-item {
+    padding: 16px;
+    cursor: pointer;
+    font-weight: normal;
+    color: #333;
+    background: transparent;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    text-align: left;
+}
+
+.drawer-menu-item.active {
+    font-weight: bold;
+    color: #409EFF;
+    background: #f5f7fa;
+}
