@@ -1,14 +1,14 @@
 <template>
-  <el-container style="border: 1px solid #ebeef5;">
+  <el-container class="app-container">
     <el-header>
-      <el-row type="flex" align="middle" style="width: 100%; position: relative;">
-        <el-button @click="onMenuClick" style="margin-left: 0; margin-right: 16px; background: transparent; border: none; box-shadow: none; display: flex; align-items: center; justify-content: center;">
+      <el-row type="flex" align="middle" class="header-row">
+        <el-button @click="onMenuClick" class="menu-button">
           <el-icon><Menu /></el-icon>
         </el-button>
-        <span style="position: absolute; left: 0; right: 0; margin: auto; text-align: center; width: 100%; pointer-events: none; font-weight: bold;">{{ currentHeader }}</span>
+        <span class="header-title">{{ currentHeader }}</span>
       </el-row>
     </el-header>
-    <el-main style="border: 1px solid #ebeef5;">
+    <el-main class="app-main">
       <el-drawer
         title="Menu"
         v-model="drawerVisible"
