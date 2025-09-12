@@ -1,8 +1,5 @@
 <template>
     <el-container>
-        <el-header>
-            {{ title }}
-        </el-header>
         <el-card v-for="recipe in recipes" :key="recipe.recipe_guid">
             <RecipeView :recipe="recipe" :recipe_title="recipe.title" />
         </el-card>

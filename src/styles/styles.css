@@ -33,3 +33,64 @@
     font-size: 1em;
     color: #333;
 }
+
+/* Drawer menu styles */
+.drawer-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.drawer-menu-item {
+    padding: 16px;
+    cursor: pointer;
+    font-weight: normal;
+    color: #333;
+    background: transparent;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    text-align: left;
+}
+
+.drawer-menu-item.active {
+    font-weight: bold;
+    color: #409EFF;
+    background: #f5f7fa;
+}
+
+/* App container styles */
+.app-container {
+    border: 1px solid #ebeef5;
+}
+
+.app-main {
+    border: 1px solid #ebeef5;
+}
+
+/* Header styles */
+.header-row {
+    width: 100%;
+    position: relative;
+}
+
+.menu-button {
+    margin-left: 0;
+    margin-right: 16px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+    width: 100%;
+    pointer-events: none;
+    font-weight: bold;
+}
