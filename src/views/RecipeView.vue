@@ -2,7 +2,7 @@
     <el-header @click="showCard = !showCard">
             {{ recipeTitle }}
     </el-header>
-    <el-card v-if="showCard">
+    <div v-if="showCard">
         <el-card>
             <div v-if="ingredients.length">
                 <b>Ainekset:</b>
@@ -44,7 +44,7 @@
                 Ei ohjeita.
             </div>
         </el-card>
-    </el-card>
+    </div>
 </template>
 
 <script>

@@ -5,7 +5,7 @@
         <el-button @click="onMenuClick" style="margin-left: 0; margin-right: 16px; background: transparent; border: none; box-shadow: none; display: flex; align-items: center; justify-content: center;">
           <el-icon><Menu /></el-icon>
         </el-button>
-        <span style="position: absolute; left: 0; right: 0; margin: auto; text-align: center; width: 100%; pointer-events: none; font-weight: bold;">HEADER</span>
+        <span style="position: absolute; left: 0; right: 0; margin: auto; text-align: center; width: 100%; pointer-events: none; font-weight: bold;">{{ currentHeader }}</span>
       </el-row>
     </el-header>
     <el-main style="border: 1px solid #ebeef5;">
@@ -36,10 +36,10 @@
             </div>
           </div>
       </el-drawer>
-      <el-container>
-        <component :is="activeTabComponent" />
-      </el-container>
     </el-main>
+    <el-container>
+      <component :is="activeTabComponent" />
+    </el-container>
   </el-container>
 </template>
 
@@ -78,6 +78,10 @@ export default {
     activeTabComponent() {
       const tab = this.tabs.find(t => t.name === this.activeTab);
       return tab ? tab.component : null;
+    },
+    currentHeader() {
+      const tab = this.tabs.find(t => t.name === this.activeTab);
+      return tab ? tab.label : '';
     }
   },
   methods: {
