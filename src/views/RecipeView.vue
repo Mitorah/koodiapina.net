@@ -33,6 +33,7 @@
         <el-card>
             <div v-if="steps.length">
                 <b>Ohjeet:</b>
+                <span v-if="preparationTime"> (Valmistusaika: {{ preparationTime }})</span>
                 <ol>
                     <li v-for="(step, idx) in steps" :key="idx">
                         {{ step.text }}
@@ -59,6 +60,19 @@ export default {
         };
     },
     computed: {
+        preparationTime() {
+            const prep = this.recipe?.details?.preparationTime ?? '';
+            const minutes = typeof prep === 'string' ? parseInt(prep) : prep;
+            if (!minutes || isNaN(minutes)) return prep;
+            if (minutes >= 60) {
+                const hours = Math.floor(minutes / 60);
+                const mins = minutes % 60;
+                return mins === 0
+                    ? `${hours} h`
+                    : `${hours} h ${mins} min`;
+            }
+            return `${minutes} min`;
+        },
         recipeTitle() {
             return this.recipe_title ?? 'foo'
         },
