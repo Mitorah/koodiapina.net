@@ -54,6 +54,18 @@
               </el-select>
             </div>
             
+            <!-- Admin: Add New User -->
+            <div v-if="currentProfileIsAdmin" class="admin-section">
+              <el-button 
+                type="primary" 
+                size="small" 
+                style="width: 100%; margin-top: 10px;"
+                @click="showAddUserDialog = true"
+              >
+                + Lisää käyttäjä
+              </el-button>
+            </div>
+            
             <el-divider />
             
             <!-- Menu Items -->
@@ -68,8 +80,39 @@
           </div>
       </el-drawer>
     </el-main>
+    
+    <!-- Add User Dialog -->
+    <el-dialog
+      v-model="showAddUserDialog"
+      title="Lisää uusi käyttäjä"
+      width="500px"
+    >
+      <el-form :model="newUserForm" label-width="130px">
+        <el-form-item label="Käyttäjänimi">
+          <el-input v-model="newUserForm.username" placeholder="esim. matti"></el-input>
+        </el-form-item>
+        <el-form-item label="Näyttönimi">
+          <el-input v-model="newUserForm.displayName" placeholder="esim. Matti Meikäläinen"></el-input>
+        </el-form-item>
+        <el-form-item label="Sähköposti">
+          <el-input v-model="newUserForm.email" placeholder="valinnainen"></el-input>
+        </el-form-item>
+        <el-form-item label="Pääkäyttäjä">
+          <el-checkbox v-model="newUserForm.isAdmin">Pääkäyttäjän oikeudet</el-checkbox>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="showAddUserDialog = false">Peruuta</el-button>
+          <el-button type="primary" @click="createUser" :loading="creatingUser">
+            Luo käyttäjä
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+    
     <el-container>
-      <component :is="activeTabComponent" :currentProfileGuid="selectedProfile" />
+      <component :is="activeTabComponent" :currentProfileGuid="selectedProfile" :currentProfile="currentProfile" />
     </el-container>
   </el-container>
 </template>
@@ -81,9 +124,10 @@
 import Recipes from './views/Recipes.vue'
 import Favorites from './views/Favorites.vue'
 import ShoppingList from './views/ShoppingList.vue'
+import AdminUsers from './views/AdminUsers.vue'
 import { Menu, User, Star } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
-import { fetchProfiles } from './utils/api'
+import { fetchProfiles, createProfile } from './utils/api'
 
 export default {
   name: 'App',
@@ -93,6 +137,7 @@ export default {
     Recipes,
     Favorites,
     ShoppingList,
+    AdminUsers,
     Menu,
     User,
     Star,
@@ -105,6 +150,14 @@ export default {
       drawerVisible: false,
       profiles: [],
       selectedProfile: null,
+      showAddUserDialog: false,
+      creatingUser: false,
+      newUserForm: {
+        username: '',
+        displayName: '',
+        email: '',
+        isAdmin: false
+      }
     }
   },
   async mounted() {
@@ -131,19 +184,23 @@ export default {
       const tab = this.tabs.find(t => t.name === this.activeTab);
       return tab ? tab.label : '';
     },
-    currentProfileName() {
+    currentProfile() {
       if (!this.selectedProfile || this.profiles.length === 0) {
+        return null;
+      }
+      return this.profiles.find(p => p.profile_guid === this.selectedProfile);
+    },
+    currentProfileName() {
+      if (!this.currentProfile) {
         return '';
       }
-      const profile = this.profiles.find(p => p.profile_guid === this.selectedProfile);
-      return profile?.display_name || profile?.username || '';
+      return this.currentProfile.display_name || this.currentProfile.username || '';
     },
     currentProfileIsAdmin() {
-      if (!this.selectedProfile || this.profiles.length === 0) {
+      if (!this.currentProfile) {
         return false;
       }
-      const profile = this.profiles.find(p => p.profile_guid === this.selectedProfile);
-      return profile?.is_admin === 1 || profile?.is_admin === true;
+      return this.currentProfile.is_admin === 1 || this.currentProfile.is_admin === true;
     }
   },
   methods: {
@@ -157,7 +214,14 @@ export default {
     async loadProfiles() {
       try {
         const data = await fetchProfiles();
-        this.profiles = data.profiles || [];
+        // Sort: admins first, then by creation time (profile_guid as proxy for creation order)
+        this.profiles = (data.profiles || []).sort((a, b) => {
+          // Admin users first
+          if (a.is_admin && !b.is_admin) return -1;
+          if (!a.is_admin && b.is_admin) return 1;
+          // Then sort by profile_guid (created earlier = smaller guid in hex)
+          return a.profile_guid.localeCompare(b.profile_guid);
+        });
       } catch (error) {
         console.error('Failed to load profiles:', error);
         this.$message.error('Profiilien lataus epäonnistui');
@@ -191,6 +255,43 @@ export default {
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
       return null;
+    },
+    async createUser() {
+      if (!this.newUserForm.username || !this.newUserForm.displayName) {
+        this.$message.warning('Käyttäjänimi ja näyttönimi ovat pakollisia');
+        return;
+      }
+
+      this.creatingUser = true;
+      try {
+        await createProfile(
+          this.newUserForm.username,
+          this.newUserForm.displayName,
+          this.newUserForm.email,
+          this.newUserForm.isAdmin
+        );
+        
+        this.$message.success('Käyttäjä luotu onnistuneesti');
+        
+        // Reset form
+        this.newUserForm = {
+          username: '',
+          displayName: '',
+          email: '',
+          isAdmin: false
+        };
+        
+        // Close dialog
+        this.showAddUserDialog = false;
+        
+        // Reload profiles
+        await this.loadProfiles();
+      } catch (err) {
+        console.error('Failed to create user:', err);
+        this.$message.error(err.message || 'Käyttäjän luonti epäonnistui');
+      } finally {
+        this.creatingUser = false;
+      }
     }
   }
 }

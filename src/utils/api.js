@@ -68,4 +68,24 @@ export async function removeFromShoppingList(profileGuid, recipeGuid) {
   return await res.json();
 }
 
+export async function createProfile(username, displayName, email, isAdmin) {
+  const res = await fetch(`${API_BASE_URL}/profiles`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ 
+      username, 
+      display_name: displayName, 
+      email: email || null,
+      is_admin: isAdmin 
+    }),
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || 'Failed to create profile');
+  }
+  return await res.json();
+}
+
 // Add more API functions here as needed

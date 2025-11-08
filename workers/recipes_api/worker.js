@@ -39,7 +39,7 @@ export default {
     }
 
     // Handle /profiles endpoint
-    if (pathname === '/profiles') {
+    if (pathname === '/profiles' && request.method === 'GET') {
       const profilesRes = await env.DB.prepare(
         'SELECT profile_guid, username, display_name, email, is_admin FROM profiles WHERE is_active = 1 ORDER BY username'
       ).all();
@@ -52,6 +52,71 @@ export default {
           'Access-Control-Allow-Origin': allowedOrigin,
         }
       });
+    }
+
+    // Handle /profiles endpoint - POST to create a new profile (admin only)
+    if (pathname === '/profiles' && request.method === 'POST') {
+      const body = await request.json();
+      const { username, display_name, email, is_admin } = body;
+      
+      if (!username || !display_name) {
+        return new Response(JSON.stringify({ error: 'username and display_name are required' }), {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+
+      try {
+        // Check if username already exists
+        const existing = await env.DB.prepare(
+          'SELECT profile_guid FROM profiles WHERE username = ?'
+        ).bind(username).first();
+        
+        if (existing) {
+          return new Response(JSON.stringify({ error: 'Username already exists' }), {
+            status: 409,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': allowedOrigin,
+            }
+          });
+        }
+
+        // Generate a GUID for the profile using randomblob
+        const guidResult = await env.DB.prepare(
+          'SELECT lower(hex(randomblob(16))) as guid'
+        ).first();
+        
+        const profileGuid = guidResult.guid;
+        
+        await env.DB.prepare(
+          'INSERT INTO profiles (profile_guid, username, display_name, email, is_admin, is_active) VALUES (?, ?, ?, ?, ?, 1)'
+        ).bind(profileGuid, username, display_name, email || null, is_admin ? 1 : 0).run();
+        
+        return new Response(JSON.stringify({ 
+          success: true,
+          profile_guid: profileGuid,
+          username,
+          display_name
+        }), {
+          status: 201,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
     }
 
     // Handle /favorites/:profile_guid endpoint - GET favorites for a user
