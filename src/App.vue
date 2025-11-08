@@ -6,6 +6,12 @@
           <el-icon><Menu /></el-icon>
         </el-button>
         <div class="profile-indicator">
+          <el-icon v-if="currentProfileIsAdmin" style="color: #F56C6C;">
+            <Star />
+          </el-icon>
+          <el-icon v-else style="color: #909399;">
+            <User />
+          </el-icon>
           <span class="profile-name">{{ currentProfileName }}</span>
         </div>
         <span class="header-title">{{ currentHeader }}</span>
@@ -34,7 +40,17 @@
                   :key="profile.profile_guid"
                   :label="profile.display_name || profile.username"
                   :value="profile.profile_guid"
-                />
+                >
+                  <span style="display: flex; align-items: center; gap: 8px;">
+                    <el-icon v-if="profile.is_admin" style="color: #F56C6C;">
+                      <Star />
+                    </el-icon>
+                    <el-icon v-else style="color: #909399;">
+                      <User />
+                    </el-icon>
+                    <span>{{ profile.display_name || profile.username }}</span>
+                  </span>
+                </el-option>
               </el-select>
             </div>
             
@@ -63,7 +79,7 @@
 //import AIWindow from './views/AIWindow.vue'
 
 import Recipes from './views/Recipes.vue'
-import { Menu } from '@element-plus/icons-vue'
+import { Menu, User, Star } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
 import { fetchProfiles } from './utils/api'
 
@@ -74,6 +90,8 @@ export default {
     // AIWindow,
     Recipes,
     Menu,
+    User,
+    Star,
     ElIcon
   },
   data() {
@@ -113,6 +131,13 @@ export default {
       }
       const profile = this.profiles.find(p => p.profile_guid === this.selectedProfile);
       return profile?.display_name || profile?.username || '';
+    },
+    currentProfileIsAdmin() {
+      if (!this.selectedProfile || this.profiles.length === 0) {
+        return false;
+      }
+      const profile = this.profiles.find(p => p.profile_guid === this.selectedProfile);
+      return profile?.is_admin === 1 || profile?.is_admin === true;
     }
   },
   methods: {

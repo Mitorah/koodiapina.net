@@ -41,7 +41,7 @@ export default {
     // Handle /profiles endpoint
     if (pathname === '/profiles') {
       const profilesRes = await env.DB.prepare(
-        'SELECT profile_guid, username, display_name, email FROM profiles WHERE is_active = 1 ORDER BY username'
+        'SELECT profile_guid, username, display_name, email, is_admin FROM profiles WHERE is_active = 1 ORDER BY username'
       ).all();
       
       return new Response(JSON.stringify({
