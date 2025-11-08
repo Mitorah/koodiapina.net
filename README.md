@@ -39,6 +39,7 @@ A modern Vue + Cloudflare D1 app for browsing, syncing, and displaying recipes f
      npx wrangler d1 execute koodiapina_local --file migrations/0001_create_recipes.sql
      npx wrangler d1 execute koodiapina_local --file migrations/0002_create_fetch_log.sql
      npx wrangler d1 execute koodiapina_local --file migrations/0003_seed_real_recipes.sql
+     npx wrangler d1 execute koodiapina_local --file migrations/0004_create_profiles.sql
      ```
    - If you see a UNIQUE constraint error, clear the table first:
      ```bash

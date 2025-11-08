@@ -1,10 +1,8 @@
-// Cloudflare Worker: Paginated Recipes API
+// Cloudflare Worker: Paginated Recipes API with Profiles
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get('page') || '1', 10);
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 100); // max 100 per page
-    const offset = (page - 1) * limit;
+    const pathname = url.pathname;
 
     // Optional: add filtering by title, diet, allergens, etc.
     // const title = url.searchParams.get('title');
@@ -39,6 +37,27 @@ export default {
     if (!isLocal && origin && !allowedOrigin) {
       return new Response('Forbidden', { status: 403 });
     }
+
+    // Handle /profiles endpoint
+    if (pathname === '/profiles') {
+      const profilesRes = await env.DB.prepare(
+        'SELECT profile_guid, username, display_name, email FROM profiles WHERE is_active = 1 ORDER BY username'
+      ).all();
+      
+      return new Response(JSON.stringify({
+        profiles: profilesRes.results || []
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': allowedOrigin,
+        }
+      });
+    }
+
+    // Handle /recipes endpoint (default)
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 100); // max 100 per page
+    const offset = (page - 1) * limit;
 
     // Count total recipes
     const totalRes = await env.DB.prepare('SELECT COUNT(*) as count FROM recipes').first();

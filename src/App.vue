@@ -5,6 +5,9 @@
         <el-button @click="onMenuClick" class="menu-button">
           <el-icon><Menu /></el-icon>
         </el-button>
+        <div class="profile-indicator">
+          <span class="profile-name">{{ currentProfileName }}</span>
+        </div>
         <span class="header-title">{{ currentHeader }}</span>
       </el-row>
     </el-header>
@@ -17,6 +20,27 @@
         @close="drawerVisible = false"
       >
           <div class="drawer-menu">
+            <!-- Profile Selector -->
+            <div class="profile-selector">
+              <label class="profile-label">Profiili:</label>
+              <el-select
+                v-model="selectedProfile"
+                placeholder="Valitse profiili"
+                @change="onProfileChange"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="profile in profiles"
+                  :key="profile.profile_guid"
+                  :label="profile.display_name || profile.username"
+                  :value="profile.profile_guid"
+                />
+              </el-select>
+            </div>
+            
+            <el-divider />
+            
+            <!-- Menu Items -->
             <div
               v-for="tab in tabs"
               :key="tab.name"
@@ -41,6 +65,7 @@
 import Recipes from './views/Recipes.vue'
 import { Menu } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
+import { fetchProfiles } from './utils/api'
 
 export default {
   name: 'App',
@@ -56,14 +81,22 @@ export default {
       activeTab: 'recipes',
       tabs: [],
       drawerVisible: false,
+      profiles: [],
+      selectedProfile: null,
     }
   },
-  mounted() {
+  async mounted() {
     this.tabs = [
       // { label: 'Main Window', name: 'main', component: 'MainWindow' },
       // { label: 'AI Window', name: 'ai', component: 'AIWindow' },
       { label: 'Recipes', name: 'recipes', component: 'Recipes' }
     ];
+    
+    // Load profiles
+    await this.loadProfiles();
+    
+    // Load selected profile from cookie or select first
+    this.loadSelectedProfile();
   },
   computed: {
     activeTabComponent() {
@@ -73,6 +106,13 @@ export default {
     currentHeader() {
       const tab = this.tabs.find(t => t.name === this.activeTab);
       return tab ? tab.label : '';
+    },
+    currentProfileName() {
+      if (!this.selectedProfile || this.profiles.length === 0) {
+        return '';
+      }
+      const profile = this.profiles.find(p => p.profile_guid === this.selectedProfile);
+      return profile?.display_name || profile?.username || '';
     }
   },
   methods: {
@@ -82,6 +122,44 @@ export default {
     selectTab(tabName) {
       this.activeTab = tabName;
       this.drawerVisible = false;
+    },
+    async loadProfiles() {
+      try {
+        const data = await fetchProfiles();
+        this.profiles = data.profiles || [];
+      } catch (error) {
+        console.error('Failed to load profiles:', error);
+        this.$message.error('Profiilien lataus epäonnistui');
+      }
+    },
+    loadSelectedProfile() {
+      // Try to load from cookie
+      const savedProfile = this.getCookie('selected_profile');
+      if (savedProfile && this.profiles.some(p => p.profile_guid === savedProfile)) {
+        this.selectedProfile = savedProfile;
+      } else if (this.profiles.length > 0) {
+        // Select first profile by default
+        this.selectedProfile = this.profiles[0].profile_guid;
+        this.saveProfileToCookie(this.selectedProfile);
+      }
+    },
+    onProfileChange(profileGuid) {
+      this.saveProfileToCookie(profileGuid);
+      const profile = this.profiles.find(p => p.profile_guid === profileGuid);
+      const displayName = profile?.display_name || profile?.username || 'tuntematon';
+      this.$message.success(`Vaihdettu profiiliin: ${displayName}`);
+    },
+    saveProfileToCookie(profileGuid) {
+      // Save for 365 days
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000));
+      document.cookie = `selected_profile=${profileGuid}; expires=${expires.toUTCString()}; path=/`;
+    },
+    getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
     }
   }
 }
