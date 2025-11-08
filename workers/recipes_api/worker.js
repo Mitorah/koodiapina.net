@@ -27,7 +27,7 @@ export default {
       return new Response(null, {
         headers: {
           'Access-Control-Allow-Origin': allowedOrigin,
-          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type',
         }
       });
@@ -52,6 +52,110 @@ export default {
           'Access-Control-Allow-Origin': allowedOrigin,
         }
       });
+    }
+
+    // Handle /favorites/:profile_guid endpoint - GET favorites for a user
+    if (pathname.startsWith('/favorites/') && request.method === 'GET') {
+      const profileGuid = pathname.split('/')[2];
+      const favoritesRes = await env.DB.prepare(
+        'SELECT f.favorite_id, f.recipe_guid, f.added_at FROM favorites f WHERE f.profile_guid = ? ORDER BY f.added_at DESC'
+      ).bind(profileGuid).all();
+      
+      return new Response(JSON.stringify({
+        favorites: favoritesRes.results || []
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': allowedOrigin,
+        }
+      });
+    }
+
+    // Handle /favorites endpoint - POST to add a favorite
+    if (pathname === '/favorites' && request.method === 'POST') {
+      const body = await request.json();
+      const { profile_guid, recipe_guid } = body;
+      
+      if (!profile_guid || !recipe_guid) {
+        return new Response(JSON.stringify({ error: 'profile_guid and recipe_guid are required' }), {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+
+      try {
+        // Generate a GUID for the favorite
+        const favoriteId = crypto.randomUUID();
+        
+        await env.DB.prepare(
+          'INSERT INTO favorites (favorite_id, profile_guid, recipe_guid) VALUES (?, ?, ?)'
+        ).bind(favoriteId, profile_guid, recipe_guid).run();
+        
+        return new Response(JSON.stringify({ 
+          success: true,
+          favorite_id: favoriteId
+        }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ 
+          error: 'Failed to add favorite',
+          message: error.message 
+        }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+    }
+
+    // Handle /favorites/:profile_guid/:recipe_guid endpoint - DELETE to remove a favorite
+    if (pathname.startsWith('/favorites/') && request.method === 'DELETE') {
+      const parts = pathname.split('/');
+      const profileGuid = parts[2];
+      const recipeGuid = parts[3];
+      
+      if (!profileGuid || !recipeGuid) {
+        return new Response(JSON.stringify({ error: 'profile_guid and recipe_guid are required' }), {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+
+      try {
+        await env.DB.prepare(
+          'DELETE FROM favorites WHERE profile_guid = ? AND recipe_guid = ?'
+        ).bind(profileGuid, recipeGuid).run();
+        
+        return new Response(JSON.stringify({ success: true }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ 
+          error: 'Failed to remove favorite',
+          message: error.message 
+        }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
     }
 
     // Handle /recipes endpoint (default)

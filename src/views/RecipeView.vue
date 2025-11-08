@@ -1,6 +1,19 @@
 <template>
-    <el-header @click="showCard = !showCard">
-            {{ recipeTitle }}
+    <el-header @click="showCard = !showCard" style="position: relative; display: flex; justify-content: center; align-items: center; cursor: pointer;">
+        <span style="flex: 1; text-align: center;">{{ recipeTitle }}</span>
+        <el-button 
+            @click.stop="toggleFavorite"
+            :loading="favoriteLoading"
+            circle
+            :type="isFavorite ? 'warning' : 'default'"
+            size="small"
+            style="position: absolute; right: 10px;"
+        >
+            <el-icon>
+                <StarFilled v-if="isFavorite" />
+                <Star v-else />
+            </el-icon>
+        </el-button>
     </el-header>
     <div v-if="showCard">
         <el-card>
@@ -48,16 +61,55 @@
 </template>
 
 <script>
+import { addFavorite, removeFavorite } from '../utils/api.js';
+import { Star, StarFilled } from '@element-plus/icons-vue';
+
 export default {
     name: 'Recipe view',
+    components: {
+        Star,
+        StarFilled
+    },
     props: {
         recipe: Object,
-        recipe_title: String
+        recipe_title: String,
+        isFavorite: {
+            type: Boolean,
+            default: false
+        },
+        currentProfileGuid: String
     },
     data() {
         return {
-            showCard: false
+            showCard: false,
+            favoriteLoading: false
         };
+    },
+    methods: {
+        async toggleFavorite() {
+            if (!this.currentProfileGuid) {
+                this.$message.error('Profiilia ei valittu');
+                return;
+            }
+
+            this.favoriteLoading = true;
+            try {
+                if (this.isFavorite) {
+                    await removeFavorite(this.currentProfileGuid, this.recipe.recipe_guid);
+                    this.$emit('favorite-removed', this.recipe.recipe_guid);
+                    this.$message.success('Poistettu suosikeista');
+                } else {
+                    await addFavorite(this.currentProfileGuid, this.recipe.recipe_guid);
+                    this.$emit('favorite-added', this.recipe.recipe_guid);
+                    this.$message.success('Lisätty suosikkeihin');
+                }
+            } catch (error) {
+                console.error('Failed to toggle favorite:', error);
+                this.$message.error('Suosikin päivitys epäonnistui');
+            } finally {
+                this.favoriteLoading = false;
+            }
+        }
     },
     computed: {
         preparationTime() {

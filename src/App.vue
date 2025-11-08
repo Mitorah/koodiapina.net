@@ -69,7 +69,7 @@
       </el-drawer>
     </el-main>
     <el-container>
-      <component :is="activeTabComponent" />
+      <component :is="activeTabComponent" :currentProfileGuid="selectedProfile" />
     </el-container>
   </el-container>
 </template>
@@ -79,6 +79,7 @@
 //import AIWindow from './views/AIWindow.vue'
 
 import Recipes from './views/Recipes.vue'
+import Favorites from './views/Favorites.vue'
 import { Menu, User, Star } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
 import { fetchProfiles } from './utils/api'
@@ -89,6 +90,7 @@ export default {
     // MainWindow,
     // AIWindow,
     Recipes,
+    Favorites,
     Menu,
     User,
     Star,
@@ -107,7 +109,8 @@ export default {
     this.tabs = [
       // { label: 'Main Window', name: 'main', component: 'MainWindow' },
       // { label: 'AI Window', name: 'ai', component: 'AIWindow' },
-      { label: 'Recipes', name: 'recipes', component: 'Recipes' }
+      { label: 'Reseptit', name: 'recipes', component: 'Recipes' },
+      { label: 'Suosikit', name: 'favorites', component: 'Favorites' }
     ];
     
     // Load profiles

@@ -16,4 +16,30 @@ export async function fetchProfiles() {
   return await res.json();
 }
 
+export async function fetchFavorites(profileGuid) {
+  const res = await fetch(`${API_BASE_URL}/favorites/${profileGuid}`);
+  if (!res.ok) throw new Error('Failed to fetch favorites');
+  return await res.json();
+}
+
+export async function addFavorite(profileGuid, recipeGuid) {
+  const res = await fetch(`${API_BASE_URL}/favorites`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ profile_guid: profileGuid, recipe_guid: recipeGuid }),
+  });
+  if (!res.ok) throw new Error('Failed to add favorite');
+  return await res.json();
+}
+
+export async function removeFavorite(profileGuid, recipeGuid) {
+  const res = await fetch(`${API_BASE_URL}/favorites/${profileGuid}/${recipeGuid}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to remove favorite');
+  return await res.json();
+}
+
 // Add more API functions here as needed

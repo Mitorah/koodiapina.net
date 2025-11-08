@@ -1,7 +1,14 @@
 <template>
     <el-container>
         <el-card v-for="recipe in recipes" :key="recipe.recipe_guid">
-            <RecipeView :recipe="recipe" :recipe_title="recipe.title" />
+            <RecipeView 
+                :recipe="recipe" 
+                :recipe_title="recipe.title"
+                :isFavorite="favoriteRecipeGuids.includes(recipe.recipe_guid)"
+                :currentProfileGuid="currentProfileGuid"
+                @favorite-added="handleFavoriteAdded"
+                @favorite-removed="handleFavoriteRemoved"
+            />
         </el-card>
         <el-footer>
             <el-pagination
@@ -17,12 +24,15 @@
 
 <script>
 import RecipeView from './RecipeView.vue';
-import { fetchRecipes as fetchRecipesApi } from '../utils/api.js';
+import { fetchRecipes as fetchRecipesApi, fetchFavorites } from '../utils/api.js';
 
 export default {
   name: 'Recipes',
   components: {
     RecipeView
+  },
+  props: {
+    currentProfileGuid: String
   },
   data() {
     return {
@@ -30,12 +40,23 @@ export default {
       page: 1,
       limit: 20,
       total: 0,
-      loading: false
+      loading: false,
+      favoriteRecipeGuids: []
     };
   },
   computed: {
     title() {
       return 'Recipes';
+    }
+  },
+  watch: {
+    currentProfileGuid: {
+      immediate: true,
+      handler(newProfileGuid) {
+        if (newProfileGuid) {
+          this.fetchFavoritesList();
+        }
+      }
     }
   },
   methods: {
@@ -53,8 +74,26 @@ export default {
         this.loading = false;
       }
     },
+    async fetchFavoritesList() {
+      if (!this.currentProfileGuid) return;
+      
+      try {
+        const data = await fetchFavorites(this.currentProfileGuid);
+        this.favoriteRecipeGuids = (data.favorites || []).map(f => f.recipe_guid);
+      } catch (err) {
+        console.error('Failed to fetch favorites:', err);
+      }
+    },
     handlePageChange(newPage) {
       this.fetchRecipes(newPage);
+    },
+    handleFavoriteAdded(recipeGuid) {
+      if (!this.favoriteRecipeGuids.includes(recipeGuid)) {
+        this.favoriteRecipeGuids.push(recipeGuid);
+      }
+    },
+    handleFavoriteRemoved(recipeGuid) {
+      this.favoriteRecipeGuids = this.favoriteRecipeGuids.filter(guid => guid !== recipeGuid);
     }
   },
   mounted() {
