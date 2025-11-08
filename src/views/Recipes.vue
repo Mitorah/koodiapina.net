@@ -5,9 +5,12 @@
                 :recipe="recipe" 
                 :recipe_title="recipe.title"
                 :isFavorite="favoriteRecipeGuids.includes(recipe.recipe_guid)"
+                :isInShoppingList="shoppingListRecipeGuids.includes(recipe.recipe_guid)"
                 :currentProfileGuid="currentProfileGuid"
                 @favorite-added="handleFavoriteAdded"
                 @favorite-removed="handleFavoriteRemoved"
+                @shopping-list-added="handleShoppingListAdded"
+                @shopping-list-removed="handleShoppingListRemoved"
             />
         </el-card>
         <el-footer>
@@ -24,7 +27,7 @@
 
 <script>
 import RecipeView from './RecipeView.vue';
-import { fetchRecipes as fetchRecipesApi, fetchFavorites } from '../utils/api.js';
+import { fetchRecipes as fetchRecipesApi, fetchFavorites, fetchShoppingList } from '../utils/api.js';
 
 export default {
   name: 'Recipes',
@@ -41,7 +44,8 @@ export default {
       limit: 20,
       total: 0,
       loading: false,
-      favoriteRecipeGuids: []
+      favoriteRecipeGuids: [],
+      shoppingListRecipeGuids: []
     };
   },
   computed: {
@@ -55,6 +59,7 @@ export default {
       handler(newProfileGuid) {
         if (newProfileGuid) {
           this.fetchFavoritesList();
+          this.fetchShoppingListItems();
         }
       }
     }
@@ -84,6 +89,16 @@ export default {
         console.error('Failed to fetch favorites:', err);
       }
     },
+    async fetchShoppingListItems() {
+      if (!this.currentProfileGuid) return;
+      
+      try {
+        const data = await fetchShoppingList(this.currentProfileGuid);
+        this.shoppingListRecipeGuids = (data.shopping_list || []).map(item => item.recipe_guid);
+      } catch (err) {
+        console.error('Failed to fetch shopping list:', err);
+      }
+    },
     handlePageChange(newPage) {
       this.fetchRecipes(newPage);
     },
@@ -94,6 +109,14 @@ export default {
     },
     handleFavoriteRemoved(recipeGuid) {
       this.favoriteRecipeGuids = this.favoriteRecipeGuids.filter(guid => guid !== recipeGuid);
+    },
+    handleShoppingListAdded(recipeGuid) {
+      if (!this.shoppingListRecipeGuids.includes(recipeGuid)) {
+        this.shoppingListRecipeGuids.push(recipeGuid);
+      }
+    },
+    handleShoppingListRemoved(recipeGuid) {
+      this.shoppingListRecipeGuids = this.shoppingListRecipeGuids.filter(guid => guid !== recipeGuid);
     }
   },
   mounted() {

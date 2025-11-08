@@ -80,6 +80,7 @@
 
 import Recipes from './views/Recipes.vue'
 import Favorites from './views/Favorites.vue'
+import ShoppingList from './views/ShoppingList.vue'
 import { Menu, User, Star } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
 import { fetchProfiles } from './utils/api'
@@ -91,6 +92,7 @@ export default {
     // AIWindow,
     Recipes,
     Favorites,
+    ShoppingList,
     Menu,
     User,
     Star,
@@ -110,7 +112,8 @@ export default {
       // { label: 'Main Window', name: 'main', component: 'MainWindow' },
       // { label: 'AI Window', name: 'ai', component: 'AIWindow' },
       { label: 'Reseptit', name: 'recipes', component: 'Recipes' },
-      { label: 'Suosikit', name: 'favorites', component: 'Favorites' }
+      { label: 'Suosikit', name: 'favorites', component: 'Favorites' },
+      { label: 'Ostoslista', name: 'shopping-list', component: 'ShoppingList' }
     ];
     
     // Load profiles

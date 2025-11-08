@@ -158,6 +158,109 @@ export default {
       }
     }
 
+    // Handle /shopping-list/:profile_guid endpoint - GET shopping list for a user
+    if (pathname.startsWith('/shopping-list/') && request.method === 'GET') {
+      const profileGuid = pathname.split('/')[2];
+      const shoppingListRes = await env.DB.prepare(
+        'SELECT s.shopping_list_id, s.recipe_guid, s.added_at FROM shopping_list s WHERE s.profile_guid = ? ORDER BY s.added_at DESC'
+      ).bind(profileGuid).all();
+      
+      return new Response(JSON.stringify({
+        shopping_list: shoppingListRes.results || []
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': allowedOrigin,
+        }
+      });
+    }
+
+    // Handle /shopping-list endpoint - POST to add a recipe to shopping list
+    if (pathname === '/shopping-list' && request.method === 'POST') {
+      const body = await request.json();
+      const { profile_guid, recipe_guid } = body;
+      
+      if (!profile_guid || !recipe_guid) {
+        return new Response(JSON.stringify({ error: 'profile_guid and recipe_guid are required' }), {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+
+      try {
+        const shoppingListId = crypto.randomUUID();
+        
+        await env.DB.prepare(
+          'INSERT INTO shopping_list (shopping_list_id, profile_guid, recipe_guid) VALUES (?, ?, ?)'
+        ).bind(shoppingListId, profile_guid, recipe_guid).run();
+        
+        return new Response(JSON.stringify({ 
+          success: true,
+          shopping_list_id: shoppingListId
+        }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ 
+          error: 'Failed to add to shopping list',
+          message: error.message 
+        }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+    }
+
+    // Handle /shopping-list/:profile_guid/:recipe_guid endpoint - DELETE to remove from shopping list
+    if (pathname.startsWith('/shopping-list/') && request.method === 'DELETE') {
+      const parts = pathname.split('/');
+      const profileGuid = parts[2];
+      const recipeGuid = parts[3];
+      
+      if (!profileGuid || !recipeGuid) {
+        return new Response(JSON.stringify({ error: 'profile_guid and recipe_guid are required' }), {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+
+      try {
+        await env.DB.prepare(
+          'DELETE FROM shopping_list WHERE profile_guid = ? AND recipe_guid = ?'
+        ).bind(profileGuid, recipeGuid).run();
+        
+        return new Response(JSON.stringify({ success: true }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ 
+          error: 'Failed to remove from shopping list',
+          message: error.message 
+        }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+    }
+
     // Handle /recipes endpoint (default)
     const page = parseInt(url.searchParams.get('page') || '1', 10);
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 100); // max 100 per page

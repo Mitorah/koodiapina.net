@@ -1,19 +1,32 @@
 <template>
     <el-header @click="showCard = !showCard" style="position: relative; display: flex; justify-content: center; align-items: center; cursor: pointer;">
         <span style="flex: 1; text-align: center;">{{ recipeTitle }}</span>
-        <el-button 
-            @click.stop="toggleFavorite"
-            :loading="favoriteLoading"
-            circle
-            :type="isFavorite ? 'warning' : 'default'"
-            size="small"
-            style="position: absolute; right: 10px;"
-        >
-            <el-icon>
-                <StarFilled v-if="isFavorite" />
-                <Star v-else />
-            </el-icon>
-        </el-button>
+        <div style="position: absolute; right: 10px; display: flex; gap: 8px;">
+            <el-button 
+                @click.stop="toggleShoppingList"
+                :loading="shoppingListLoading"
+                circle
+                :type="isInShoppingList ? 'success' : 'default'"
+                size="small"
+            >
+                <el-icon>
+                    <ShoppingCartFull v-if="isInShoppingList" />
+                    <ShoppingCart v-else />
+                </el-icon>
+            </el-button>
+            <el-button 
+                @click.stop="toggleFavorite"
+                :loading="favoriteLoading"
+                circle
+                :type="isFavorite ? 'warning' : 'default'"
+                size="small"
+            >
+                <el-icon>
+                    <StarFilled v-if="isFavorite" />
+                    <Star v-else />
+                </el-icon>
+            </el-button>
+        </div>
     </el-header>
     <div v-if="showCard">
         <el-card>
@@ -61,14 +74,16 @@
 </template>
 
 <script>
-import { addFavorite, removeFavorite } from '../utils/api.js';
-import { Star, StarFilled } from '@element-plus/icons-vue';
+import { addFavorite, removeFavorite, addToShoppingList, removeFromShoppingList } from '../utils/api.js';
+import { Star, StarFilled, ShoppingCart, ShoppingCartFull } from '@element-plus/icons-vue';
 
 export default {
     name: 'Recipe view',
     components: {
         Star,
-        StarFilled
+        StarFilled,
+        ShoppingCart,
+        ShoppingCartFull
     },
     props: {
         recipe: Object,
@@ -77,12 +92,17 @@ export default {
             type: Boolean,
             default: false
         },
+        isInShoppingList: {
+            type: Boolean,
+            default: false
+        },
         currentProfileGuid: String
     },
     data() {
         return {
             showCard: false,
-            favoriteLoading: false
+            favoriteLoading: false,
+            shoppingListLoading: false
         };
     },
     methods: {
@@ -108,6 +128,30 @@ export default {
                 this.$message.error('Suosikin päivitys epäonnistui');
             } finally {
                 this.favoriteLoading = false;
+            }
+        },
+        async toggleShoppingList() {
+            if (!this.currentProfileGuid) {
+                this.$message.error('Profiilia ei valittu');
+                return;
+            }
+
+            this.shoppingListLoading = true;
+            try {
+                if (this.isInShoppingList) {
+                    await removeFromShoppingList(this.currentProfileGuid, this.recipe.recipe_guid);
+                    this.$emit('shopping-list-removed', this.recipe.recipe_guid);
+                    this.$message.success('Poistettu ostoslistalta');
+                } else {
+                    await addToShoppingList(this.currentProfileGuid, this.recipe.recipe_guid);
+                    this.$emit('shopping-list-added', this.recipe.recipe_guid);
+                    this.$message.success('Lisätty ostoslistalle');
+                }
+            } catch (error) {
+                console.error('Failed to toggle shopping list:', error);
+                this.$message.error('Ostoslistan päivitys epäonnistui');
+            } finally {
+                this.shoppingListLoading = false;
             }
         }
     },

@@ -42,4 +42,30 @@ export async function removeFavorite(profileGuid, recipeGuid) {
   return await res.json();
 }
 
+export async function fetchShoppingList(profileGuid) {
+  const res = await fetch(`${API_BASE_URL}/shopping-list/${profileGuid}`);
+  if (!res.ok) throw new Error('Failed to fetch shopping list');
+  return await res.json();
+}
+
+export async function addToShoppingList(profileGuid, recipeGuid) {
+  const res = await fetch(`${API_BASE_URL}/shopping-list`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ profile_guid: profileGuid, recipe_guid: recipeGuid }),
+  });
+  if (!res.ok) throw new Error('Failed to add to shopping list');
+  return await res.json();
+}
+
+export async function removeFromShoppingList(profileGuid, recipeGuid) {
+  const res = await fetch(`${API_BASE_URL}/shopping-list/${profileGuid}/${recipeGuid}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to remove from shopping list');
+  return await res.json();
+}
+
 // Add more API functions here as needed
