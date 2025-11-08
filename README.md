@@ -51,6 +51,35 @@ A modern Vue + Cloudflare D1 app for browsing, syncing, and displaying recipes f
    ```
 
 ## Development
+
+### Local Development Options
+
+#### Frontend Development (npm run dev)
+For frontend-only development:
+```bash
+npm run dev
+```
+This starts the Vite development server for the Vue frontend.
+
+#### Full Stack Development (npx wrangler dev)
+For testing with Cloudflare Workers and D1 database integration:
+```bash
+npx wrangler dev
+```
+This command:
+- Starts the Wrangler development server with Miniflare
+- Provides access to local D1 database bindings
+- Enables testing of Cloudflare Workers functionality
+- Useful when working on API endpoints, database operations, or worker scripts
+- Serves the application at `http://localhost:8787` by default
+
+Use `npx wrangler dev` when you need to:
+- Test recipe syncing functionality
+- Debug database operations
+- Work on the Cloudflare Workers API endpoints
+- Test the full application stack locally
+
+### Code Structure
 - Frontend: Vue 3, Element UI, global styles in `src/styles/styles.css`
 - Backend: Cloudflare Workers for sync and API
 - All recipe data is grouped and localized in Finnish
