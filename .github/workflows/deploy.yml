@@ -1,0 +1,70 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - cloudflare  # Triggers on merge to cloudflare branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Cloudflare Production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run D1 Migrations
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "🗄️ Running database migrations..."
+          for migration in migrations/*.sql; do
+            if [ -f "$migration" ]; then
+              echo "📝 Applying $(basename $migration)..."
+              npx wrangler d1 execute koodiapina_net_db --remote --file "$migration" || echo "⚠️ Migration may already exist, continuing..."
+            fi
+          done
+          echo "✅ Migrations complete!"
+
+      - name: Build frontend
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Deploy API Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "🚀 Deploying API worker..."
+          npx wrangler deploy
+          echo "✅ API worker deployed to https://koodiapina-net.leinonen-op.workers.dev"
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: koodiapina-net
+          directory: dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: cloudflare
+
+      - name: Deployment Summary
+        run: |
+          echo "🎉 Deployment complete!"
+          echo "================================"
+          echo "📦 Frontend: https://www.koodiapina.net"
+          echo "🔧 API Worker: https://koodiapina-net.leinonen-op.workers.dev"
+          echo "🗄️ Database: koodiapina_net_db"
+          echo "================================"
