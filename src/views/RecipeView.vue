@@ -85,9 +85,17 @@ export default {
         ShoppingCart,
         ShoppingCartFull
     },
+    emits: ['favorite-added', 'favorite-removed', 'shopping-list-added', 'shopping-list-removed'],
     props: {
-        recipe: Object,
-        recipe_title: String,
+        recipe: {
+            type: Object,
+            required: true
+        },
+        recipe_title: {
+            type: String,
+            required: false,
+            default: ''
+        },
         isFavorite: {
             type: Boolean,
             default: false
@@ -96,7 +104,11 @@ export default {
             type: Boolean,
             default: false
         },
-        currentProfileGuid: String
+        currentProfileGuid: {
+            type: String,
+            required: false,
+            default: null
+        }
     },
     data() {
         return {
