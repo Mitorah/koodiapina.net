@@ -2,6 +2,14 @@
 
 A modern Vue + Cloudflare D1 app for browsing, syncing, and displaying recipes from ruokaboksi.fi.
 
+## Tech Stack
+
+- **Frontend**: Vue 3, Element Plus, Vite
+- **Backend**: Cloudflare Workers
+- **Database**: Cloudflare D1 (SQLite)
+- **Deployment**: Cloudflare Pages, GitHub Actions
+- **Development**: Wrangler, Miniflare
+
 ## Features
 - Automated recipe and instruction sync from ruokaboksi.fi
 - Cloudflare D1 database for recipes and logs
