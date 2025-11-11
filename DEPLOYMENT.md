@@ -91,6 +91,20 @@ npx wrangler d1 execute koodiapina_local --local --file migrations/0004_create_p
 
 ## Database Migrations
 
+### Migration Structure
+
+The project uses two types of database files:
+
+- **`migrations/*.sql`** - Schema migrations (tables, indexes)
+  - Run in both local and production
+  - Should be idempotent (safe to run multiple times)
+  - Example: `0004_create_profiles.sql`
+
+- **`migrations/seeds/*.sql`** - Test/seed data
+  - Run ONLY in local development
+  - Never run in production
+  - Example: `seed_test_profiles.sql`
+
 ### Creating a New Migration
 
 1. Create a new file in `migrations/` directory:
@@ -113,10 +127,30 @@ npx wrangler d1 execute koodiapina_local --local --file migrations/0004_create_p
 
 3. Test locally:
    ```bash
-   npx wrangler d1 execute koodiapina_local --local --file migrations/0007_add_new_feature.sql
+   npx wrangler d1 execute koodiapina_local --env local --file migrations/0007_add_new_feature.sql
    ```
 
 4. Commit and push - it will auto-deploy when merged to `cloudflare`
+
+### Creating Seed Data (Local Only)
+
+1. Create a new file in `migrations/seeds/` directory:
+   ```bash
+   touch migrations/seeds/seed_my_test_data.sql
+   ```
+
+2. Add test data with `INSERT OR IGNORE`:
+   ```sql
+   -- WARNING: Local development only!
+   INSERT OR IGNORE INTO my_table (id, name) VALUES (1, 'Test Data');
+   ```
+
+3. Test locally:
+   ```bash
+   npx wrangler d1 execute koodiapina_local --env local --file migrations/seeds/seed_my_test_data.sql
+   ```
+
+**Important**: Seed files are automatically skipped in production deployments.
 
 ### Migration Best Practices
 
