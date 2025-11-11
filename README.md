@@ -37,13 +37,20 @@ See [API.md](./API.md) for complete API documentation.
    npm install
    ```
 
-2. **Create local database:**
+2. **Configure your domain:**
+   Edit `wrangler.toml` and update the `ALLOWED_ORIGIN` variable to your frontend URL:
+   ```toml
+   [vars]
+   ALLOWED_ORIGIN = "https://your-domain.com"
+   ```
+
+3. **Create local database:**
    ```bash
    npx wrangler d1 create koodiapina_local
    ```
    Copy the database ID from the output and update it in `wrangler.toml` under `[[env.local.d1_databases]]`.
 
-3. **Run all migrations:**
+4. **Run all migrations:**
    ```bash
    # Run migrations on local database
    for migration in migrations/*.sql; do 

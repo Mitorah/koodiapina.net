@@ -2,6 +2,10 @@ name = "koodiapina-net"
 main = "workers/recipes_api/worker.js"
 compatibility_date = "2025-09-08"
 
+# Environment variables
+[vars]
+ALLOWED_ORIGIN = "https://ruoka.koodiapina.net"
+
 # Production database (default environment)
 [[d1_databases]]
 binding = "DB"
@@ -10,8 +14,11 @@ database_id = "58fd57d4-0c4b-496b-89ff-98be9389c35c"
 
 # Local development environment
 [env.local]
+[env.local.vars]
+ALLOWED_ORIGIN = "http://localhost:5173"
+
 [[env.local.d1_databases]]
 binding = "DB"
 database_name = "koodiapina_local"
-database_id = "9ecfd761-106a-4447-afd2-2be04f6d7083"
+database_id = "2ebc9a20-c6d3-4358-bcdf-eb1a73fc2db1"
 
