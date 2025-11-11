@@ -50,15 +50,23 @@ See [API.md](./API.md) for complete API documentation.
    ```
    Copy the database ID from the output and update it in `wrangler.toml` under `[[env.local.d1_databases]]`.
 
-4. **Run all migrations:**
+4. **Run schema migrations:**
    ```bash
-   # Run migrations on local database
+   # Run schema migrations on local database
    for migration in migrations/*.sql; do 
      npx wrangler d1 execute koodiapina_local --env local --file "$migration"
    done
    ```
+
+5. **Seed test data (local only):**
+   ```bash
+   # Seed test recipes and profiles for development
+   for seed in migrations/seeds/*.sql; do 
+     npx wrangler d1 execute koodiapina_local --env local --file "$seed"
+   done
+   ```
    
-   This will create all tables, seed recipes, and create test profiles (including an admin user).
+   This creates test profiles (including an admin user) and seed recipes.
 
 ### Daily Development
 
@@ -88,10 +96,17 @@ If you need to start fresh:
 
 2. Update `wrangler.toml` with the new database ID under `[[env.local.d1_databases]]`.
 
-3. Run all migrations:
+3. Run schema migrations:
    ```bash
    for migration in migrations/*.sql; do 
      npx wrangler d1 execute koodiapina_local --env local --file "$migration"
+   done
+   ```
+
+4. Seed test data:
+   ```bash
+   for seed in migrations/seeds/*.sql; do 
+     npx wrangler d1 execute koodiapina_local --env local --file "$seed"
    done
    ```
 
