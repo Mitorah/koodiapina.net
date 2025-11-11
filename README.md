@@ -10,6 +10,16 @@ A modern Vue + Cloudflare D1 app for browsing, syncing, and displaying recipes f
 - Finnish localization for UI
 - Local development with Miniflare/Wrangler
 
+## API Overview
+
+REST API for recipes, profiles, favorites, and shopping lists:
+- **Recipes**: List (paginated) and retrieve individual recipes
+- **Profiles**: User profile management (admin-only creation)
+- **Favorites**: Add/remove/list favorite recipes per profile
+- **Shopping List**: Add/remove/list shopping items per profile
+
+See [API.md](./API.md) for complete API documentation.
+
 ## Setup
 
 ### First-Time Setup
@@ -23,7 +33,7 @@ A modern Vue + Cloudflare D1 app for browsing, syncing, and displaying recipes f
    ```bash
    npx wrangler d1 create koodiapina_local
    ```
-   This will output a database ID. Update `wrangler.toml` with the new ID.
+   Copy the database ID from the output and update it in `wrangler.toml` under `[[env.local.d1_databases]]`.
 
 3. **Run all migrations:**
    ```bash
@@ -32,12 +42,8 @@ A modern Vue + Cloudflare D1 app for browsing, syncing, and displaying recipes f
      npx wrangler d1 execute koodiapina_local --env local --file "$migration"
    done
    ```
-
-4. **Create a test profile:**
-   ```bash
-   npx wrangler d1 execute koodiapina_local --env local --command \
-     "INSERT INTO profiles (username, display_name, email, is_admin) VALUES ('testuser', 'Test User', 'test@example.com', 1);"
-   ```
+   
+   This will create all tables, seed recipes, and create test profiles (including an admin user).
 
 ### Daily Development
 
@@ -59,18 +65,20 @@ The frontend automatically connects to the local API worker.
 
 If you need to start fresh:
 
-```bash
-# Delete and recreate
-npx wrangler d1 delete koodiapina_local
-npx wrangler d1 create koodiapina_local
+1. Delete and recreate the database:
+   ```bash
+   npx wrangler d1 delete koodiapina_local
+   npx wrangler d1 create koodiapina_local
+   ```
 
-# Update wrangler.toml with the new database ID
+2. Update `wrangler.toml` with the new database ID under `[[env.local.d1_databases]]`.
 
-# Run all migrations
-for migration in migrations/*.sql; do 
-  npx wrangler d1 execute koodiapina_local --env local --file "$migration"
-done
-```
+3. Run all migrations:
+   ```bash
+   for migration in migrations/*.sql; do 
+     npx wrangler d1 execute koodiapina_local --env local --file "$migration"
+   done
+   ```
 
 ## Deployment
 
@@ -98,36 +106,8 @@ koodiapina.net/
 └── dist/                # Build output (generated)
 ```
 
-### API Endpoints
-
-The API worker (`workers/recipes_api/worker.js`) provides:
-
-- **Recipes:**
-  - `GET /` - List recipes (paginated)
-  - `GET /{recipe_guid}` - Get single recipe
-
-- **Profiles:**
-  - `GET /profiles` - List all profiles
-  - `POST /profiles` - Create new profile (admin only)
-
-- **Favorites:**
-  - `GET /favorites/{profile_guid}` - Get user's favorites
-  - `POST /favorites` - Add to favorites
-  - `DELETE /favorites/{profile_guid}/{recipe_guid}` - Remove from favorites
-
-- **Shopping List:**
-  - `GET /shopping-list/{profile_guid}` - Get shopping list
-  - `POST /shopping-list` - Add to shopping list
-  - `DELETE /shopping-list/{profile_guid}/{recipe_guid}` - Remove from shopping list
-
-Use `npx wrangler dev` when you need to:
-- Test recipe syncing functionality
-- Debug database operations
-- Work on the Cloudflare Workers API endpoints
-- Test the full application stack locally
-
 ### Code Structure
-- Frontend: Vue 3, Element UI, global styles in `src/styles/styles.css`
+- Frontend: Vue 3, Element Plus, global styles in `src/styles/styles.css`
 - Backend: Cloudflare Workers for sync and API
 - All recipe data is grouped and localized in Finnish
 - To update styles, edit `src/styles/styles.css`
