@@ -8,9 +8,9 @@ binding = "DB"
 database_name = "koodiapina_net_db"
 database_id = "58fd57d4-0c4b-496b-89ff-98be9389c35c"
 
-# Local development database
+# Local development environment
 [env.local]
-[[d1_databases]]
+[[env.local.d1_databases]]
 binding = "DB"
 database_name = "koodiapina_local"
 database_id = "6617b859-12c5-4002-bdf5-34c96cd18c6d"
