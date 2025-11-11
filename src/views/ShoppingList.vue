@@ -89,7 +89,7 @@
 
 <script>
 import { fetchShoppingList, removeFromShoppingList, fetchRecipes } from '../utils/api.js';
-import { parseAmountWithUnit } from '../utils/units.js';
+import { parseAmountWithUnit, getUnitForm } from '../utils/units.js';
 import { Loading } from '@element-plus/icons-vue';
 
 export default {
@@ -223,11 +223,7 @@ export default {
 
       // Process aggregated ingredients
       this.aggregatedIngredients = Array.from(ingredientMap.values()).map(item => {
-        console.log(`Ingredient: ${item.title}`);
-        console.log(`Amounts to combine:`, item.amounts);
-        console.log(`Recipes:`, item.recipes);
         const combined = this.combineAmounts(item.amounts);
-        console.log(`Combined result: "${combined}"`);
         return {
           title: item.title,
           totalAmount: combined,
@@ -285,12 +281,9 @@ export default {
     combineAmounts(amounts) {
       const unitMap = new Map();
       
-      console.log('combineAmounts input:', amounts);
-      
       // Check if any amounts are empty/null
       const hasEmptyAmounts = amounts.some(a => !a || a.trim() === '');
       if (hasEmptyAmounts) {
-        console.log('Has empty amounts, returning empty string to show breakdown');
         return '';
       }
       
@@ -299,7 +292,6 @@ export default {
         
         // Use the unit parser to check if this has a recognized unit
         const parsed = parseAmountWithUnit(amount);
-        console.log(`Parsing "${amount}":`, parsed);
         
         if (parsed && parsed.unit) {
           // Successfully parsed - combine amounts with same unit
@@ -309,7 +301,6 @@ export default {
             unitMap.set(unit, 0);
           }
           unitMap.set(unit, unitMap.get(unit) + parsed.value);
-          console.log(`  → Added ${parsed.value} to unit "${unit}", new total: ${unitMap.get(unit)}`);
         } else {
           // No recognized unit - keep as separate entry
           if (!unitMap.has(amount)) {
@@ -317,45 +308,34 @@ export default {
           } else {
             unitMap.set(amount, unitMap.get(amount) + 1);
           }
-          console.log(`  → No unit found, kept as separate entry: "${amount}"`);
         }
       });
-
-      console.log('unitMap:', unitMap);
 
       // Format results
       const results = [];
       unitMap.forEach((value, key) => {
-        console.log(`Formatting: value=${value}, key="${key}"`);
-        
         // Check if key is a number - means it was parsed with a unit
         if (typeof value === 'number' && !isNaN(value) && !key.match(/^[\d,./-]/)) {
           // This is a combined unit amount (e.g., "300 g" from "100 g" + "200 g")
-          results.push(`${value} ${key}`);
-          console.log(`  → Combined unit amount: "${value} ${key}"`);
+          // Get the appropriate form (singular/plural) based on the amount
+          const correctForm = getUnitForm(key, value);
+          results.push(`${value} ${correctForm}`);
         } else if (value > 1) {
           // Multiple occurrences of unparseable amount
           results.push(`${value}× ${key}`);
-          console.log(`  → Multiple occurrences: "${value}× ${key}"`);
         } else {
           // Single occurrence
           results.push(key);
-          console.log(`  → Single occurrence: "${key}"`);
         }
       });
-
-      console.log('results array:', results);
 
       // If we have multiple different amounts that couldn't be combined,
       // return empty string so the breakdown is shown instead
       if (results.length > 1) {
-        console.log('Multiple different amounts, returning empty string');
         return '';
       }
       
-      const finalResult = results[0] || '';
-      console.log('Final result:', finalResult);
-      return finalResult;
+      return results[0] || '';
     },
 
     async removeRecipe(recipeGuid) {
