@@ -2,6 +2,13 @@ name = "koodiapina-net"
 main = "workers/recipes_api/worker.js"
 compatibility_date = "2025-09-08"
 
+# Production database (default environment)
+[[d1_databases]]
+binding = "DB"
+database_name = "koodiapina_net_db"
+database_id = "58fd57d4-0c4b-496b-89ff-98be9389c35c"
+
+# Local development database
 [env.local]
 [[d1_databases]]
 binding = "DB"
