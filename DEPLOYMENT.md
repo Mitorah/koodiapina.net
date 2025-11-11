@@ -153,32 +153,20 @@ npx wrangler d1 execute koodiapina_local --local --file migrations/0004_create_p
 
 ## Local Development
 
-### First-time Setup
+For local development setup and daily workflow, see [README.md](./README.md#setup).
+
+This section covers deployment-specific local operations.
+
+### Running Migrations Locally
+
+Test migrations locally before deploying:
 
 ```bash
-# Install dependencies
-npm install
+# Run a specific migration
+npx wrangler d1 execute koodiapina_local --env local --file migrations/0007_add_new_feature.sql
 
-# Run local database migrations
-npx wrangler d1 execute koodiapina_local --local --file migrations/0001_create_recipes.sql
-npx wrangler d1 execute koodiapina_local --local --file migrations/0002_create_fetch_log.sql
-# ... run all migrations
-
-# Seed local database with recipes
-npx wrangler d1 execute koodiapina_local --local --file migrations/0003_seed_real_recipes.sql
+# Or run all migrations (see README.md for the loop command)
 ```
-
-### Daily Development
-
-```bash
-# Terminal 1: Start API worker (localhost:8787)
-npx wrangler dev
-
-# Terminal 2: Start frontend dev server (localhost:5173)
-npm run dev
-```
-
-The frontend automatically connects to the local API worker when running in development mode.
 
 ## Configuration Files
 
