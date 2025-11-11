@@ -34,12 +34,13 @@
                 placeholder="Valitse profiili"
                 @change="onProfileChange"
                 style="width: 100%"
+                :value-key="'profile_guid'"
               >
                 <el-option
                   v-for="profile in profiles"
                   :key="profile.profile_guid"
                   :label="profile.display_name || profile.username"
-                  :value="profile.profile_guid"
+                  :value="profile.profile_guid || ''"
                 >
                   <span style="display: flex; align-items: center; gap: 8px;">
                     <el-icon v-if="profile.is_admin" style="color: #F56C6C;">
@@ -149,7 +150,7 @@ export default {
       tabs: [],
       drawerVisible: false,
       profiles: [],
-      selectedProfile: null,
+      selectedProfile: undefined,
       showAddUserDialog: false,
       creatingUser: false,
       newUserForm: {

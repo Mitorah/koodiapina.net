@@ -11,70 +11,114 @@ A modern Vue + Cloudflare D1 app for browsing, syncing, and displaying recipes f
 - Local development with Miniflare/Wrangler
 
 ## Setup
-1. Install dependencies:
+
+### First-Time Setup
+
+1. **Install dependencies:**
    ```bash
    npm install
    ```
-2. Configure Cloudflare Wrangler and D1:
-   - Install Wrangler globally if needed:
-     ```bash
-     npm install -g wrangler
-     ```
-   - Edit `wrangler.toml`:
-     - Set your D1 database binding name (e.g. `koodiapina_local`)
-     - Add your Cloudflare account ID and database ID
-     - Example:
-       ```toml
-       [d1_databases]
-       binding = "koodiapina_local"
-       database_id = "your-database-id"
-       database_name = "koodiapina_local"
-       ```
-   - Set up environment variables/secrets if needed:
-     ```bash
-     npx wrangler secret put API_KEY
-     ```
-   - Apply migrations in order:
-     ```bash
-     npx wrangler d1 execute koodiapina_local --file migrations/0001_create_recipes.sql
-     npx wrangler d1 execute koodiapina_local --file migrations/0002_create_fetch_log.sql
-     npx wrangler d1 execute koodiapina_local --file migrations/0003_seed_real_recipes.sql
-     npx wrangler d1 execute koodiapina_local --file migrations/0004_create_profiles.sql
-     npx wrangler d1 execute koodiapina_local --file migrations/0005_create_favorites.sql
-     npx wrangler d1 execute koodiapina_local --file migrations/0006_create_shopping_list.sql
-     ```
-   - If you see a UNIQUE constraint error, clear the table first:
-     ```bash
-     npx wrangler d1 execute koodiapina_local --command "DELETE FROM recipes;"
-     ```
-   - For remote D1, add `--remote` to commands.
-3. Start local dev server:
+
+2. **Create local database:**
+   ```bash
+   npx wrangler d1 create koodiapina_local
+   ```
+   This will output a database ID. Update `wrangler.toml` with the new ID.
+
+3. **Run all migrations:**
+   ```bash
+   # Run migrations on local database
+   for migration in migrations/*.sql; do 
+     npx wrangler d1 execute koodiapina_local --env local --file "$migration"
+   done
+   ```
+
+4. **Create a test profile:**
+   ```bash
+   npx wrangler d1 execute koodiapina_local --env local --command \
+     "INSERT INTO profiles (username, display_name, email, is_admin) VALUES ('testuser', 'Test User', 'test@example.com', 1);"
+   ```
+
+### Daily Development
+
+1. **Start the API worker (Terminal 1):**
+   ```bash
+   npx wrangler dev --env local
+   ```
+   This starts the API at `http://localhost:8787`
+
+2. **Start the frontend dev server (Terminal 2):**
    ```bash
    npm run dev
    ```
+   This starts the Vue app at `http://localhost:5173`
+
+The frontend automatically connects to the local API worker.
+
+### Resetting Local Database
+
+If you need to start fresh:
+
+```bash
+# Delete and recreate
+npx wrangler d1 delete koodiapina_local
+npx wrangler d1 create koodiapina_local
+
+# Update wrangler.toml with the new database ID
+
+# Run all migrations
+for migration in migrations/*.sql; do 
+  npx wrangler d1 execute koodiapina_local --env local --file "$migration"
+done
+```
+
+## Deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment documentation including:
+- Automatic deployment via GitHub Actions
+- Manual deployment procedures  
+- Database migrations
+- Troubleshooting
 
 ## Development
 
-### Local Development Options
+### Project Structure
 
-#### Frontend Development (npm run dev)
-For frontend-only development:
-```bash
-npm run dev
 ```
-This starts the Vite development server for the Vue frontend.
+koodiapina.net/
+├── src/                    # Vue frontend source
+│   ├── components/        # Vue components
+│   ├── views/            # Page views
+│   ├── utils/            # Utilities (API client, units parser)
+│   └── styles/           # CSS files
+├── workers/              # Cloudflare Workers
+│   └── recipes_api/      # Main API worker
+├── migrations/           # Database migrations
+├── public/              # Static assets
+└── dist/                # Build output (generated)
+```
 
-#### Full Stack Development (npx wrangler dev)
-For testing with Cloudflare Workers and D1 database integration:
-```bash
-npx wrangler dev
-```
-This command:
-- Starts the Wrangler development server with Miniflare
-- Provides access to local D1 database bindings
-- Enables testing of Cloudflare Workers functionality
-- Useful when working on API endpoints, database operations, or worker scripts
-- Serves the application at `http://localhost:8787` by default
+### API Endpoints
+
+The API worker (`workers/recipes_api/worker.js`) provides:
+
+- **Recipes:**
+  - `GET /` - List recipes (paginated)
+  - `GET /{recipe_guid}` - Get single recipe
+
+- **Profiles:**
+  - `GET /profiles` - List all profiles
+  - `POST /profiles` - Create new profile (admin only)
+
+- **Favorites:**
+  - `GET /favorites/{profile_guid}` - Get user's favorites
+  - `POST /favorites` - Add to favorites
+  - `DELETE /favorites/{profile_guid}/{recipe_guid}` - Remove from favorites
+
+- **Shopping List:**
+  - `GET /shopping-list/{profile_guid}` - Get shopping list
+  - `POST /shopping-list` - Add to shopping list
+  - `DELETE /shopping-list/{profile_guid}/{recipe_guid}` - Remove from shopping list
 
 Use `npx wrangler dev` when you need to:
 - Test recipe syncing functionality
