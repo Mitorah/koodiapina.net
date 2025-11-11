@@ -10,15 +10,9 @@ export default {
     const origin = request.headers.get('Origin');
     // Detect local development by checking for localhost in the origin
     const isLocal = origin && (origin.includes('localhost') || origin.includes('127.0.0.1'));
+    
     let allowedOrigin = '';
-    if (isLocal) {
-      allowedOrigin = origin; // Allow the specific localhost origin
-    } else if (
-      origin && (
-        /^https?:\/\/[a-z0-9-]+\.koodiapina-net\.pages\.dev$/.test(origin) ||
-        origin === 'https://www.koodiapina.net'
-      )
-    ) {
+    if (isLocal || (origin && origin === env.ALLOWED_ORIGIN)) {
       allowedOrigin = origin;
     }
 
