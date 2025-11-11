@@ -64,7 +64,8 @@ jobs:
         run: |
           echo "🎉 Deployment complete!"
           echo "================================"
-          echo "📦 Frontend: https://www.koodiapina.net"
-          echo "🔧 API Worker: https://koodiapina-net.leinonen-op.workers.dev"
+          echo "� Deployment Summary:"
+          echo "�📦 Frontend: https://ruoka.koodiapina.net"
+          echo "⚙️  API Worker: https://koodiapina-net.leinonen-op.workers.dev"
           echo "🗄️ Database: koodiapina_net_db"
           echo "================================"

@@ -341,7 +341,7 @@ All endpoints may return the following error responses:
 ## CORS
 
 The API supports Cross-Origin Resource Sharing (CORS):
-- **Production**: Allows requests from `https://www.koodiapina.net`
+- **Production**: Allows requests from `https://ruoka.koodiapina.net`
 - **Local Development**: Allows requests from `http://localhost:5173` and `http://127.0.0.1:5173`
 
 All successful responses include appropriate CORS headers.

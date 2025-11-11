@@ -15,8 +15,8 @@ export default {
       allowedOrigin = origin; // Allow the specific localhost origin
     } else if (
       origin && (
-        /^https?:\/\/[a-z0-9-]+\.koodiapina-net\.pages\.dev$/.test(origin) ||
-        origin === 'https://www.koodiapina.net'
+        /^https:\/\/[a-z0-9-]+\.koodiapina-net\.pages\.dev$/.test(origin) ||
+        origin === 'https://ruoka.koodiapina.net'
       )
     ) {
       allowedOrigin = origin;

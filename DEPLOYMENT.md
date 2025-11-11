@@ -13,7 +13,7 @@ The application consists of three main components:
 ## Infrastructure
 
 ### Production URLs
-- **Frontend**: https://www.koodiapina.net
+- **Frontend**: https://ruoka.koodiapina.net
 - **API Worker**: https://koodiapina-net.leinonen-op.workers.dev
 - **Database**: `koodiapina_net_db` (ID: `58fd57d4-0c4b-496b-89ff-98be9389c35c`)
 
