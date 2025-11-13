@@ -9,6 +9,7 @@
         justify-content: center;
         align-items: center;
         text-align: center;
+        padding: 0px 5px;
     }
     .el-main {
         border: 1px solid #ccc;
@@ -126,4 +127,42 @@
     width: 100%;
     pointer-events: none;
     font-weight: bold;
+}
+
+/* Recipe view header styles */
+.recipe-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.recipe-title {
+    flex: 1;
+    text-align: center;
+    padding-right: 16px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.recipe-buttons {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.recipe-buttons .el-button {
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+}
+
+.recipe-buttons .el-icon {
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .recipe-title {
+        font-size: 14px;
+    }
 }
