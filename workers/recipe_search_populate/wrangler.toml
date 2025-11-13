@@ -1,0 +1,13 @@
+name = "recipe-search-populate"
+main = "worker.js"
+compatibility_date = "2024-11-13"
+
+# Runs daily at 3 AM Helsinki time (1 AM UTC)
+[triggers]
+crons = ["0 1 * * *"]
+
+# Bind to your D1 database
+[[d1_databases]]
+binding = "DB"
+database_name = "koodiapina-db"
+database_id = "your-database-id-here"
