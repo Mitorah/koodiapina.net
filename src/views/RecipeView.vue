@@ -1,15 +1,14 @@
 <template>
-    <el-header @click="showCard = !showCard" style="position: relative; display: flex; justify-content: center; align-items: center; cursor: pointer;">
-        <span style="flex: 1; text-align: center;">{{ recipeTitle }}</span>
-        <div style="position: absolute; right: 10px; display: flex; gap: 8px;">
+    <el-header @click="showCard = !showCard" class="recipe-header">
+        <span class="recipe-title">{{ recipeTitle }}</span>
+        <div class="recipe-buttons">
             <el-button 
                 @click.stop="toggleShoppingList"
                 :loading="shoppingListLoading"
                 circle
                 :type="isInShoppingList ? 'success' : 'default'"
-                size="small"
             >
-                <el-icon>
+                <el-icon v-if="!shoppingListLoading">
                     <ShoppingCartFull v-if="isInShoppingList" />
                     <ShoppingCart v-else />
                 </el-icon>
@@ -19,9 +18,8 @@
                 :loading="favoriteLoading"
                 circle
                 :type="isFavorite ? 'warning' : 'default'"
-                size="small"
             >
-                <el-icon>
+                <el-icon v-if="!favoriteLoading">
                     <StarFilled v-if="isFavorite" />
                     <Star v-else />
                 </el-icon>
