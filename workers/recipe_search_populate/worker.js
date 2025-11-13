@@ -3,7 +3,12 @@
 
 export default {
   async scheduled(event, env, ctx) {
-    const finlandTime = new Date().toLocaleString('en-US', { timeZone: 'Europe/Helsinki' });
+    function getFinlandTimeISO() {
+      const now = new Date();
+      return new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Helsinki' })).toISOString();
+    }
+
+    const timestamp = getFinlandTimeISO();
     
     try {
       // Get 100 recipes that need search_text populated (NULL or oldest updates)
@@ -16,7 +21,6 @@ export default {
       ).all();
 
       if (!recipesToProcess.results || recipesToProcess.results.length === 0) {
-        console.log('No recipes to process');
         return;
       }
 
@@ -37,13 +41,26 @@ export default {
         }
       }
 
-      console.log(`[${finlandTime}] Processed ${processed}/${recipesToProcess.results.length} recipes`);
-      if (errors.length > 0) {
-        console.error('Errors:', errors);
-      }
+      await env.DB.prepare(
+        'INSERT INTO fetch_log (timestamp, count, status, error, details) VALUES (?, ?, ?, ?, ?)'
+      ).bind(
+        timestamp,
+        processed,
+        'success',
+        errors.length > 0 ? `${errors.length} errors` : null,
+        `Processed ${processed}/${recipesToProcess.results.length} recipes. Errors: ${JSON.stringify(errors)}`
+      ).run();
 
     } catch (error) {
-      console.error(`[${finlandTime}] Worker error:`, error);
+      await env.DB.prepare(
+        'INSERT INTO fetch_log (timestamp, count, status, error, details) VALUES (?, ?, ?, ?, ?)'
+      ).bind(
+        timestamp,
+        0,
+        'exception',
+        error.message,
+        'Worker exception in recipe_search_populate'
+      ).run();
     }
   },
 

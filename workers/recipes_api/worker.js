@@ -335,7 +335,7 @@ export default {
       const sanitized = sanitizeSearchInput(searchQuery.trim());
       if (sanitized) {
         const stemmedSearch = stemFinnish(sanitized.toLowerCase());
-        whereClause += ' AND LOWER(search_text) LIKE ?';
+        whereClause += ' AND search_text IS NOT NULL AND LOWER(search_text) LIKE ?';
         searchParams.push(`%${escapeLikePattern(stemmedSearch)}%`);
       }
     }
