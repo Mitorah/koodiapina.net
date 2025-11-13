@@ -324,15 +324,34 @@ export default {
     const page = parseInt(url.searchParams.get('page') || '1', 10);
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 100); // max 100 per page
     const offset = (page - 1) * limit;
+    const searchQuery = url.searchParams.get('search') || url.searchParams.get('q');
 
-    // Count total recipes
-    const totalRes = await env.DB.prepare('SELECT COUNT(*) as count FROM recipes').first();
+    // Build WHERE clause for search
+    let whereClause = 'WHERE instructions IS NOT NULL';
+    let searchParams = [];
+    
+    if (searchQuery && searchQuery.trim()) {
+      // Sanitize and stem the search query
+      const sanitized = sanitizeSearchInput(searchQuery.trim());
+      if (sanitized) {
+        const stemmedSearch = stemFinnish(sanitized.toLowerCase());
+        whereClause += ' AND LOWER(search_text) LIKE ?';
+        searchParams.push(`%${escapeLikePattern(stemmedSearch)}%`);
+      }
+    }
+
+    // Count total recipes (with search filter if present)
+    const countQuery = `SELECT COUNT(*) as count FROM recipes ${whereClause}`;
+    const totalRes = searchParams.length > 0 
+      ? await env.DB.prepare(countQuery).bind(...searchParams).first()
+      : await env.DB.prepare(countQuery).first();
     const total = totalRes?.count || 0;
 
-    // Fetch paginated recipes
-    const recipesRes = await env.DB.prepare(
-      'SELECT recipe_guid, title, added_date, details, instructions FROM recipes WHERE instructions IS NOT NULL ORDER BY added_date DESC LIMIT ? OFFSET ?'
-    ).bind(limit, offset).all();
+    // Fetch paginated recipes (with search filter if present)
+    const recipesQuery = `SELECT recipe_guid, title, added_date, details, instructions FROM recipes ${whereClause} ORDER BY added_date DESC LIMIT ? OFFSET ?`;
+    const recipesRes = searchParams.length > 0
+      ? await env.DB.prepare(recipesQuery).bind(...searchParams, limit, offset).all()
+      : await env.DB.prepare(recipesQuery).bind(limit, offset).all();
 
     // Format response
     // Parse details and instructions fields if they are strings
@@ -363,4 +382,70 @@ export default {
       }
     });
   }
+}
+
+/**
+ * Sanitize search input to prevent malicious queries
+ * @param {string} input - User search input
+ * @returns {string} - Sanitized input
+ */
+function sanitizeSearchInput(input) {
+  if (!input) return '';
+  
+  // Remove any characters that aren't letters, spaces, or Finnish characters
+  // Allow only: a-z, å, ä, ö, and spaces
+  return input.replace(/[^a-zåäö\s]/gi, '').trim();
+}
+
+/**
+ * Escape special LIKE pattern characters to prevent LIKE injection
+ * @param {string} pattern - Pattern to escape
+ * @returns {string} - Escaped pattern
+ */
+function escapeLikePattern(pattern) {
+  if (!pattern) return '';
+  
+  // Escape LIKE special characters: % _ [ ]
+  return pattern
+    .replace(/\\/g, '\\\\')  // Escape backslash first
+    .replace(/%/g, '\\%')    // Escape %
+    .replace(/_/g, '\\_')    // Escape _
+    .replace(/\[/g, '\\[')   // Escape [
+    .replace(/\]/g, '\\]');  // Escape ]
+}
+
+/**
+ * Simple Finnish stemmer - removes common suffixes
+ * This matches the stemmer used in the search population worker
+ * @param {string} word - Finnish word to stem
+ * @returns {string} - Stemmed word
+ */
+function stemFinnish(word) {
+  if (!word || word.length < 3) return word;
+
+  // Store original for fallback
+  const original = word;
+
+  // Remove possessive suffixes (must be done first)
+  word = word.replace(/(ni|si|nsa|mme|nne|nsa)$/, '');
+
+  // Remove case endings (genetive, partitive, etc.)
+  word = word
+    // Partitive plural
+    .replace(/(oita|öitä|eita|ita|itä)$/, '')
+    // Partitive singular  
+    .replace(/(aa|ää|ta|tä)$/, '')
+    // Illative
+    .replace(/(seen|siin|hun|hyn|hön)$/, '')
+    // Inessive/Elative/Adessive/Ablative/Allative
+    .replace(/(ssa|ssä|sta|stä|lla|llä|lta|ltä|lle)$/, '')
+    // Plural marker
+    .replace(/(jen|en|in|ien|ten|den|tten)$/, '');
+
+  // Don't return too-short stems (avoid over-stemming)
+  if (word.length < 3) {
+    return original;
+  }
+
+  return word;
 }

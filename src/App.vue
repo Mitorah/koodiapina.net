@@ -15,6 +15,46 @@
           <span class="profile-name">{{ currentProfileName }}</span>
         </div>
         <span class="header-title">{{ currentHeader }}</span>
+        <div v-if="activeTab === 'recipes'" class="search-container">
+          <el-button 
+            v-if="!searchExpanded" 
+            @click="searchExpanded = true" 
+            circle 
+            class="search-toggle"
+          >
+            <el-icon><Search /></el-icon>
+          </el-button>
+          <div v-else class="search-box">
+            <el-input
+              v-model="searchQueryInput"
+              placeholder="Hae reseptejä..."
+              @keyup.enter="handleSearch"
+              @clear="handleClearSearch"
+              clearable
+              class="search-input"
+              ref="searchInput"
+            >
+              <template #suffix>
+                <el-button 
+                  @click="handleSearch" 
+                  type="primary" 
+                  size="small"
+                  :disabled="!searchQueryInput.trim()"
+                >
+                  Hae
+                </el-button>
+              </template>
+            </el-input>
+            <el-button 
+              @click="closeSearch" 
+              circle 
+              size="small" 
+              class="close-search"
+            >
+              <el-icon><Close /></el-icon>
+            </el-button>
+          </div>
+        </div>
       </el-row>
     </el-header>
     <el-main class="app-main">
@@ -113,7 +153,27 @@
     </el-dialog>
     
     <el-container>
-      <component :is="activeTabComponent" :currentProfileGuid="selectedProfile" :currentProfile="currentProfile" />
+      <Recipes 
+        v-if="activeTab === 'recipes'"
+        :currentProfileGuid="selectedProfile" 
+        :searchQuery="searchQuery"
+        @search-cleared="searchQuery = ''"
+      />
+      <Favorites 
+        v-else-if="activeTab === 'favorites'"
+        :currentProfileGuid="selectedProfile" 
+        :currentProfile="currentProfile" 
+      />
+      <ShoppingList 
+        v-else-if="activeTab === 'shopping-list'"
+        :currentProfileGuid="selectedProfile" 
+        :currentProfile="currentProfile" 
+      />
+      <AdminUsers 
+        v-else-if="activeTab === 'admin-users'"
+        :currentProfileGuid="selectedProfile" 
+        :currentProfile="currentProfile" 
+      />
     </el-container>
   </el-container>
 </template>
@@ -126,7 +186,7 @@ import Recipes from './views/Recipes.vue'
 import Favorites from './views/Favorites.vue'
 import ShoppingList from './views/ShoppingList.vue'
 import AdminUsers from './views/AdminUsers.vue'
-import { Menu, User, Star } from '@element-plus/icons-vue'
+import { Menu, User, Star, Search, Close } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
 import { fetchProfiles, createProfile } from './utils/api'
 
@@ -142,6 +202,8 @@ export default {
     Menu,
     User,
     Star,
+    Search,
+    Close,
     ElIcon
   },
   data() {
@@ -153,6 +215,9 @@ export default {
       selectedProfile: undefined,
       showAddUserDialog: false,
       creatingUser: false,
+      searchExpanded: false,
+      searchQueryInput: '',
+      searchQuery: '',
       newUserForm: {
         username: '',
         displayName: '',
@@ -293,8 +358,92 @@ export default {
       } finally {
         this.creatingUser = false;
       }
+    },
+    handleSearch() {
+      // If empty, clear the search
+      if (!this.searchQueryInput.trim()) {
+        this.searchQuery = '';
+        return;
+      }
+      
+      // Trigger search by updating searchQuery prop
+      this.searchQuery = this.searchQueryInput.trim();
+    },
+    handleClearSearch() {
+      // Called when user clicks the X in the input field
+      this.searchQueryInput = '';
+      this.searchQuery = '';
+    },
+    closeSearch() {
+      this.searchExpanded = false;
+      this.searchQueryInput = '';
+      this.searchQuery = '';
+    }
+  },
+  watch: {
+    searchExpanded(newVal) {
+      if (newVal) {
+        // Focus input when expanded
+        this.$nextTick(() => {
+          this.$refs.searchInput?.focus();
+        });
+      }
+    },
+    activeTab(newTab) {
+      // Close search when leaving recipes tab
+      if (newTab !== 'recipes') {
+        this.searchExpanded = false;
+        this.searchQueryInput = '';
+        this.searchQuery = '';
+      }
     }
   }
 }
 
 </script>
+
+<style scoped>
+.header-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.search-container {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-toggle {
+  transition: all 0.3s ease;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: expandSearch 0.3s ease;
+}
+
+@keyframes expandSearch {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.search-input {
+  width: 300px;
+}
+
+.close-search {
+  flex-shrink: 0;
+}
+</style>
