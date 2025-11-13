@@ -19,7 +19,7 @@
                     </div>
                 </template>
                 
-                <div v-for="(ingredient, index) in aggregatedIngredients" :key="index" class="ingredient-item">
+                <div v-for="(ingredient, index) in sortedIngredients" :key="index" class="ingredient-item" :class="{ 'checked': ingredient.checked }" @click="toggleIngredient(ingredient)">
                     <div>
                         <span v-if="ingredient.totalAmount">
                             <strong>{{ ingredient.totalAmount }}</strong> {{ ingredient.title }}
@@ -47,7 +47,7 @@
                     </div>
                 </template>
                 
-                <div v-for="(item, index) in aggregatedPantryItems" :key="index" class="ingredient-item">
+                <div v-for="(item, index) in sortedPantryItems" :key="index" class="ingredient-item" :class="{ 'checked': item.checked }" @click="togglePantryItem(item)">
                     <div>
                         <span v-if="item.totalAmount">
                             <strong>{{ item.totalAmount }}</strong> {{ item.title }}
@@ -109,19 +109,46 @@ export default {
       shoppingListRecipes: [],
       aggregatedIngredients: [],
       aggregatedPantryItems: [],
-      loading: false
+      loading: false,
+      checkedIngredients: new Set(),
+      checkedPantryItems: new Set()
     };
+  },
+  computed: {
+    sortedIngredients() {
+      // Sort: unchecked items first, then checked items
+      return [...this.aggregatedIngredients].sort((a, b) => {
+        if (a.checked === b.checked) return 0;
+        return a.checked ? 1 : -1;
+      });
+    },
+    sortedPantryItems() {
+      // Sort: unchecked items first, then checked items
+      return [...this.aggregatedPantryItems].sort((a, b) => {
+        if (a.checked === b.checked) return 0;
+        return a.checked ? 1 : -1;
+      });
+    },
+    storageKey() {
+      return `shoppingList_${this.currentProfileGuid}`;
+    }
+  },
+  mounted() {
+    this.loadCheckedState();
   },
   watch: {
     currentProfileGuid: {
       immediate: true,
       handler(newProfileGuid) {
         if (newProfileGuid) {
+          this.loadCheckedState();
           this.loadShoppingList();
         } else {
           this.shoppingListRecipes = [];
           this.aggregatedIngredients = [];
           this.aggregatedPantryItems = [];
+          this.checkedIngredients = new Set();
+          this.checkedPantryItems = new Set();
         }
       }
     }
@@ -152,6 +179,9 @@ export default {
         // Aggregate pantry items first, then ingredients (excluding pantry items)
         this.aggregatePantryItems();
         this.aggregateIngredients();
+        
+        // Clean up checked items that are no longer in the shopping list
+        this.cleanupCheckedState();
       } catch (err) {
         console.error('Failed to load shopping list:', err);
         this.$message.error('Ostoslistan lataus epäonnistui');
@@ -228,7 +258,8 @@ export default {
           title: item.title,
           totalAmount: combined,
           recipes: item.recipes,
-          expanded: false
+          expanded: false,
+          checked: this.checkedIngredients.has(item.title.toLowerCase())
         };
       });
     },
@@ -273,7 +304,8 @@ export default {
           title: item.title,
           totalAmount: combined,
           recipes: item.recipes,
-          expanded: false
+          expanded: false,
+          checked: this.checkedPantryItems.has(item.title.toLowerCase())
         };
       });
     },
@@ -347,6 +379,93 @@ export default {
         console.error('Failed to remove from shopping list:', err);
         this.$message.error('Poisto epäonnistui');
       }
+    },
+
+    toggleIngredient(ingredient) {
+      ingredient.checked = !ingredient.checked;
+      const key = ingredient.title.toLowerCase();
+      
+      if (ingredient.checked) {
+        this.checkedIngredients.add(key);
+      } else {
+        this.checkedIngredients.delete(key);
+      }
+      
+      this.saveCheckedState();
+    },
+
+    togglePantryItem(item) {
+      item.checked = !item.checked;
+      const key = item.title.toLowerCase();
+      
+      if (item.checked) {
+        this.checkedPantryItems.add(key);
+      } else {
+        this.checkedPantryItems.delete(key);
+      }
+      
+      this.saveCheckedState();
+    },
+
+    loadCheckedState() {
+      if (!this.currentProfileGuid) return;
+      
+      try {
+        const stored = localStorage.getItem(this.storageKey);
+        if (stored) {
+          const data = JSON.parse(stored);
+          this.checkedIngredients = new Set(data.ingredients || []);
+          this.checkedPantryItems = new Set(data.pantryItems || []);
+        }
+      } catch (err) {
+        console.error('Failed to load checked state from localStorage:', err);
+      }
+    },
+
+    saveCheckedState() {
+      if (!this.currentProfileGuid) return;
+      
+      try {
+        const data = {
+          ingredients: Array.from(this.checkedIngredients),
+          pantryItems: Array.from(this.checkedPantryItems)
+        };
+        localStorage.setItem(this.storageKey, JSON.stringify(data));
+      } catch (err) {
+        console.error('Failed to save checked state to localStorage:', err);
+      }
+    },
+
+    cleanupCheckedState() {
+      // Get current ingredient titles
+      const currentIngredients = new Set(
+        this.aggregatedIngredients.map(item => item.title.toLowerCase())
+      );
+      const currentPantryItems = new Set(
+        this.aggregatedPantryItems.map(item => item.title.toLowerCase())
+      );
+      
+      // Remove checked items that are no longer in the shopping list
+      let changed = false;
+      
+      for (const key of this.checkedIngredients) {
+        if (!currentIngredients.has(key)) {
+          this.checkedIngredients.delete(key);
+          changed = true;
+        }
+      }
+      
+      for (const key of this.checkedPantryItems) {
+        if (!currentPantryItems.has(key)) {
+          this.checkedPantryItems.delete(key);
+          changed = true;
+        }
+      }
+      
+      // Save if anything was removed
+      if (changed) {
+        this.saveCheckedState();
+      }
     }
   }
 };
@@ -355,5 +474,16 @@ export default {
 <style scoped>
 .ingredient-item {
   padding: 6px 0;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.ingredient-item:hover {
+  opacity: 0.7;
+}
+
+.ingredient-item.checked {
+  text-decoration: line-through;
+  opacity: 0.5;
 }
 </style>
