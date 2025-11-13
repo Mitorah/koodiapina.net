@@ -35,7 +35,8 @@ export default {
     RecipeView
   },
   props: {
-    currentProfileGuid: String
+    currentProfileGuid: String,
+    searchQuery: String
   },
   data() {
     return {
@@ -45,7 +46,8 @@ export default {
       total: 0,
       loading: false,
       favoriteRecipeGuids: [],
-      shoppingListRecipeGuids: []
+      shoppingListRecipeGuids: [],
+      activeSearchQuery: ''
     };
   },
   computed: {
@@ -62,13 +64,24 @@ export default {
           this.fetchShoppingListItems();
         }
       }
+    },
+    searchQuery(newQuery) {
+      if (newQuery && newQuery.trim()) {
+        this.activeSearchQuery = newQuery.trim();
+        this.page = 1;
+        this.fetchRecipes(1);
+      } else if (this.activeSearchQuery && !newQuery) {
+        this.activeSearchQuery = '';
+        this.page = 1;
+        this.fetchRecipes(1);
+      }
     }
   },
   methods: {
     async fetchRecipes(page = 1) {
       this.loading = true;
       try {
-        const data = await fetchRecipesApi(page, this.limit);
+        const data = await fetchRecipesApi(page, this.limit, this.activeSearchQuery);
         this.recipes = data.recipes || [];
         this.page = data.page;
         this.limit = data.limit;

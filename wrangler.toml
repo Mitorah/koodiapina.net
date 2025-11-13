@@ -20,5 +20,7 @@ ALLOWED_ORIGIN = "http://localhost:5173"
 [[env.local.d1_databases]]
 binding = "DB"
 database_name = "koodiapina_local"
-database_id = "2ebc9a20-c6d3-4358-bcdf-eb1a73fc2db1"
+database_id = "ca9290ee-f605-4819-a271-946b4b6c7be9"
+
+
 
