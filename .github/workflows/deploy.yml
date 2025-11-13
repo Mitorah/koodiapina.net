@@ -47,9 +47,10 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          echo "🚀 Deploying workers..."
-          cd workers/recipes_api && npx wrangler deploy
-          cd ../recipe_sync_ids && npx wrangler deploy
+          echo "🚀 Deploying main API worker..."
+          npx wrangler deploy
+          echo "🚀 Deploying background workers..."
+          cd workers/recipe_sync_ids && npx wrangler deploy
           cd ../recipe_sync_instructions && npx wrangler deploy
           cd ../recipe_search_populate && npx wrangler deploy
           echo "✅ All workers deployed"
