@@ -1,5 +1,8 @@
 <template>
     <el-header @click="showCard = !showCard" class="recipe-header">
+        <div v-if="preparationTime" class="recipe-prep-time">
+            {{ preparationTime }}
+        </div>
         <span class="recipe-title">{{ recipeTitle }}</span>
         <div class="recipe-buttons">
             <el-button 
@@ -174,10 +177,10 @@ export default {
                 const hours = Math.floor(minutes / 60);
                 const mins = minutes % 60;
                 return mins === 0
-                    ? `${hours} h`
-                    : `${hours} h ${mins} min`;
+                    ? `${hours}:00`
+                    : `${hours}:${mins.toString().padStart(2, '0')}`;
             }
-            return `${minutes} min`;
+            return `${minutes}`;
         },
         recipeTitle() {
             return this.recipe_title ?? 'foo'
