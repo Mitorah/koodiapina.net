@@ -446,4 +446,58 @@ export default {
 .close-search {
   flex-shrink: 0;
 }
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .header-row {
+    gap: 8px;
+  }
+
+  .profile-indicator {
+    max-width: 120px;
+    overflow: hidden;
+  }
+
+  .profile-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .search-container {
+    position: static;
+  }
+
+  .search-box {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: expandSearchMobile 0.3s ease;
+  }
+
+  @keyframes expandSearchMobile {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .search-input {
+    width: 100%;
+    flex: 1;
+  }
+
+  .close-search {
+    position: relative;
+  }
+}
 </style>
