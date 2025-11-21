@@ -3,10 +3,24 @@
   "short_name": "Ruoka",
   "description": "Recipe app by Koodiapina",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#409eff",
-  "orientation": "portrait-primary",
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/mobile.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
   "icons": [
     {
       "src": "/icons/icon-72x72.png",
