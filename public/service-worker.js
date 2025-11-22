@@ -36,7 +36,7 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Fetch event - network first for navigation, cache first for assets
+// Fetch event - cache first for all resources
 self.addEventListener('fetch', (event) => {
   // Skip service worker for:
   // - Chrome extension requests
@@ -52,49 +52,30 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Network-first strategy for HTML navigation requests
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          // Clone and cache the response
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
+  // Cache-first strategy for all resources
+  event.respondWith(
+    caches.match(event.request)
+      .then((response) => {
+        if (response) {
           return response;
-        })
-        .catch(() => {
-          // Fallback to cache if network fails
-          return caches.match(event.request);
-        })
-    );
-  } else {
-    // Cache-first strategy for other resources (CSS, JS, images, etc.)
-    event.respondWith(
-      caches.match(event.request)
-        .then((response) => {
-          if (response) {
+        }
+        
+        const fetchRequest = event.request.clone();
+        
+        return fetch(fetchRequest).then((response) => {
+          if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
           
-          const fetchRequest = event.request.clone();
+          const responseToCache = response.clone();
           
-          return fetch(fetchRequest).then((response) => {
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            
-            const responseToCache = response.clone();
-            
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-            
-            return response;
-          });
-        })
-    );
-  }
+          caches.open(CACHE_NAME)
+            .then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          
+          return response;
+        });
+      })
+  );
 });

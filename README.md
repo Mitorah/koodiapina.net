@@ -132,10 +132,29 @@ If you need to start fresh:
 ## Deployment
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment documentation including:
-- Automatic deployment via GitHub Actions
+- Automatic deployment via GitHub Actions (merges to `cloudflare` branch)
+- Automatic cache invalidation on deployment
 - Manual deployment procedures  
 - Database migrations
 - Troubleshooting
+
+### Required GitHub Secrets
+
+For automatic deployment to work, configure these secrets at:
+**https://github.com/Mitorah/koodiapina.net/settings/secrets/actions**
+
+- `CLOUDFLARE_API_TOKEN` - Your Cloudflare API token
+- `CLOUDFLARE_ACCOUNT_ID` - Your Cloudflare account ID
+- `CLOUDFLARE_ZONE_ID` - Your domain's zone ID (for cache purging)
+
+Get these values from https://dash.cloudflare.com
+
+### Cache Management
+
+Every deployment automatically:
+- Updates service worker cache version (timestamp-based)
+- Purges Cloudflare edge cache
+- Forces fresh content delivery to users
 
 ## Development
 
