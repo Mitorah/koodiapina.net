@@ -4,10 +4,13 @@ const API_BASE_URL = import.meta.env.DEV
   ? 'http://localhost:8787'
   : 'https://koodiapina-net.leinonen-op.workers.dev';
 
-export async function fetchRecipes(page = 1, limit = 20, searchQuery = '') {
+export async function fetchRecipes(page = 1, limit = 20, searchQuery = '', profileGuid = null) {
   let url = `${API_BASE_URL}?page=${page}&limit=${limit}`;
   if (searchQuery && searchQuery.trim()) {
     url += `&search=${encodeURIComponent(searchQuery.trim())}`;
+  }
+  if (profileGuid) {
+    url += `&profile_guid=${encodeURIComponent(profileGuid)}`;
   }
   const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch recipes');
@@ -69,6 +72,32 @@ export async function removeFromShoppingList(profileGuid, recipeGuid) {
     method: 'DELETE',
   });
   if (!res.ok) throw new Error('Failed to remove from shopping list');
+  return await res.json();
+}
+
+export async function fetchHidden(profileGuid) {
+  const res = await fetch(`${API_BASE_URL}/hidden/${profileGuid}`);
+  if (!res.ok) throw new Error('Failed to fetch hidden recipes');
+  return await res.json();
+}
+
+export async function addHidden(profileGuid, recipeGuid) {
+  const res = await fetch(`${API_BASE_URL}/hidden`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ profile_guid: profileGuid, recipe_guid: recipeGuid }),
+  });
+  if (!res.ok) throw new Error('Failed to hide recipe');
+  return await res.json();
+}
+
+export async function removeHidden(profileGuid, recipeGuid) {
+  const res = await fetch(`${API_BASE_URL}/hidden/${profileGuid}/${recipeGuid}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to unhide recipe');
   return await res.json();
 }
 

@@ -217,6 +217,110 @@ export default {
       }
     }
 
+    // Handle /hidden/:profile_guid endpoint - GET hidden recipes for a user
+    if (pathname.startsWith('/hidden/') && request.method === 'GET') {
+      const profileGuid = pathname.split('/')[2];
+      const hiddenRes = await env.DB.prepare(
+        'SELECT h.hidden_id, h.recipe_guid, h.hidden_at FROM hidden_recipes h WHERE h.profile_guid = ? ORDER BY h.hidden_at DESC'
+      ).bind(profileGuid).all();
+      
+      return new Response(JSON.stringify({
+        hidden: hiddenRes.results || []
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': allowedOrigin,
+        }
+      });
+    }
+
+    // Handle /hidden endpoint - POST to hide a recipe
+    if (pathname === '/hidden' && request.method === 'POST') {
+      const body = await request.json();
+      const { profile_guid, recipe_guid } = body;
+      
+      if (!profile_guid || !recipe_guid) {
+        return new Response(JSON.stringify({ error: 'profile_guid and recipe_guid are required' }), {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+
+      try {
+        // Generate a GUID for the hidden entry
+        const hiddenId = crypto.randomUUID();
+        
+        await env.DB.prepare(
+          'INSERT INTO hidden_recipes (hidden_id, profile_guid, recipe_guid) VALUES (?, ?, ?)'
+        ).bind(hiddenId, profile_guid, recipe_guid).run();
+        
+        return new Response(JSON.stringify({ 
+          success: true,
+          hidden_id: hiddenId
+        }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ 
+          error: 'Failed to hide recipe',
+          message: error.message 
+        }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+    }
+
+    // Handle /hidden/:profile_guid/:recipe_guid endpoint - DELETE to unhide a recipe
+    if (pathname.startsWith('/hidden/') && request.method === 'DELETE') {
+      const parts = pathname.split('/');
+      const profileGuid = parts[2];
+      const recipeGuid = parts[3];
+      
+      if (!profileGuid || !recipeGuid) {
+        return new Response(JSON.stringify({ error: 'profile_guid and recipe_guid are required' }), {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+
+      try {
+        await env.DB.prepare(
+          'DELETE FROM hidden_recipes WHERE profile_guid = ? AND recipe_guid = ?'
+        ).bind(profileGuid, recipeGuid).run();
+        
+        return new Response(JSON.stringify({ success: true }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ 
+          error: 'Failed to unhide recipe',
+          message: error.message 
+        }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+    }
+
     // Handle /shopping-list/:profile_guid endpoint - GET shopping list for a user
     if (pathname.startsWith('/shopping-list/') && request.method === 'GET') {
       const profileGuid = pathname.split('/')[2];
@@ -323,12 +427,18 @@ export default {
     // Handle /recipes endpoint (default)
     const page = parseInt(url.searchParams.get('page') || '1', 10);
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 100); // max 100 per page
-    const offset = (page - 1) * limit;
     const searchQuery = url.searchParams.get('search') || url.searchParams.get('q');
+    const profileGuid = url.searchParams.get('profile_guid');
 
-    // Build WHERE clause for search
+    // Build WHERE clause for search and hidden recipes filter
     let whereClause = 'WHERE instructions IS NOT NULL';
     let searchParams = [];
+    
+    // Filter out hidden recipes if profile_guid is provided
+    if (profileGuid) {
+      whereClause += ' AND recipe_guid NOT IN (SELECT recipe_guid FROM hidden_recipes WHERE profile_guid = ?)';
+      searchParams.push(profileGuid);
+    }
     
     if (searchQuery && searchQuery.trim()) {
       // Sanitize and stem the search query
@@ -340,14 +450,17 @@ export default {
       }
     }
 
-    // Count total recipes (with search filter if present)
+    // Count total recipes (with search filter and hidden filter if present)
     const countQuery = `SELECT COUNT(*) as count FROM recipes ${whereClause}`;
     const totalRes = searchParams.length > 0 
       ? await env.DB.prepare(countQuery).bind(...searchParams).first()
       : await env.DB.prepare(countQuery).first();
     const total = totalRes?.count || 0;
 
-    // Fetch paginated recipes (with search filter if present)
+    // Calculate offset based on page and limit (applied after filtering)
+    const offset = (page - 1) * limit;
+
+    // Fetch paginated recipes (with search filter and hidden filter if present)
     const recipesQuery = `SELECT recipe_guid, title, added_date, details, instructions FROM recipes ${whereClause} ORDER BY added_date DESC LIMIT ? OFFSET ?`;
     const recipesRes = searchParams.length > 0
       ? await env.DB.prepare(recipesQuery).bind(...searchParams, limit, offset).all()
