@@ -6,11 +6,13 @@
                 :recipe_title="recipe.title"
                 :isFavorite="favoriteRecipeGuids.includes(recipe.recipe_guid)"
                 :isInShoppingList="shoppingListRecipeGuids.includes(recipe.recipe_guid)"
+                :isHidden="false"
                 :currentProfileGuid="currentProfileGuid"
                 @favorite-added="handleFavoriteAdded"
                 @favorite-removed="handleFavoriteRemoved"
                 @shopping-list-added="handleShoppingListAdded"
                 @shopping-list-removed="handleShoppingListRemoved"
+                @hidden-added="handleHiddenAdded"
             />
         </el-card>
         <el-footer>
@@ -62,6 +64,7 @@ export default {
         if (newProfileGuid) {
           this.fetchFavoritesList();
           this.fetchShoppingListItems();
+          this.fetchRecipes(this.page);
         }
       }
     },
@@ -81,7 +84,7 @@ export default {
     async fetchRecipes(page = 1) {
       this.loading = true;
       try {
-        const data = await fetchRecipesApi(page, this.limit, this.activeSearchQuery);
+        const data = await fetchRecipesApi(page, this.limit, this.activeSearchQuery, this.currentProfileGuid);
         this.recipes = data.recipes || [];
         this.page = data.page;
         this.limit = data.limit;
@@ -130,10 +133,13 @@ export default {
     },
     handleShoppingListRemoved(recipeGuid) {
       this.shoppingListRecipeGuids = this.shoppingListRecipeGuids.filter(guid => guid !== recipeGuid);
+    },
+    handleHiddenAdded(recipeGuid) {
+      // Remove recipe from current view when hidden
+      this.recipes = this.recipes.filter(recipe => recipe.recipe_guid !== recipeGuid);
+      // Refetch to maintain page size
+      this.fetchRecipes(this.page);
     }
-  },
-  mounted() {
-    this.fetchRecipes(this.page);
   }
 };
 </script>

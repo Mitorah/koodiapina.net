@@ -164,6 +164,11 @@
         :currentProfileGuid="selectedProfile" 
         :currentProfile="currentProfile" 
       />
+      <HiddenRecipes 
+        v-else-if="activeTab === 'hidden'"
+        :currentProfileGuid="selectedProfile" 
+        :currentProfile="currentProfile" 
+      />
       <ShoppingList 
         v-else-if="activeTab === 'shopping-list'"
         :currentProfileGuid="selectedProfile" 
@@ -184,6 +189,7 @@
 
 import Recipes from './views/Recipes.vue'
 import Favorites from './views/Favorites.vue'
+import HiddenRecipes from './views/HiddenRecipes.vue'
 import ShoppingList from './views/ShoppingList.vue'
 import AdminUsers from './views/AdminUsers.vue'
 import { Menu, User, Star, Search, Close } from '@element-plus/icons-vue'
@@ -197,6 +203,7 @@ export default {
     // AIWindow,
     Recipes,
     Favorites,
+    HiddenRecipes,
     ShoppingList,
     AdminUsers,
     Menu,
@@ -232,6 +239,7 @@ export default {
       // { label: 'AI Window', name: 'ai', component: 'AIWindow' },
       { label: 'Reseptit', name: 'recipes', component: 'Recipes' },
       { label: 'Suosikit', name: 'favorites', component: 'Favorites' },
+      { label: 'Piilotetut', name: 'hidden', component: 'HiddenRecipes' },
       { label: 'Ostoslista', name: 'shopping-list', component: 'ShoppingList' }
     ];
     

@@ -17,14 +17,32 @@
                 </el-icon>
             </el-button>
             <el-button 
+                v-if="!isHidden"
                 @click.stop="toggleFavorite"
-                :loading="favoriteLoading"
+                @mousedown="startLongPress"
+                @mouseup="cancelLongPress"
+                @mouseleave="cancelLongPress"
+                @touchstart="startLongPress"
+                @touchend="cancelLongPress"
+                @touchcancel="cancelLongPress"
+                :loading="favoriteLoading || hiddenLoading"
                 circle
                 :type="isFavorite ? 'warning' : 'default'"
             >
-                <el-icon v-if="!favoriteLoading">
+                <el-icon v-if="!favoriteLoading && !hiddenLoading">
                     <StarFilled v-if="isFavorite" />
                     <Star v-else />
+                </el-icon>
+            </el-button>
+            <el-button 
+                v-else
+                @click.stop="toggleHidden"
+                :loading="hiddenLoading"
+                circle
+                type="info"
+            >
+                <el-icon v-if="!hiddenLoading">
+                    <View />
                 </el-icon>
             </el-button>
         </div>
@@ -75,8 +93,8 @@
 </template>
 
 <script>
-import { addFavorite, removeFavorite, addToShoppingList, removeFromShoppingList } from '../utils/api.js';
-import { Star, StarFilled, ShoppingCart, ShoppingCartFull } from '@element-plus/icons-vue';
+import { addFavorite, removeFavorite, addToShoppingList, removeFromShoppingList, addHidden, removeHidden } from '../utils/api.js';
+import { Star, StarFilled, ShoppingCart, ShoppingCartFull, Hide, View } from '@element-plus/icons-vue';
 
 export default {
     name: 'Recipe view',
@@ -84,9 +102,11 @@ export default {
         Star,
         StarFilled,
         ShoppingCart,
-        ShoppingCartFull
+        ShoppingCartFull,
+        Hide,
+        View
     },
-    emits: ['favorite-added', 'favorite-removed', 'shopping-list-added', 'shopping-list-removed'],
+    emits: ['favorite-added', 'favorite-removed', 'shopping-list-added', 'shopping-list-removed', 'hidden-added', 'hidden-removed'],
     props: {
         recipe: {
             type: Object,
@@ -105,6 +125,10 @@ export default {
             type: Boolean,
             default: false
         },
+        isHidden: {
+            type: Boolean,
+            default: false
+        },
         currentProfileGuid: {
             type: String,
             required: false,
@@ -115,11 +139,33 @@ export default {
         return {
             showCard: false,
             favoriteLoading: false,
-            shoppingListLoading: false
+            shoppingListLoading: false,
+            hiddenLoading: false,
+            longPressTimer: null,
+            longPressTriggered: false
         };
     },
     methods: {
+        startLongPress(event) {
+            this.longPressTriggered = false;
+            this.longPressTimer = setTimeout(() => {
+                this.longPressTriggered = true;
+                this.toggleHidden();
+            }, 500); // 500ms for long press
+        },
+        cancelLongPress() {
+            if (this.longPressTimer) {
+                clearTimeout(this.longPressTimer);
+                this.longPressTimer = null;
+            }
+        },
         async toggleFavorite() {
+            // Don't toggle favorite if long press was triggered
+            if (this.longPressTriggered) {
+                this.longPressTriggered = false;
+                return;
+            }
+
             if (!this.currentProfileGuid) {
                 this.$message.error('Profiilia ei valittu');
                 return;
@@ -165,6 +211,35 @@ export default {
                 this.$message.error('Ostoslistan päivitys epäonnistui');
             } finally {
                 this.shoppingListLoading = false;
+            }
+        },
+        async toggleHidden() {
+            if (!this.currentProfileGuid) {
+                this.$message.error('Profiilia ei valittu');
+                return;
+            }
+
+            this.hiddenLoading = true;
+            try {
+                if (this.isHidden) {
+                    await removeHidden(this.currentProfileGuid, this.recipe.recipe_guid);
+                    this.$emit('hidden-removed', this.recipe.recipe_guid);
+                    this.$message.success('Resepti näytetään taas');
+                } else {
+                    // Remove from favorites if it's a favorite
+                    if (this.isFavorite) {
+                        await removeFavorite(this.currentProfileGuid, this.recipe.recipe_guid);
+                        this.$emit('favorite-removed', this.recipe.recipe_guid);
+                    }
+                    await addHidden(this.currentProfileGuid, this.recipe.recipe_guid);
+                    this.$emit('hidden-added', this.recipe.recipe_guid);
+                    this.$message.success('Resepti piilotettu');
+                }
+            } catch (error) {
+                console.error('Failed to toggle hidden:', error);
+                this.$message.error('Piilotuksen päivitys epäonnistui');
+            } finally {
+                this.hiddenLoading = false;
             }
         }
     },
