@@ -36,35 +36,65 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - network first for navigation, cache first for assets
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Cache hit - return response
-        if (response) {
+  // Skip service worker for:
+  // - Chrome extension requests
+  // - Vite HMR WebSocket connections
+  // - Non-http(s) requests
+  if (
+    event.request.url.startsWith('chrome-extension://') ||
+    event.request.url.includes('/__vite') ||
+    event.request.url.includes('@vite') ||
+    event.request.url.includes('?') && event.request.url.includes('token=') ||
+    !event.request.url.startsWith('http')
+  ) {
+    return;
+  }
+
+  // Network-first strategy for HTML navigation requests
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Clone and cache the response
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
           return response;
-        }
-        
-        // Clone the request
-        const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then((response) => {
-          // Check if valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+        })
+        .catch(() => {
+          // Fallback to cache if network fails
+          return caches.match(event.request);
+        })
+    );
+  } else {
+    // Cache-first strategy for other resources (CSS, JS, images, etc.)
+    event.respondWith(
+      caches.match(event.request)
+        .then((response) => {
+          if (response) {
             return response;
           }
           
-          // Clone the response
-          const responseToCache = response.clone();
+          const fetchRequest = event.request.clone();
           
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          
-          return response;
-        });
-      })
-  );
+          return fetch(fetchRequest).then((response) => {
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+            
+            const responseToCache = response.clone();
+            
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(event.request, responseToCache);
+              });
+            
+            return response;
+          });
+        })
+    );
+  }
 });
