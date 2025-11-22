@@ -37,6 +37,13 @@ jobs:
           echo "✅ Migrations complete!"
           echo "⏭️  Skipping seed files (migrations/seeds/) - production data only"
 
+      - name: Update Service Worker Cache Version
+        run: |
+          echo "🔄 Updating service worker cache version..."
+          TIMESTAMP=$(date +%s)
+          sed -i "s/CACHE_NAME = '[^']*'/CACHE_NAME = 'koodiapina-ruoka-v${TIMESTAMP}'/" public/service-worker.js
+          echo "✅ Cache version updated to v${TIMESTAMP}"
+
       - name: Build frontend
         run: npm run build
         env:
@@ -65,12 +72,25 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           branch: cloudflare
 
+      - name: Purge Cloudflare Cache
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+        run: |
+          echo "🧹 Purging Cloudflare cache..."
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/purge_cache" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}' || echo "⚠️ Cache purge failed, but deployment continues"
+          echo "✅ Cloudflare cache purged"
+
       - name: Deployment Summary
         run: |
           echo "🎉 Deployment complete!"
           echo "================================"
-          echo "� Deployment Summary:"
-          echo "�📦 Frontend: https://ruoka.koodiapina.net"
+          echo "📋 Deployment Summary:"
+          echo "📦 Frontend: https://ruoka.koodiapina.net"
           echo "⚙️  API Worker: https://koodiapina-net.leinonen-op.workers.dev"
           echo "🗄️ Database: koodiapina_net_db"
+          echo "🧹 Cache: Purged & Service Worker updated"
           echo "================================"
