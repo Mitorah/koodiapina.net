@@ -68,6 +68,25 @@ See [API.md](./API.md) for complete API documentation.
    
    This creates test profiles (including an admin user) and seed recipes.
 
+6. **(Optional) Refresh test data from production:**
+   
+   To fetch fresh recipe data from production, run:
+   
+   ```bash
+   ./migrations/seeds/prod_data/fetch_prod_data.sh
+   ```
+   
+   Or to fetch a different number of recipes (e.g., 50):
+   
+   ```bash
+   ./migrations/seeds/prod_data/fetch_prod_data.sh 50
+   ```
+   
+   This script will:
+   - Fetch recipes from production database
+   - Convert JSON to SQL seed file
+   - Load into local database
+
 ### Daily Development
 
 1. **Start the API worker (Terminal 1):**
