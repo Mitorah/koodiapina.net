@@ -10,13 +10,31 @@
         align-items: center;
         text-align: center;
         padding: 0px 5px;
+        position: sticky;
+        top: 0;
+        z-index: 2000;
+        background-color: white;
     }
     .el-main {
-        border: 1px solid #ccc;
+        border: none;
+        padding: 0;
+        height: 0;
+        overflow: visible;
     }
     .el-card {
-        white-space: pre-line
+        white-space: pre-line;
+        position: relative;
+        z-index: 1;
     }
+}
+
+/* Recipe card wrapper - minimal padding */
+.el-card:has(.recipe-header) {
+    padding: 0;
+}
+
+.el-card:has(.recipe-header) .el-card__body {
+    padding: 0;
 }
 
 /* Ingredient group styles for RecipeView.vue */

@@ -15,8 +15,11 @@
                 :recipe="recipe" 
                 :recipe_title="recipe.title"
                 :isFavorite="true"
+                :isInShoppingList="shoppingListRecipeGuids.includes(recipe.recipe_guid)"
                 :currentProfileGuid="currentProfileGuid"
                 @favorite-removed="handleFavoriteRemoved"
+                @shopping-list-added="handleShoppingListAdded"
+                @shopping-list-removed="handleShoppingListRemoved"
             />
         </el-card>
     </el-container>
@@ -24,7 +27,7 @@
 
 <script>
 import RecipeView from './RecipeView.vue';
-import { fetchFavorites, fetchRecipes } from '../utils/api.js';
+import { fetchFavorites, fetchRecipes, fetchShoppingList } from '../utils/api.js';
 import { Loading } from '@element-plus/icons-vue';
 
 export default {
@@ -39,6 +42,7 @@ export default {
   data() {
     return {
       favoriteRecipes: [],
+      shoppingListRecipeGuids: [],
       loading: false
     };
   },
@@ -48,8 +52,10 @@ export default {
       handler(newProfileGuid) {
         if (newProfileGuid) {
           this.loadFavorites();
+          this.fetchShoppingListItems();
         } else {
           this.favoriteRecipes = [];
+          this.shoppingListRecipeGuids = [];
         }
       }
     }
@@ -85,6 +91,24 @@ export default {
     },
     handleFavoriteRemoved(recipeGuid) {
       this.favoriteRecipes = this.favoriteRecipes.filter(recipe => recipe.recipe_guid !== recipeGuid);
+    },
+    async fetchShoppingListItems() {
+      if (!this.currentProfileGuid) return;
+      
+      try {
+        const data = await fetchShoppingList(this.currentProfileGuid);
+        this.shoppingListRecipeGuids = (data.shopping_list || []).map(item => item.recipe_guid);
+      } catch (err) {
+        console.error('Failed to fetch shopping list:', err);
+      }
+    },
+    handleShoppingListAdded(recipeGuid) {
+      if (!this.shoppingListRecipeGuids.includes(recipeGuid)) {
+        this.shoppingListRecipeGuids.push(recipeGuid);
+      }
+    },
+    handleShoppingListRemoved(recipeGuid) {
+      this.shoppingListRecipeGuids = this.shoppingListRecipeGuids.filter(guid => guid !== recipeGuid);
     }
   }
 };
