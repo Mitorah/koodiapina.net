@@ -1,6 +1,6 @@
 {
-  "name": "Koodiapina Ruoka",
-  "short_name": "Ruoka",
+  "name": "Koodiapina Recipes",
+  "short_name": "Koodiapina Recipes",
   "description": "Recipe app by Koodiapina",
   "start_url": "/",
   "scope": "/",
