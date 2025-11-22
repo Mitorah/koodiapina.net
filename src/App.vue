@@ -95,18 +95,6 @@
               </el-select>
             </div>
             
-            <!-- Admin: Add New User -->
-            <div v-if="currentProfileIsAdmin" class="admin-section">
-              <el-button 
-                type="primary" 
-                size="small" 
-                style="width: 100%; margin-top: 10px;"
-                @click="showAddUserDialog = true"
-              >
-                + Lisää käyttäjä
-              </el-button>
-            </div>
-            
             <el-divider />
             
             <!-- Menu Items -->
@@ -121,6 +109,80 @@
           </div>
       </el-drawer>
     </el-main>
+    
+    <!-- Profile Selection Dialog (First Visit) -->
+    <el-dialog
+      v-model="showProfileSelectionDialog"
+      title="Valitse profiili"
+      width="500px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+    >
+      <!-- Production: Email matched - show welcome -->
+      <div v-if="userEmailFromAuth && emailMatchedProfile" style="margin-bottom: 16px; padding: 12px; background-color: #D1ECF1; border-radius: 4px; color: #0C5460;">
+        <strong>Tervetuloa!</strong> Tunnistauduitte sähköpostiosoitteella: {{ userEmailFromAuth }}<br>
+        Valitse profiilisi alta.
+      </div>
+      
+      <!-- Production: Email NOT matched - access denied -->
+      <div v-if="userEmailFromAuth && !emailMatchedProfile" style="padding: 20px; text-align: center;">
+        <div style="margin-bottom: 16px; padding: 16px; background-color: #F8D7DA; border-radius: 4px; color: #721C24;">
+          <el-icon style="font-size: 48px; margin-bottom: 12px;"><CircleClose /></el-icon>
+          <h3 style="margin: 0 0 8px 0;">Ei käyttöoikeutta</h3>
+          <p style="margin: 0;">Sähköpostiosoitteellesi ({{ userEmailFromAuth }}) ei ole luotu profiilia.</p>
+          <p style="margin: 8px 0 0 0; font-size: 14px;">Ota yhteyttä ylläpitäjään profiilin luomiseksi.</p>
+        </div>
+      </div>
+      
+      <!-- Local Development mode -->
+      <div v-if="!userEmailFromAuth" style="margin-bottom: 16px; padding: 12px; background-color: #E2E3E5; border-radius: 4px; color: #383D41;">
+        <strong>Kehitystila:</strong> Valitse testausprofiili.
+      </div>
+      
+      <!-- Profile selector - only shown if user has access or in dev mode -->
+      <el-form v-if="!userEmailFromAuth || emailMatchedProfile" label-width="100px">
+        <el-form-item label="Profiili">
+          <el-select
+            v-model="tempSelectedProfile"
+            placeholder="Valitse profiili"
+            style="width: 100%"
+            :value-key="'profile_guid'"
+          >
+            <el-option
+              v-for="profile in filteredProfilesForSelection"
+              :key="profile.profile_guid"
+              :label="profile.display_name || profile.username"
+              :value="profile.profile_guid || ''"
+            >
+              <span style="display: flex; align-items: center; gap: 8px;">
+                <el-icon v-if="profile.is_admin" style="color: #F56C6C;">
+                  <Star />
+                </el-icon>
+                <el-icon v-else style="color: #909399;">
+                  <User />
+                </el-icon>
+                <span>{{ profile.display_name || profile.username }}</span>
+                <span v-if="profile.email" style="color: #909399; font-size: 12px;">({{ profile.email }})</span>
+              </span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button 
+            v-if="!userEmailFromAuth || emailMatchedProfile"
+            type="primary" 
+            @click="confirmProfileSelection" 
+            :disabled="!tempSelectedProfile"
+          >
+            OK
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
     
     <!-- Add User Dialog -->
     <el-dialog
@@ -177,7 +239,8 @@
       <AdminUsers 
         v-else-if="activeTab === 'admin-users'"
         :currentProfileGuid="selectedProfile" 
-        :currentProfile="currentProfile" 
+        :currentProfile="currentProfile"
+        @profiles-changed="onProfilesChanged"
       />
     </el-container>
   </el-container>
@@ -192,9 +255,9 @@ import Favorites from './views/Favorites.vue'
 import HiddenRecipes from './views/HiddenRecipes.vue'
 import ShoppingList from './views/ShoppingList.vue'
 import AdminUsers from './views/AdminUsers.vue'
-import { Menu, User, Star, Search, Close } from '@element-plus/icons-vue'
+import { Menu, User, Star, Search, Close, CircleClose } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
-import { fetchProfiles, createProfile } from './utils/api'
+import { fetchProfiles, createProfile, getUserEmail } from './utils/api'
 
 export default {
   name: 'App',
@@ -211,6 +274,7 @@ export default {
     Star,
     Search,
     Close,
+    CircleClose,
     ElIcon
   },
   data() {
@@ -221,6 +285,10 @@ export default {
       profiles: [],
       selectedProfile: undefined,
       showAddUserDialog: false,
+      showProfileSelectionDialog: false,
+      tempSelectedProfile: undefined,
+      userEmailFromAuth: null,
+      emailMatchedProfile: false,
       creatingUser: false,
       searchExpanded: false,
       searchQueryInput: '',
@@ -234,20 +302,22 @@ export default {
     }
   },
   async mounted() {
-    this.tabs = [
-      // { label: 'Main Window', name: 'main', component: 'MainWindow' },
-      // { label: 'AI Window', name: 'ai', component: 'AIWindow' },
-      { label: 'Reseptit', name: 'recipes', component: 'Recipes' },
-      { label: 'Suosikit', name: 'favorites', component: 'Favorites' },
-      { label: 'Piilotetut', name: 'hidden', component: 'HiddenRecipes' },
-      { label: 'Ostoslista', name: 'shopping-list', component: 'ShoppingList' }
-    ];
+    this.updateTabs();
     
     // Load profiles
     await this.loadProfiles();
     
-    // Load selected profile from cookie or select first
-    this.loadSelectedProfile();
+    // Check for saved profile in cookie
+    const savedProfile = this.getCookie('selected_profile');
+    
+    if (savedProfile && this.profiles.some(p => p.profile_guid === savedProfile)) {
+      // User has a valid saved profile - use it
+      this.selectedProfile = savedProfile;
+      this.updateTabs(); // Update tabs based on selected profile
+    } else {
+      // First visit or invalid cookie - show profile selection dialog
+      await this.showProfileSelectionForFirstVisit();
+    }
   },
   computed: {
     activeTabComponent() {
@@ -275,9 +345,41 @@ export default {
         return false;
       }
       return this.currentProfile.is_admin === 1 || this.currentProfile.is_admin === true;
+    },
+    filteredProfilesForSelection() {
+      // If we have a Cloudflare email, only show matching profiles
+      if (this.userEmailFromAuth) {
+        const matchingProfiles = this.profiles.filter(
+          p => p.email && p.email.toLowerCase() === this.userEmailFromAuth.toLowerCase()
+        );
+        
+        // If we found matching profiles, show only those
+        if (matchingProfiles.length > 0) {
+          return matchingProfiles;
+        }
+        // If no matches, show all profiles as fallback (with warning message shown)
+      }
+      
+      // No email or no matches - show all profiles
+      return this.profiles;
     }
   },
   methods: {
+    updateTabs() {
+      const baseTabs = [
+        { label: 'Reseptit', name: 'recipes', component: 'Recipes' },
+        { label: 'Suosikit', name: 'favorites', component: 'Favorites' },
+        { label: 'Piilotetut', name: 'hidden', component: 'HiddenRecipes' },
+        { label: 'Ostoslista', name: 'shopping-list', component: 'ShoppingList' }
+      ];
+      
+      // Add admin tab if current profile is admin
+      if (this.currentProfileIsAdmin) {
+        baseTabs.push({ label: 'Käyttäjät', name: 'admin-users', component: 'AdminUsers' });
+      }
+      
+      this.tabs = baseTabs;
+    },
     onMenuClick() {
       this.drawerVisible = true;
     },
@@ -301,19 +403,59 @@ export default {
         this.$message.error('Profiilien lataus epäonnistui');
       }
     },
-    loadSelectedProfile() {
-      // Try to load from cookie
-      const savedProfile = this.getCookie('selected_profile');
-      if (savedProfile && this.profiles.some(p => p.profile_guid === savedProfile)) {
-        this.selectedProfile = savedProfile;
-      } else if (this.profiles.length > 0) {
-        // Select first profile by default
-        this.selectedProfile = this.profiles[0].profile_guid;
+    onProfilesChanged() {
+      // Reload profiles when AdminUsers emits profiles-changed event
+      this.loadProfiles();
+    },
+    async showProfileSelectionForFirstVisit() {
+      // Try to get user email from Cloudflare Access
+      try {
+        const authData = await getUserEmail();
+        this.userEmailFromAuth = authData.email;
+        
+        if (this.userEmailFromAuth) {
+          // Production: Check if email matches any profile
+          const matchingProfiles = this.profiles.filter(
+            p => p.email && p.email.toLowerCase() === this.userEmailFromAuth.toLowerCase()
+          );
+          
+          if (matchingProfiles.length > 0) {
+            this.emailMatchedProfile = true;
+            // Don't pre-select - user must choose explicitly
+            this.tempSelectedProfile = undefined;
+          } else {
+            // No match in production - security issue
+            this.emailMatchedProfile = false;
+            this.tempSelectedProfile = undefined;
+          }
+        } else {
+          // Local dev (no email) - show all profiles, no pre-selection
+          this.tempSelectedProfile = undefined;
+        }
+      } catch (error) {
+        console.error('Failed to get user email:', error);
+        // Error fetching email - no pre-selection
+        this.tempSelectedProfile = undefined;
+      }
+      
+      // Show the dialog
+      this.showProfileSelectionDialog = true;
+    },
+    confirmProfileSelection() {
+      if (this.tempSelectedProfile) {
+        this.selectedProfile = this.tempSelectedProfile;
         this.saveProfileToCookie(this.selectedProfile);
+        this.showProfileSelectionDialog = false;
+        this.updateTabs(); // Update tabs after profile selection
+        
+        const profile = this.profiles.find(p => p.profile_guid === this.tempSelectedProfile);
+        const displayName = profile?.display_name || profile?.username || 'tuntematon';
+        this.$message.success(`Profiili valittu: ${displayName}`);
       }
     },
     onProfileChange(profileGuid) {
       this.saveProfileToCookie(profileGuid);
+      this.updateTabs(); // Update tabs when profile changes
       const profile = this.profiles.find(p => p.profile_guid === profileGuid);
       const displayName = profile?.display_name || profile?.username || 'tuntematon';
       this.$message.success(`Vaihdettu profiiliin: ${displayName}`);

@@ -23,6 +23,12 @@ export async function fetchProfiles() {
   return await res.json();
 }
 
+export async function getUserEmail() {
+  const res = await fetch(`${API_BASE_URL}/auth/user`);
+  if (!res.ok) throw new Error('Failed to fetch user email');
+  return await res.json();
+}
+
 export async function fetchFavorites(profileGuid) {
   const res = await fetch(`${API_BASE_URL}/favorites/${profileGuid}`);
   if (!res.ok) throw new Error('Failed to fetch favorites');
@@ -117,6 +123,37 @@ export async function createProfile(username, displayName, email, isAdmin) {
   if (!res.ok) {
     const error = await res.json();
     throw new Error(error.error || 'Failed to create profile');
+  }
+  return await res.json();
+}
+
+export async function updateProfile(profileGuid, username, displayName, email, isAdmin) {
+  const res = await fetch(`${API_BASE_URL}/profiles/${profileGuid}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ 
+      username, 
+      display_name: displayName, 
+      email: email || null,
+      is_admin: isAdmin 
+    }),
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || 'Failed to update profile');
+  }
+  return await res.json();
+}
+
+export async function deleteProfile(profileGuid) {
+  const res = await fetch(`${API_BASE_URL}/profiles/${profileGuid}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || 'Failed to delete profile');
   }
   return await res.json();
 }
