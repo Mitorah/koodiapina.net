@@ -32,6 +32,21 @@ export default {
       return new Response('Forbidden', { status: 403 });
     }
 
+    // Handle /auth/user endpoint - returns Cloudflare Access authenticated user email
+    if (pathname === '/auth/user' && request.method === 'GET') {
+      // Get email from Cloudflare Access header
+      const userEmail = request.headers.get('CF-Access-Authenticated-User-Email') || null;
+      
+      return new Response(JSON.stringify({
+        email: userEmail
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': allowedOrigin,
+        }
+      });
+    }
+
     // Handle /profiles endpoint
     if (pathname === '/profiles' && request.method === 'GET') {
       const profilesRes = await env.DB.prepare(
