@@ -111,9 +111,9 @@
                 <span style="font-weight: bold;">{{ selectedRecipe?.title }}</span>
             </template>
             <div
-                @touchstart="startDialogLongPress"
-                @touchend="cancelDialogLongPress"
-                @touchcancel="cancelDialogLongPress"
+                @touchstart.passive="startDialogLongPress"
+                @touchend.passive="cancelDialogLongPress"
+                @touchcancel.passive="cancelDialogLongPress"
                 @contextmenu.prevent
             >
                 <RecipeView 

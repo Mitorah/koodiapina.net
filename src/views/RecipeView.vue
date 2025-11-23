@@ -22,9 +22,9 @@
                 @mousedown="startLongPress"
                 @mouseup="cancelLongPress"
                 @mouseleave="cancelLongPress"
-                @touchstart="startLongPress"
-                @touchend="cancelLongPress"
-                @touchcancel="cancelLongPress"
+                @touchstart.passive="startLongPress"
+                @touchend.passive="cancelLongPress"
+                @touchcancel.passive="cancelLongPress"
                 :loading="favoriteLoading || hiddenLoading"
                 circle
                 :type="isFavorite ? 'warning' : 'default'"
@@ -47,7 +47,7 @@
             </el-button>
         </div>
     </el-header>
-    <div v-if="showCard">
+    <div v-if="showCardState">
         <el-card>
             <div v-if="ingredients.length">
                 <b>Ainekset:</b>
@@ -124,6 +124,10 @@ export default {
       type: Boolean,
       default: false
     },
+    isHidden: {
+      type: Boolean,
+      default: false
+    },
     currentProfileGuid: {
       type: String,
       default: null
@@ -139,7 +143,7 @@ export default {
   },
     data() {
         return {
-            showCard: this.isExpanded,
+            cardExpanded: this.isExpanded,
             favoriteLoading: false,
             shoppingListLoading: false,
             hiddenLoading: false,
@@ -149,6 +153,8 @@ export default {
         };
     },
     mounted() {
+        // Initialize local state from prop
+        this.cardExpanded = this.isExpanded;
         // Request wake lock when recipe is expanded by default
         if (this.isExpanded && this.showCard) {
             this.requestWakeLock();
@@ -162,10 +168,10 @@ export default {
         toggleCard() {
             // If isExpanded is true, don't allow toggling
             if (!this.isExpanded) {
-                this.showCard = !this.showCard;
+                this.cardExpanded = !this.cardExpanded;
                 
                 // Request wake lock when expanding, release when collapsing
-                if (this.showCard) {
+                if (this.cardExpanded) {
                     this.requestWakeLock();
                 } else {
                     this.releaseWakeLock();
@@ -179,7 +185,7 @@ export default {
                     
                     // Re-acquire wake lock when page becomes visible again
                     document.addEventListener('visibilitychange', async () => {
-                        if (this.wakeLock !== null && document.visibilityState === 'visible' && this.showCard) {
+                        if (this.wakeLock !== null && document.visibilityState === 'visible' && this.cardExpanded) {
                             this.wakeLock = await navigator.wakeLock.request('screen');
                         }
                     });
@@ -358,6 +364,9 @@ export default {
             });
             return groups;
         },
+        showCardState() {
+            return this.showCard && this.cardExpanded;
+        }
     }
 
 };

@@ -6,9 +6,9 @@
             @mousedown="startLongPress(recipe)"
             @mouseup="cancelLongPress"
             @mouseleave="cancelLongPress"
-            @touchstart="startLongPress(recipe)"
-            @touchend="cancelLongPress"
-            @touchcancel="cancelLongPress"
+            @touchstart.passive="startLongPress(recipe)"
+            @touchend.passive="cancelLongPress"
+            @touchcancel.passive="cancelLongPress"
         >
             <RecipeView 
                 :recipe="recipe" 
@@ -45,9 +45,9 @@
                 <span style="font-weight: bold;">{{ selectedRecipe?.title }}</span>
             </template>
             <div
-                @touchstart="startDialogLongPress"
-                @touchend="cancelDialogLongPress"
-                @touchcancel="cancelDialogLongPress"
+                @touchstart.passive="startDialogLongPress"
+                @touchend.passive="cancelDialogLongPress"
+                @touchcancel.passive="cancelDialogLongPress"
                 @contextmenu.prevent
             >
                 <RecipeView 
