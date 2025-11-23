@@ -43,18 +43,25 @@
             <template #header>
                 <span style="font-weight: bold;">{{ selectedRecipe?.title }}</span>
             </template>
-            <RecipeView 
-                v-if="selectedRecipe"
-                :recipe="selectedRecipe" 
-                :recipe_title="selectedRecipe.title"
-                :isFavorite="true"
-                :isInShoppingList="shoppingListRecipeGuids.includes(selectedRecipe.recipe_guid)"
-                :currentProfileGuid="currentProfileGuid"
-                :isExpanded="true"
-                @favorite-removed="handleFavoriteRemoved"
-                @shopping-list-added="handleShoppingListAdded"
-                @shopping-list-removed="handleShoppingListRemoved"
-            />
+            <div
+                @touchstart="startDialogLongPress"
+                @touchend="cancelDialogLongPress"
+                @touchcancel="cancelDialogLongPress"
+                @contextmenu.prevent
+            >
+                <RecipeView 
+                    v-if="selectedRecipe"
+                    :recipe="selectedRecipe" 
+                    :recipe_title="selectedRecipe.title"
+                    :isFavorite="true"
+                    :isInShoppingList="shoppingListRecipeGuids.includes(selectedRecipe.recipe_guid)"
+                    :currentProfileGuid="currentProfileGuid"
+                    :isExpanded="true"
+                    @favorite-removed="handleFavoriteRemoved"
+                    @shopping-list-added="handleShoppingListAdded"
+                    @shopping-list-removed="handleShoppingListRemoved"
+                />
+            </div>
         </el-dialog>
     </el-container>
 </template>
@@ -80,7 +87,8 @@ export default {
       loading: false,
       showCookingDialog: false,
       selectedRecipe: null,
-      longPressTimer: null
+      longPressTimer: null,
+      dialogLongPressTimer: null
     }
   },
   watch: {
@@ -146,12 +154,24 @@ export default {
       this.longPressTimer = setTimeout(() => {
         this.selectedRecipe = recipe;
         this.showCookingDialog = true;
+        this.$message.info('Vihje: Paina pitkään sulkeaksesi');
       }, 500); // 500ms long press
     },
     cancelLongPress() {
       if (this.longPressTimer) {
         clearTimeout(this.longPressTimer);
         this.longPressTimer = null;
+      }
+    },
+    startDialogLongPress() {
+      this.dialogLongPressTimer = setTimeout(() => {
+        this.showCookingDialog = false;
+      }, 500); // 500ms long press to close
+    },
+    cancelDialogLongPress() {
+      if (this.dialogLongPressTimer) {
+        clearTimeout(this.dialogLongPressTimer);
+        this.dialogLongPressTimer = null;
       }
     }
   }

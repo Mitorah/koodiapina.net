@@ -100,7 +100,7 @@
             </el-card>
         </div>
 
-        <!-- Recipe Dialog -->
+        <!-- Cooking View Dialog -->
         <el-dialog 
             v-model="showRecipeDialog" 
             width="90%"
@@ -110,19 +110,26 @@
             <template #header>
                 <span style="font-weight: bold;">{{ selectedRecipe?.title }}</span>
             </template>
-            <RecipeView 
-                v-if="selectedRecipe"
-                :recipe="selectedRecipe" 
-                :recipe_title="selectedRecipe.title"
-                :isFavorite="isFavorite(selectedRecipe.recipe_guid)"
-                :isInShoppingList="true"
-                :isHidden="false"
-                :currentProfileGuid="currentProfileGuid"
-                :isExpanded="true"
-                @favorite-added="handleFavoriteAdded"
-                @favorite-removed="handleFavoriteRemoved"
-                @shopping-list-removed="handleShoppingListRemoved"
-            />
+            <div
+                @touchstart="startDialogLongPress"
+                @touchend="cancelDialogLongPress"
+                @touchcancel="cancelDialogLongPress"
+                @contextmenu.prevent
+            >
+                <RecipeView 
+                    v-if="selectedRecipe"
+                    :recipe="selectedRecipe" 
+                    :recipe_title="selectedRecipe.title"
+                    :isFavorite="isFavorite(selectedRecipe.recipe_guid)"
+                    :isInShoppingList="true"
+                    :isHidden="false"
+                    :currentProfileGuid="currentProfileGuid"
+                    :isExpanded="true"
+                    @favorite-added="handleFavoriteAdded"
+                    @favorite-removed="handleFavoriteRemoved"
+                    @shopping-list-removed="handleShoppingListRemoved"
+                />
+            </div>
         </el-dialog>
     </el-container>
 </template>
@@ -160,7 +167,8 @@ export default {
       recipesExpanded: false,
       showRecipeDialog: false,
       selectedRecipe: null,
-      favoriteRecipeGuids: []
+      favoriteRecipeGuids: [],
+      dialogLongPressTimer: null
     };
   },
   computed: {
@@ -519,6 +527,20 @@ export default {
     openRecipeDialog(recipe) {
       this.selectedRecipe = recipe;
       this.showRecipeDialog = true;
+      this.$message.info('Vihje: Paina pitkään sulkeaksesi');
+    },
+
+    startDialogLongPress() {
+      this.dialogLongPressTimer = setTimeout(() => {
+        this.showRecipeDialog = false;
+      }, 500); // 500ms long press to close
+    },
+
+    cancelDialogLongPress() {
+      if (this.dialogLongPressTimer) {
+        clearTimeout(this.dialogLongPressTimer);
+        this.dialogLongPressTimer = null;
+      }
     },
 
     async loadFavorites() {
