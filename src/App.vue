@@ -57,7 +57,7 @@
         </div>
       </el-row>
     </el-header>
-    <el-main class="app-main">
+    <el-main :class="['app-main', { 'search-expanded-mobile': searchExpanded && activeTab === 'recipes' }]">
       <el-drawer
         title="Menu"
         v-model="drawerVisible"
@@ -679,6 +679,10 @@ export default {
 
   .close-search {
     position: relative;
+  }
+
+  .app-main.search-expanded-mobile {
+    padding-top: 60px;
   }
 }
 </style>
