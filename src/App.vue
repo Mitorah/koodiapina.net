@@ -122,6 +122,56 @@
       </el-drawer>
     </el-main>
     
+    <!-- Profile Selection Dialog (First Visit) -->
+    <el-dialog
+      v-model="showProfileSelectionDialog"
+      title="Valitse profiili"
+      width="500px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+    >
+      <el-form label-width="100px">
+        <el-form-item label="Profiili">
+          <el-select
+            v-model="tempSelectedProfile"
+            placeholder="Valitse profiili"
+            style="width: 100%"
+            :value-key="'profile_guid'"
+          >
+            <el-option
+              v-for="profile in profiles"
+              :key="profile.profile_guid"
+              :label="profile.display_name || profile.username"
+              :value="profile.profile_guid || ''"
+            >
+              <span style="display: flex; align-items: center; gap: 8px;">
+                <el-icon v-if="profile.is_admin" style="color: #F56C6C;">
+                  <Star />
+                </el-icon>
+                <el-icon v-else style="color: #909399;">
+                  <User />
+                </el-icon>
+                <span>{{ profile.display_name || profile.username }}</span>
+              </span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button 
+            type="primary" 
+            @click="confirmProfileSelection" 
+            :disabled="!tempSelectedProfile"
+          >
+            OK
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+    
     <!-- Add User Dialog -->
     <el-dialog
       v-model="showAddUserDialog"
@@ -221,6 +271,8 @@ export default {
       profiles: [],
       selectedProfile: undefined,
       showAddUserDialog: false,
+      showProfileSelectionDialog: false,
+      tempSelectedProfile: undefined,
       creatingUser: false,
       searchExpanded: false,
       searchQueryInput: '',
@@ -246,8 +298,16 @@ export default {
     // Load profiles
     await this.loadProfiles();
     
-    // Load selected profile from cookie or select first
-    this.loadSelectedProfile();
+    // Check for saved profile in cookie
+    const savedProfile = this.getCookie('selected_profile');
+    
+    if (savedProfile && this.profiles.some(p => p.profile_guid === savedProfile)) {
+      // User has a valid saved profile - use it
+      this.selectedProfile = savedProfile;
+    } else {
+      // First visit or invalid cookie - show profile selection dialog
+      this.showProfileSelectionDialog = true;
+    }
   },
   computed: {
     activeTabComponent() {
@@ -301,15 +361,15 @@ export default {
         this.$message.error('Profiilien lataus epäonnistui');
       }
     },
-    loadSelectedProfile() {
-      // Try to load from cookie
-      const savedProfile = this.getCookie('selected_profile');
-      if (savedProfile && this.profiles.some(p => p.profile_guid === savedProfile)) {
-        this.selectedProfile = savedProfile;
-      } else if (this.profiles.length > 0) {
-        // Select first profile by default
-        this.selectedProfile = this.profiles[0].profile_guid;
+    confirmProfileSelection() {
+      if (this.tempSelectedProfile) {
+        this.selectedProfile = this.tempSelectedProfile;
         this.saveProfileToCookie(this.selectedProfile);
+        this.showProfileSelectionDialog = false;
+        
+        const profile = this.profiles.find(p => p.profile_guid === this.tempSelectedProfile);
+        const displayName = profile?.display_name || profile?.username || 'tuntematon';
+        this.$message.success(`Profiili valittu: ${displayName}`);
       }
     },
     onProfileChange(profileGuid) {
