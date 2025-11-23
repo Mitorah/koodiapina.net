@@ -394,7 +394,6 @@ export default {
           return a.profile_guid.localeCompare(b.profile_guid);
         });
       } catch (error) {
-        console.error('Failed to load profiles:', error);
         this.$message.error('Profiilien lataus epäonnistui');
       }
     },
@@ -437,7 +436,6 @@ export default {
           this.tempPinInput = '';
         }
       } catch (err) {
-        console.error('Failed to verify PIN:', err);
         this.tempPinError = 'PIN-koodin tarkistus epäonnistui';
       } finally {
         this.verifyingTempPin = false;
@@ -507,7 +505,6 @@ export default {
         // Reload profiles
         await this.loadProfiles();
       } catch (err) {
-        console.error('Failed to create user:', err);
         this.$message.error(err.message || 'Käyttäjän luonti epäonnistui');
       } finally {
         this.creatingUser = false;

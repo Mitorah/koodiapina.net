@@ -150,7 +150,6 @@ export default {
         // Emit event to parent to reload profiles
         this.$emit('profile-updated');
       } catch (err) {
-        console.error('Failed to update profile:', err);
         this.$message.error(err.message || 'Profiilin päivitys epäonnistui');
       } finally {
         this.saving = false;
