@@ -29,13 +29,17 @@ export default {
 
     // Handle /version endpoint - returns current deployment version
     if (pathname === '/version' && request.method === 'GET') {
+      // Allow version checks from both production domains
+      const allowedVersionOrigins = ['https://koodiapina.net', 'https://ruoka.koodiapina.net'];
+      const versionOrigin = (origin && allowedVersionOrigins.includes(origin)) ? origin : '';
+      
       return new Response(JSON.stringify({
         version: env.APP_VERSION || 'unknown',
         buildTime: env.BUILD_TIME || 'unknown'
       }), {
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': allowedOrigin,
+          'Access-Control-Allow-Origin': versionOrigin,
           'Cache-Control': 'no-cache, no-store, must-revalidate',
         }
       });
