@@ -92,10 +92,14 @@
             <div
               v-for="tab in tabs"
               :key="tab.name"
-              @click="selectTab(tab.name)"
-              :class="['drawer-menu-item', { active: activeTab === tab.name }]"
             >
-              {{ tab.label }}
+              <el-divider v-if="tab.name === 'profile'" style="margin: 12px 0;" />
+              <div
+                @click="selectTab(tab.name)"
+                :class="['drawer-menu-item', { active: activeTab === tab.name }]"
+              >
+                {{ tab.label }}
+              </div>
             </div>
             
             <!-- Version Info -->
@@ -181,7 +185,7 @@
         <el-form-item label="Käyttäjänimi">
           <el-input v-model="newUserForm.username" placeholder="esim. matti"></el-input>
         </el-form-item>
-        <el-form-item label="Näyttönimi">
+        <el-form-item label="Nimi">
           <el-input v-model="newUserForm.displayName" placeholder="esim. Matti Meikäläinen"></el-input>
         </el-form-item>
         <el-form-item label="Sähköposti">
