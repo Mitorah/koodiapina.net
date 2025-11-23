@@ -27,11 +27,6 @@ export default {
       });
     }
 
-    // Restrict access to allowed origins (except local dev)
-    if (!isLocal && origin && !allowedOrigin) {
-      return new Response('Forbidden', { status: 403 });
-    }
-
     // Handle /version endpoint - returns current deployment version
     if (pathname === '/version' && request.method === 'GET') {
       return new Response(JSON.stringify({
@@ -44,6 +39,11 @@ export default {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
         }
       });
+    }
+
+    // Restrict access to allowed origins (except local dev)
+    if (!isLocal && origin && !allowedOrigin) {
+      return new Response('Forbidden', { status: 403 });
     }
 
     // Handle /auth/user endpoint - returns Cloudflare Access authenticated user email
