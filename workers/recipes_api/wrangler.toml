@@ -2,6 +2,9 @@ name = "worker-recipes-api"
 main = "worker.js"
 compatibility_date = "2025-09-08"
 
+[vars]
+ALLOWED_ORIGIN = "https://ruoka.koodiapina.net"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "koodiapina_net_db"
