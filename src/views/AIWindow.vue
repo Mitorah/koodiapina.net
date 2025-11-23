@@ -25,7 +25,6 @@ export default {
         };
     },
     mounted() {
-        console.log('AI Window mounted');
     },
     computed: {
         title() {

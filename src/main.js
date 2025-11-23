@@ -12,11 +12,8 @@ app.mount('#app')
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
-      .then((registration) => {
-        console.log('Service Worker registered:', registration);
-      })
       .catch((error) => {
-        console.log('Service Worker registration failed:', error);
+        console.error('Service Worker registration failed:', error);
       });
   });
 } else if ('serviceWorker' in navigator && import.meta.env.DEV) {
@@ -24,7 +21,6 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
     registrations.forEach((registration) => {
       registration.unregister();
-      console.log('Service Worker unregistered for development');
     });
   });
 }

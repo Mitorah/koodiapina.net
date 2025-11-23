@@ -38,7 +38,6 @@ export default {
           'Row missing recipe_guid or title',
           'SELECT recipe_guid, title FROM recipes WHERE instructions IS NULL LIMIT 1 (missing fields)'
         ).run();
-        console.log('Skipping row with missing fields:', row);
         return new Response('Row missing recipe_guid or title', { status: 200 });
       }
       // Authenticate
@@ -107,7 +106,6 @@ export default {
           `Status: ${detailRes.status}`,
           `GET /recipes/FIN/${row.recipe_guid}/instructions (fetching instructions)`
         ).run();
-        console.log('Instructions fetch failed for:', row.recipe_guid);
         return new Response('Instructions fetch failed', { status: 500 });
       }
       const instructionsJson = await detailRes.json();
@@ -121,7 +119,6 @@ export default {
           'Instructions JSON is undefined',
           `GET /recipes/FIN/${row.recipe_guid}/instructions (instructions JSON undefined)`
         ).run();
-        console.log('Instructions JSON is undefined for:', row.recipe_guid);
         return new Response('Instructions JSON is undefined', { status: 500 });
       }
       // Update row
