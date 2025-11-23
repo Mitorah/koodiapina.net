@@ -22,6 +22,60 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Auto-increment Version
+        id: version
+        run: |
+          echo "📦 Determining version from git tags..."
+          
+          # Fetch all tags
+          git fetch --tags
+          
+          # Get latest version tag (or default to 0.0.0)
+          LATEST_TAG=$(git tag -l "v*.*.*" | sort -V | tail -n1)
+          if [ -z "$LATEST_TAG" ]; then
+            CURRENT_VERSION="0.0.0"
+            echo "No existing version tags found, starting from 0.0.0"
+          else
+            CURRENT_VERSION="${LATEST_TAG#v}"
+            echo "Latest version tag: $LATEST_TAG"
+          fi
+          
+          # Parse version parts
+          MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+          MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+          PATCH=$(echo $CURRENT_VERSION | cut -d. -f3)
+          
+          # Check commit message for version bump type
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          
+          if [[ "$COMMIT_MSG" == *"[major]"* ]] || [[ "$COMMIT_MSG" == *"BREAKING CHANGE"* ]]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+            BUMP_TYPE="major"
+          elif [[ "$COMMIT_MSG" == *"[minor]"* ]] || [[ "$COMMIT_MSG" == *"feat:"* ]] || [[ "$COMMIT_MSG" == *"feature:"* ]]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+            BUMP_TYPE="minor"
+          else
+            # Default to patch for any other commit (fix:, chore:, etc.)
+            PATCH=$((PATCH + 1))
+            BUMP_TYPE="patch"
+          fi
+          
+          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "New version: $NEW_VERSION (${BUMP_TYPE} bump)"
+          
+          # Create new git tag
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
+          git push origin "v${NEW_VERSION}"
+          
+          # Export version for build
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "✅ Version bumped to $NEW_VERSION and tagged"
+
       - name: Run D1 Migrations
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -48,6 +102,7 @@ jobs:
         run: npm run build
         env:
           NODE_ENV: production
+          npm_package_version: ${{ steps.version.outputs.version }}
 
       - name: Deploy API Worker
         env:
@@ -89,6 +144,7 @@ jobs:
           echo "🎉 Deployment complete!"
           echo "================================"
           echo "📋 Deployment Summary:"
+          echo "🏷️  Version: v${{ steps.version.outputs.version }}"
           echo "📦 Frontend: https://ruoka.koodiapina.net"
           echo "⚙️  API Worker: https://koodiapina-net.leinonen-op.workers.dev"
           echo "🗄️ Database: koodiapina_net_db"

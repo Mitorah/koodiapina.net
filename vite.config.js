@@ -16,6 +16,19 @@ export default defineConfig({
     },
   },
   publicDir: 'public',
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version || 'dev'),
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
+      }
+    }
+  },
   server: {
     port: 5173,
     strictPort: true,
