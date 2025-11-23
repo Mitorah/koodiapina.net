@@ -225,7 +225,7 @@
       <ShoppingList 
         v-else-if="activeTab === 'shopping-list'"
         :currentProfileGuid="selectedProfile" 
-        :currentProfile="currentProfile" 
+        :currentProfile="currentProfile"
       />
       <ProfileSettings 
         v-else-if="activeTab === 'profile'"

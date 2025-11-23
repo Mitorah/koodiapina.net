@@ -11,6 +11,38 @@
             <p>Ostoslista on tyhjä</p>
         </div>
         <div v-else>
+            <!-- My Recipes Section -->
+            <el-card style="margin-bottom: 20px;" :body-style="recipesExpanded ? {} : { padding: '0' }">
+                <template #header>
+                    <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" @click="recipesExpanded = !recipesExpanded">
+                        <span><strong>Reseptit ostoslistassa ({{ shoppingListRecipes.length }})</strong></span>
+                        <el-icon :class="{ 'rotate-icon': recipesExpanded }">
+                            <ArrowDown />
+                        </el-icon>
+                    </div>
+                </template>
+                
+                <el-collapse-transition>
+                    <div v-show="recipesExpanded">
+                        <div 
+                            v-for="recipe in shoppingListRecipes" 
+                            :key="recipe.recipe_guid" 
+                            class="recipe-link-item"
+                        >
+                            <span @click="openRecipeDialog(recipe)" style="flex: 1; cursor: pointer;">{{ recipe.title }}</span>
+                            <el-button 
+                                type="danger" 
+                                size="small"
+                                @click.stop="removeRecipe(recipe.recipe_guid)"
+                                circle
+                            >
+                                <el-icon><Close /></el-icon>
+                            </el-button>
+                        </div>
+                    </div>
+                </el-collapse-transition>
+            </el-card>
+
             <!-- Aggregated ingredients -->
             <el-card style="margin-bottom: 20px;">
                 <template #header>
@@ -66,36 +98,50 @@
                     </div>
                 </div>
             </el-card>
-
-            <!-- Recipe cards -->
-            <div style="margin-top: 20px;">
-                <h3>Reseptit ostoslistalla:</h3>
-                <el-card v-for="recipe in shoppingListRecipes" :key="recipe.recipe_guid" style="margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>{{ recipe.title }}</span>
-                        <el-button 
-                            type="danger" 
-                            size="small"
-                            @click="removeRecipe(recipe.recipe_guid)"
-                        >
-                            Poista
-                        </el-button>
-                    </div>
-                </el-card>
-            </div>
         </div>
+
+        <!-- Recipe Dialog -->
+        <el-dialog 
+            v-model="showRecipeDialog" 
+            width="90%"
+            style="max-width: 800px;"
+            top="2vh"
+            @close="releaseWakeLock"
+        >
+            <template #header>
+                <span style="font-weight: bold;">{{ selectedRecipe?.title }}</span>
+            </template>
+            <RecipeView 
+                v-if="selectedRecipe"
+                :recipe="selectedRecipe" 
+                :recipe_title="selectedRecipe.title"
+                :isFavorite="isFavorite(selectedRecipe.recipe_guid)"
+                :isInShoppingList="true"
+                :isHidden="false"
+                :currentProfileGuid="currentProfileGuid"
+                :isExpanded="true"
+                @favorite-added="handleFavoriteAdded"
+                @favorite-removed="handleFavoriteRemoved"
+                @shopping-list-removed="handleShoppingListRemoved"
+            />
+        </el-dialog>
     </el-container>
 </template>
 
 <script>
-import { fetchShoppingList, removeFromShoppingList, fetchRecipes } from '../utils/api.js';
+import { fetchShoppingList, removeFromShoppingList, fetchRecipes, fetchFavorites } from '../utils/api.js';
 import { parseAmountWithUnit, getUnitForm } from '../utils/units.js';
-import { Loading } from '@element-plus/icons-vue';
+import { Loading, ArrowRight, ArrowDown, Close } from '@element-plus/icons-vue';
+import RecipeView from './RecipeView.vue';
 
 export default {
   name: 'ShoppingList',
   components: {
-    Loading
+    Loading,
+    ArrowRight,
+    ArrowDown,
+    Close,
+    RecipeView
   },
   props: {
     currentProfileGuid: {
@@ -111,7 +157,12 @@ export default {
       aggregatedPantryItems: [],
       loading: false,
       checkedIngredients: new Set(),
-      checkedPantryItems: new Set()
+      checkedPantryItems: new Set(),
+      recipesExpanded: false,
+      showRecipeDialog: false,
+      selectedRecipe: null,
+      favoriteRecipeGuids: [],
+      wakeLock: null
     };
   },
   computed: {
@@ -143,6 +194,7 @@ export default {
         if (newProfileGuid) {
           this.loadCheckedState();
           this.loadShoppingList();
+          this.loadFavorites();
         } else {
           this.shoppingListRecipes = [];
           this.aggregatedIngredients = [];
@@ -464,6 +516,75 @@ export default {
       if (changed) {
         this.saveCheckedState();
       }
+    },
+
+    openRecipeDialog(recipe) {
+      this.selectedRecipe = recipe;
+      this.showRecipeDialog = true;
+      this.requestWakeLock();
+    },
+
+    async requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          this.wakeLock = await navigator.wakeLock.request('screen');
+          
+          // Re-acquire wake lock when page becomes visible again
+          document.addEventListener('visibilitychange', async () => {
+            if (this.wakeLock !== null && document.visibilityState === 'visible' && this.showRecipeDialog) {
+              this.wakeLock = await navigator.wakeLock.request('screen');
+            }
+          });
+        }
+      } catch (err) {
+        // Wake lock request failed - not critical, just continue
+        console.log('Wake lock request failed:', err);
+      }
+    },
+
+    releaseWakeLock() {
+      if (this.wakeLock !== null) {
+        this.wakeLock.release()
+          .then(() => {
+            this.wakeLock = null;
+          });
+      }
+    },
+
+    async loadFavorites() {
+      if (!this.currentProfileGuid) return;
+      
+      try {
+        const data = await fetchFavorites(this.currentProfileGuid);
+        this.favoriteRecipeGuids = (data.favorites || []).map(f => f.recipe_guid);
+      } catch (err) {
+        // Failed to fetch favorites
+      }
+    },
+
+    isFavorite(recipeGuid) {
+      return this.favoriteRecipeGuids.includes(recipeGuid);
+    },
+
+    handleFavoriteAdded(recipeGuid) {
+      if (!this.favoriteRecipeGuids.includes(recipeGuid)) {
+        this.favoriteRecipeGuids.push(recipeGuid);
+      }
+    },
+
+    handleFavoriteRemoved(recipeGuid) {
+      this.favoriteRecipeGuids = this.favoriteRecipeGuids.filter(guid => guid !== recipeGuid);
+    },
+
+    handleShoppingListRemoved(recipeGuid) {
+      this.showRecipeDialog = false;
+      this.selectedRecipe = null;
+      this.releaseWakeLock();
+      this.loadShoppingList();
+    },
+
+    openRecipe(recipeGuid) {
+      this.$emit('open-recipe', recipeGuid);
     }
   }
 };
@@ -483,5 +604,30 @@ export default {
 .ingredient-item.checked {
   text-decoration: line-through;
   opacity: 0.5;
+}
+
+.recipe-link-item {
+  padding: 12px;
+  margin-bottom: 8px;
+  background-color: #f5f7fa;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s;
+}
+
+.recipe-link-item span:hover {
+  opacity: 0.7;
+}
+
+.recipe-link-item:last-child {
+  margin-bottom: 0;
+}
+
+.rotate-icon {
+  transform: rotate(180deg);
+  transition: transform 0.3s;
 }
 </style>

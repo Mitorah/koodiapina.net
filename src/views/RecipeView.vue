@@ -1,5 +1,5 @@
 <template>
-    <el-header @click="showCard = !showCard" class="recipe-header">
+    <el-header @click="toggleCard" class="recipe-header">
         <div v-if="preparationTime" class="recipe-prep-time">
             {{ preparationTime }}
         </div>
@@ -133,11 +133,15 @@ export default {
             type: String,
             required: false,
             default: null
+        },
+        isExpanded: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
-            showCard: false,
+            showCard: this.isExpanded,
             favoriteLoading: false,
             shoppingListLoading: false,
             hiddenLoading: false,
@@ -146,6 +150,12 @@ export default {
         };
     },
     methods: {
+        toggleCard() {
+            // If isExpanded is true, don't allow toggling
+            if (!this.isExpanded) {
+                this.showCard = !this.showCard;
+            }
+        },
         startLongPress(event) {
             this.longPressTriggered = false;
             this.longPressTimer = setTimeout(() => {
