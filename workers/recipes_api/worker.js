@@ -361,12 +361,36 @@ export default {
     // Handle /favorites/:profile_guid endpoint - GET favorites for a user
     if (pathname.startsWith('/favorites/') && request.method === 'GET') {
       const profileGuid = pathname.split('/')[2];
-      const favoritesRes = await env.DB.prepare(
-        'SELECT f.favorite_id, f.recipe_guid, f.added_at FROM favorites f WHERE f.profile_guid = ? ORDER BY f.added_at DESC'
-      ).bind(profileGuid).all();
+      
+      // Join with recipes table to get full recipe details
+      const favoritesRes = await env.DB.prepare(`
+        SELECT 
+          f.favorite_id, 
+          f.recipe_guid, 
+          f.added_at,
+          r.title,
+          r.added_date,
+          r.details,
+          r.instructions
+        FROM favorites f
+        INNER JOIN recipes r ON f.recipe_guid = r.recipe_guid
+        WHERE f.profile_guid = ? 
+        ORDER BY f.added_at DESC
+      `).bind(profileGuid).all();
+      
+      // Parse JSON fields for each recipe
+      const favorites = (favoritesRes.results || []).map(row => ({
+        favorite_id: row.favorite_id,
+        recipe_guid: row.recipe_guid,
+        added_at: row.added_at,
+        title: row.title,
+        added_date: row.added_date,
+        details: row.details ? JSON.parse(row.details) : {},
+        instructions: row.instructions ? JSON.parse(row.instructions) : []
+      }));
       
       return new Response(JSON.stringify({
-        favorites: favoritesRes.results || []
+        favorites: favorites
       }), {
         headers: {
           'Content-Type': 'application/json',

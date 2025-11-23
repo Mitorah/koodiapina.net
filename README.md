@@ -32,6 +32,8 @@ See [API.md](./API.md) for complete API documentation.
 
 ### First-Time Setup
 
+**Note:** All commands in this section should be run from the project root directory (`/home/your-user/path/to/koodiapina.net`).
+
 1. **Install dependencies:**
    ```bash
    npm install
@@ -54,7 +56,7 @@ See [API.md](./API.md) for complete API documentation.
    ```bash
    # Run schema migrations on local database
    for migration in migrations/*.sql; do 
-     npx wrangler d1 execute koodiapina_local --env local --file "$migration"
+     npx wrangler d1 execute koodiapina_local --env local --config workers/recipes_api/wrangler.toml --file "$migration"
    done
    ```
 
@@ -62,7 +64,7 @@ See [API.md](./API.md) for complete API documentation.
    ```bash
    # Seed test recipes and profiles for development
    for seed in migrations/seeds/*.sql; do 
-     npx wrangler d1 execute koodiapina_local --env local --file "$seed"
+     npx wrangler d1 execute koodiapina_local --env local --config workers/recipes_api/wrangler.toml --file "$seed"
    done
    ```
    
@@ -91,6 +93,7 @@ See [API.md](./API.md) for complete API documentation.
 
 1. **Start the API worker (Terminal 1):**
    ```bash
+   cd workers/recipes_api
    npx wrangler dev --env local
    ```
    This starts the API at `http://localhost:8787`
@@ -118,14 +121,14 @@ If you need to start fresh:
 3. Run schema migrations:
    ```bash
    for migration in migrations/*.sql; do 
-     npx wrangler d1 execute koodiapina_local --env local --file "$migration"
+     npx wrangler d1 execute koodiapina_local --env local --config workers/recipes_api/wrangler.toml --file "$migration"
    done
    ```
 
 4. Seed test data:
    ```bash
    for seed in migrations/seeds/*.sql; do 
-     npx wrangler d1 execute koodiapina_local --env local --file "$seed"
+     npx wrangler d1 execute koodiapina_local --env local --config workers/recipes_api/wrangler.toml --file "$seed"
    done
    ```
 

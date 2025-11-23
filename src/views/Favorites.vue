@@ -27,7 +27,7 @@
 
 <script>
 import RecipeView from './RecipeView.vue';
-import { fetchFavorites, fetchRecipes, fetchShoppingList } from '../utils/api.js';
+import { fetchFavorites, fetchShoppingList } from '../utils/api.js';
 import { Loading } from '@element-plus/icons-vue';
 
 export default {
@@ -66,22 +66,17 @@ export default {
       
       this.loading = true;
       try {
-        // Fetch favorite recipe GUIDs
+        // Fetch favorites with full recipe details from the API
         const favoritesData = await fetchFavorites(this.currentProfileGuid);
-        const favoriteGuids = (favoritesData.favorites || []).map(f => f.recipe_guid);
         
-        if (favoriteGuids.length === 0) {
-          this.favoriteRecipes = [];
-          return;
-        }
-
-        // Fetch all recipes and filter favorites
-        // Note: This is a simple approach. For better performance, you might want
-        // to add an API endpoint that returns favorite recipes directly
-        const recipesData = await fetchRecipes(1, 1000); // Fetch a large number to get all
-        this.favoriteRecipes = recipesData.recipes.filter(recipe => 
-          favoriteGuids.includes(recipe.recipe_guid)
-        );
+        // The API now returns full recipe objects, not just GUIDs
+        this.favoriteRecipes = (favoritesData.favorites || []).map(fav => ({
+          recipe_guid: fav.recipe_guid,
+          title: fav.title,
+          added_date: fav.added_date,
+          details: fav.details,
+          instructions: fav.instructions
+        }));
       } catch (err) {
         this.$message.error('Suosikkien lataus epäonnistui');
       } finally {

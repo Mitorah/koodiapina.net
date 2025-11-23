@@ -12,3 +12,10 @@ database_id = "58fd57d4-0c4b-496b-89ff-98be9389c35c"
 
 [observability.logs]
 enabled = true
+
+# Local development environment
+[env.local]
+[[env.local.d1_databases]]
+binding = "DB"
+database_name = "koodiapina_local"
+database_id = "a59d0baa-b8b1-4ce6-ab73-c9d50f9048ab"
