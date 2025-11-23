@@ -10,11 +10,7 @@
                 </template>
                 
                 <el-form :model="profileForm" label-position="top">
-                    <el-form-item label="Käyttäjänimi">
-                        <el-input v-model="profileForm.username" disabled></el-input>
-                        <div style="color: #909399; font-size: 12px; margin-top: 5px;">Käyttäjänimeä ei voi muuttaa</div>
-                    </el-form-item>
-                    <el-form-item label="Näyttönimi">
+                    <el-form-item label="Nimi">
                         <el-input v-model="profileForm.displayName" placeholder="esim. Matti Meikäläinen"></el-input>
                     </el-form-item>
                     <el-form-item label="Sähköposti">
