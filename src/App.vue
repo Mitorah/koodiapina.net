@@ -95,18 +95,6 @@
               </el-select>
             </div>
             
-            <!-- Admin: Add New User -->
-            <div v-if="currentProfileIsAdmin" class="admin-section">
-              <el-button 
-                type="primary" 
-                size="small" 
-                style="width: 100%; margin-top: 10px;"
-                @click="showAddUserDialog = true"
-              >
-                + Lisää käyttäjä
-              </el-button>
-            </div>
-            
             <el-divider />
             
             <!-- Menu Items -->
@@ -227,7 +215,8 @@
       <AdminUsers 
         v-else-if="activeTab === 'admin-users'"
         :currentProfileGuid="selectedProfile" 
-        :currentProfile="currentProfile" 
+        :currentProfile="currentProfile"
+        @profiles-changed="onProfilesChanged"
       />
     </el-container>
   </el-container>
@@ -286,14 +275,7 @@ export default {
     }
   },
   async mounted() {
-    this.tabs = [
-      // { label: 'Main Window', name: 'main', component: 'MainWindow' },
-      // { label: 'AI Window', name: 'ai', component: 'AIWindow' },
-      { label: 'Reseptit', name: 'recipes', component: 'Recipes' },
-      { label: 'Suosikit', name: 'favorites', component: 'Favorites' },
-      { label: 'Piilotetut', name: 'hidden', component: 'HiddenRecipes' },
-      { label: 'Ostoslista', name: 'shopping-list', component: 'ShoppingList' }
-    ];
+    this.updateTabs();
     
     // Load profiles
     await this.loadProfiles();
@@ -304,6 +286,7 @@ export default {
     if (savedProfile && this.profiles.some(p => p.profile_guid === savedProfile)) {
       // User has a valid saved profile - use it
       this.selectedProfile = savedProfile;
+      this.updateTabs(); // Update tabs based on selected profile
     } else {
       // First visit or invalid cookie - show profile selection dialog
       this.showProfileSelectionDialog = true;
@@ -338,6 +321,21 @@ export default {
     }
   },
   methods: {
+    updateTabs() {
+      const baseTabs = [
+        { label: 'Reseptit', name: 'recipes', component: 'Recipes' },
+        { label: 'Suosikit', name: 'favorites', component: 'Favorites' },
+        { label: 'Piilotetut', name: 'hidden', component: 'HiddenRecipes' },
+        { label: 'Ostoslista', name: 'shopping-list', component: 'ShoppingList' }
+      ];
+      
+      // Add admin tab if current profile is admin
+      if (this.currentProfileIsAdmin) {
+        baseTabs.push({ label: 'Käyttäjät', name: 'admin-users', component: 'AdminUsers' });
+      }
+      
+      this.tabs = baseTabs;
+    },
     onMenuClick() {
       this.drawerVisible = true;
     },
@@ -366,6 +364,7 @@ export default {
         this.selectedProfile = this.tempSelectedProfile;
         this.saveProfileToCookie(this.selectedProfile);
         this.showProfileSelectionDialog = false;
+        this.updateTabs(); // Update tabs after profile selection
         
         const profile = this.profiles.find(p => p.profile_guid === this.tempSelectedProfile);
         const displayName = profile?.display_name || profile?.username || 'tuntematon';
@@ -374,6 +373,7 @@ export default {
     },
     onProfileChange(profileGuid) {
       this.saveProfileToCookie(profileGuid);
+      this.updateTabs(); // Update tabs when profile changes
       const profile = this.profiles.find(p => p.profile_guid === profileGuid);
       const displayName = profile?.display_name || profile?.username || 'tuntematon';
       this.$message.success(`Vaihdettu profiiliin: ${displayName}`);
@@ -389,6 +389,10 @@ export default {
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
       return null;
+    },
+    onProfilesChanged() {
+      // Reload profiles when AdminUsers emits profiles-changed event
+      this.loadProfiles();
     },
     async createUser() {
       if (!this.newUserForm.username || !this.newUserForm.displayName) {

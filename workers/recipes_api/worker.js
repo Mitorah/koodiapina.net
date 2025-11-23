@@ -21,7 +21,7 @@ export default {
       return new Response(null, {
         headers: {
           'Access-Control-Allow-Origin': allowedOrigin,
-          'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type',
         }
       });
@@ -97,6 +97,94 @@ export default {
           display_name
         }), {
           status: 201,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+    }
+
+    // Handle /profiles/:profile_guid endpoint - PUT to update a profile (admin only)
+    if (pathname.startsWith('/profiles/') && request.method === 'PUT') {
+      const profileGuid = pathname.split('/')[2];
+      const body = await request.json();
+      const { username, display_name, email, is_admin } = body;
+      
+      if (!username || !display_name) {
+        return new Response(JSON.stringify({ error: 'username and display_name are required' }), {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+
+      try {
+        // Check if username already exists for a different profile
+        const existing = await env.DB.prepare(
+          'SELECT profile_guid FROM profiles WHERE username = ? AND profile_guid != ?'
+        ).bind(username, profileGuid).first();
+        
+        if (existing) {
+          return new Response(JSON.stringify({ error: 'Username already exists' }), {
+            status: 409,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': allowedOrigin,
+            }
+          });
+        }
+
+        await env.DB.prepare(
+          'UPDATE profiles SET username = ?, display_name = ?, email = ?, is_admin = ? WHERE profile_guid = ?'
+        ).bind(username, display_name, email || null, is_admin ? 1 : 0, profileGuid).run();
+        
+        return new Response(JSON.stringify({ 
+          success: true,
+          profile_guid: profileGuid,
+          username,
+          display_name
+        }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': allowedOrigin,
+          }
+        });
+      }
+    }
+
+    // Handle /profiles/:profile_guid endpoint - DELETE to soft-delete a profile (admin only)
+    if (pathname.startsWith('/profiles/') && request.method === 'DELETE') {
+      const profileGuid = pathname.split('/')[2];
+
+      try {
+        // Soft delete: set is_active = 0 instead of actually deleting
+        await env.DB.prepare(
+          'UPDATE profiles SET is_active = 0 WHERE profile_guid = ?'
+        ).bind(profileGuid).run();
+        
+        return new Response(JSON.stringify({ 
+          success: true,
+          profile_guid: profileGuid
+        }), {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': allowedOrigin,
