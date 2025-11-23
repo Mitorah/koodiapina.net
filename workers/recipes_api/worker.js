@@ -11,8 +11,12 @@ export default {
     // Detect local development by checking for localhost in the origin
     const isLocal = origin && (origin.includes('localhost') || origin.includes('127.0.0.1'));
     
+    // Allow both production domains
+    const allowedOrigins = ['https://koodiapina.net', 'https://ruoka.koodiapina.net'];
     let allowedOrigin = '';
-    if (isLocal || (origin && origin === env.ALLOWED_ORIGIN)) {
+    if (isLocal) {
+      allowedOrigin = origin;
+    } else if (origin && (allowedOrigins.includes(origin) || origin === env.ALLOWED_ORIGIN)) {
       allowedOrigin = origin;
     }
 
@@ -22,7 +26,8 @@ export default {
         headers: {
           'Access-Control-Allow-Origin': allowedOrigin,
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Headers': 'Content-Type, Cache-Control',
+          'Access-Control-Max-Age': '86400',
         }
       });
     }
