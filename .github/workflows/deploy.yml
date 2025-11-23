@@ -118,7 +118,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           echo "🚀 Deploying main API worker..."
-          npx wrangler deploy
+          npx wrangler deploy --var APP_VERSION:${{ steps.version.outputs.version }} --var BUILD_TIME:$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           echo "🚀 Deploying background workers..."
           cd workers/recipe_sync_ids && npx wrangler deploy
           cd ../recipe_sync_instructions && npx wrangler deploy

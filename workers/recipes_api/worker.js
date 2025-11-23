@@ -32,6 +32,20 @@ export default {
       return new Response('Forbidden', { status: 403 });
     }
 
+    // Handle /version endpoint - returns current deployment version
+    if (pathname === '/version' && request.method === 'GET') {
+      return new Response(JSON.stringify({
+        version: env.APP_VERSION || 'unknown',
+        buildTime: env.BUILD_TIME || 'unknown'
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': allowedOrigin,
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+        }
+      });
+    }
+
     // Handle /auth/user endpoint - returns Cloudflare Access authenticated user email
     if (pathname === '/auth/user' && request.method === 'GET') {
       // Get email from Cloudflare Access header
