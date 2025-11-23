@@ -97,7 +97,6 @@ export default {
           hiddenGuids.includes(recipe.recipe_guid)
         );
       } catch (err) {
-        console.error('Failed to load hidden recipes:', err);
         this.$message.error('Piilotettujen reseptien lataus epäonnistui');
       } finally {
         this.loading = false;
@@ -110,7 +109,7 @@ export default {
         const data = await fetchFavorites(this.currentProfileGuid);
         this.favoriteRecipeGuids = (data.favorites || []).map(f => f.recipe_guid);
       } catch (err) {
-        console.error('Failed to fetch favorites:', err);
+        // Failed to fetch favorites
       }
     },
     async fetchShoppingListItems() {
@@ -120,7 +119,7 @@ export default {
         const data = await fetchShoppingList(this.currentProfileGuid);
         this.shoppingListRecipeGuids = (data.shopping_list || []).map(item => item.recipe_guid);
       } catch (err) {
-        console.error('Failed to fetch shopping list:', err);
+        // Failed to fetch shopping list
       }
     },
     handleHiddenRemoved(recipeGuid) {

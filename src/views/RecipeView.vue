@@ -183,7 +183,6 @@ export default {
                     this.$message.success('Lisätty suosikkeihin');
                 }
             } catch (error) {
-                console.error('Failed to toggle favorite:', error);
                 this.$message.error('Suosikin päivitys epäonnistui');
             } finally {
                 this.favoriteLoading = false;
@@ -207,7 +206,6 @@ export default {
                     this.$message.success('Lisätty ostoslistalle');
                 }
             } catch (error) {
-                console.error('Failed to toggle shopping list:', error);
                 this.$message.error('Ostoslistan päivitys epäonnistui');
             } finally {
                 this.shoppingListLoading = false;
@@ -236,7 +234,6 @@ export default {
                     this.$message.success('Resepti piilotettu');
                 }
             } catch (error) {
-                console.error('Failed to toggle hidden:', error);
                 this.$message.error('Piilotuksen päivitys epäonnistui');
             } finally {
                 this.hiddenLoading = false;

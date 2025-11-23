@@ -116,7 +116,7 @@ function extractSearchableText(recipe) {
       }
     }
   } catch (error) {
-    console.error('Error parsing recipe details:', error);
+    // Error parsing recipe details
   }
 
   return Array.from(words).join(' ');

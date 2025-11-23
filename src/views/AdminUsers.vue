@@ -175,7 +175,6 @@ export default {
         const data = await fetchProfiles();
         this.profiles = data.profiles || [];
       } catch (err) {
-        console.error('Failed to load profiles:', err);
         this.$message.error('Käyttäjien lataus epäonnistui');
       }
     },
@@ -243,7 +242,6 @@ export default {
         // Emit event to parent
         this.$emit('profiles-changed');
       } catch (err) {
-        console.error('Failed to create user:', err);
         this.$message.error(err.message || 'Käyttäjän luonti epäonnistui');
       } finally {
         this.saving = false;
@@ -286,7 +284,6 @@ export default {
         // Emit event to parent
         this.$emit('profiles-changed');
       } catch (err) {
-        console.error('Failed to update user:', err);
         this.$message.error(err.message || 'Käyttäjän päivitys epäonnistui');
       } finally {
         this.saving = false;
@@ -320,7 +317,6 @@ export default {
           // Emit event to parent
           this.$emit('profiles-changed');
         } catch (err) {
-          console.error('Failed to delete user:', err);
           this.$message.error(err.message || 'Käyttäjän poisto epäonnistui');
         }
       }).catch(() => {
@@ -355,7 +351,6 @@ export default {
           // Emit event to parent
           this.$emit('profiles-changed');
         } catch (err) {
-          console.error('Failed to reactivate user:', err);
           this.$message.error(err.message || 'Käyttäjän aktivointi epäonnistui');
         }
       }).catch(() => {
@@ -385,7 +380,6 @@ export default {
           // Emit event to parent
           this.$emit('profiles-changed');
         } catch (err) {
-          console.error('Failed to permanently delete user:', err);
           this.$message.error(err.message || 'Käyttäjän pysyvä poisto epäonnistui');
         }
       }).catch(() => {

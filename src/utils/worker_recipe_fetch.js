@@ -44,7 +44,6 @@ export default {
           }
         }
       } catch (err) {
-        console.error('Failed to parse recipes JSON:', err);
         return new Response('Invalid recipes JSON', { status: 500 });
       }
 
@@ -73,7 +72,6 @@ export default {
 
       return new Response(`Stored ${storedCount} unique recipes with full JSON`, { status: 200 });
     } catch (err) {
-      console.error('Worker exception:', err);
       return new Response('Worker exception: ' + err.message, { status: 500 });
     }
   }

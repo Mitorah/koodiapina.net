@@ -100,7 +100,6 @@ async function checkVersion() {
     });
     
     if (!response.ok) {
-      console.warn('Version check failed:', response.status);
       return;
     }
     
@@ -110,9 +109,6 @@ async function checkVersion() {
     
     // If we have a stored version and it doesn't match, force reload
     if (storedVersion && storedVersion !== currentVersion) {
-      console.log(`Version mismatch detected! Stored: ${storedVersion}, Current: ${currentVersion}`);
-      console.log('App will update...');
-      
       // Store new version before showing notification
       localStorage.setItem(VERSION_STORAGE_KEY, currentVersion);
       
@@ -121,12 +117,9 @@ async function checkVersion() {
     } else if (!storedVersion) {
       // First time - just store the version
       localStorage.setItem(VERSION_STORAGE_KEY, currentVersion);
-      console.log('Initial version stored:', currentVersion);
-    } else {
-      console.log('Version check OK:', currentVersion);
     }
   } catch (error) {
-    console.error('Version check error:', error);
+    // Version check error
   }
 }
 
@@ -136,7 +129,6 @@ async function checkVersion() {
 export function startVersionCheck() {
   // Only in production
   if (!import.meta.env.PROD) {
-    console.log('Version check disabled in development');
     return;
   }
   
@@ -155,8 +147,6 @@ export function startVersionCheck() {
       checkVersion();
     }
   });
-  
-  console.log('Version check started (checking every 5 minutes)');
 }
 
 /**

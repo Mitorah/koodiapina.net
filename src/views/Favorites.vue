@@ -83,7 +83,6 @@ export default {
           favoriteGuids.includes(recipe.recipe_guid)
         );
       } catch (err) {
-        console.error('Failed to load favorites:', err);
         this.$message.error('Suosikkien lataus epäonnistui');
       } finally {
         this.loading = false;
@@ -99,7 +98,7 @@ export default {
         const data = await fetchShoppingList(this.currentProfileGuid);
         this.shoppingListRecipeGuids = (data.shopping_list || []).map(item => item.recipe_guid);
       } catch (err) {
-        console.error('Failed to fetch shopping list:', err);
+        // Failed to fetch shopping list
       }
     },
     handleShoppingListAdded(recipeGuid) {

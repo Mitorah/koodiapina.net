@@ -183,7 +183,6 @@ export default {
         // Clean up checked items that are no longer in the shopping list
         this.cleanupCheckedState();
       } catch (err) {
-        console.error('Failed to load shopping list:', err);
         this.$message.error('Ostoslistan lataus epäonnistui');
       } finally {
         this.loading = false;
@@ -376,7 +375,6 @@ export default {
         this.$message.success('Resepti poistettu ostoslistalta');
         this.loadShoppingList();
       } catch (err) {
-        console.error('Failed to remove from shopping list:', err);
         this.$message.error('Poisto epäonnistui');
       }
     },
@@ -418,7 +416,7 @@ export default {
           this.checkedPantryItems = new Set(data.pantryItems || []);
         }
       } catch (err) {
-        console.error('Failed to load checked state from localStorage:', err);
+        // Failed to load checked state from localStorage
       }
     },
 
@@ -432,7 +430,7 @@ export default {
         };
         localStorage.setItem(this.storageKey, JSON.stringify(data));
       } catch (err) {
-        console.error('Failed to save checked state to localStorage:', err);
+        // Failed to save checked state to localStorage
       }
     },
 

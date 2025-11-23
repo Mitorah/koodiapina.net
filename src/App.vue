@@ -57,7 +57,7 @@
         </div>
       </el-row>
     </el-header>
-    <el-main class="app-main">
+    <el-main :class="['app-main', { 'search-expanded-mobile': searchExpanded && activeTab === 'recipes' }]">
       <el-drawer
         title="Menu"
         v-model="drawerVisible"
@@ -394,7 +394,6 @@ export default {
           return a.profile_guid.localeCompare(b.profile_guid);
         });
       } catch (error) {
-        console.error('Failed to load profiles:', error);
         this.$message.error('Profiilien lataus epäonnistui');
       }
     },
@@ -437,7 +436,6 @@ export default {
           this.tempPinInput = '';
         }
       } catch (err) {
-        console.error('Failed to verify PIN:', err);
         this.tempPinError = 'PIN-koodin tarkistus epäonnistui';
       } finally {
         this.verifyingTempPin = false;
@@ -507,7 +505,6 @@ export default {
         // Reload profiles
         await this.loadProfiles();
       } catch (err) {
-        console.error('Failed to create user:', err);
         this.$message.error(err.message || 'Käyttäjän luonti epäonnistui');
       } finally {
         this.creatingUser = false;
@@ -682,6 +679,10 @@ export default {
 
   .close-search {
     position: relative;
+  }
+
+  .app-main.search-expanded-mobile {
+    padding-top: 60px;
   }
 }
 </style>
