@@ -11,6 +11,7 @@ jobs:
     name: Deploy to Cloudflare Production
     permissions:
       contents: write  # Required to push tags
+      deployments: write  # Required for Cloudflare Pages action to create GitHub deployments
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
