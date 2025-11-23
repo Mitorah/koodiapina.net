@@ -101,11 +101,16 @@ jobs:
           sed -i "s/CACHE_NAME = '[^']*'/CACHE_NAME = 'koodiapina-ruoka-v${TIMESTAMP}'/" public/service-worker.js
           echo "✅ Cache version updated to v${TIMESTAMP}"
 
+      - name: Update package.json version
+        run: |
+          echo "📝 Updating package.json version to ${{ steps.version.outputs.version }}..."
+          npm version ${{ steps.version.outputs.version }} --no-git-tag-version
+          echo "✅ package.json version updated"
+
       - name: Build frontend
         run: npm run build
         env:
           NODE_ENV: production
-          npm_package_version: ${{ steps.version.outputs.version }}
 
       - name: Deploy API Worker
         env:

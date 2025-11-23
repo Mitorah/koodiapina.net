@@ -25,28 +25,21 @@ export default {
       const bearer = tokenData.idToken;
 
       // Step 2: Fetch recipe list (example endpoint)
-      console.log('Bearer token:', bearer);
       const recipesRes = await fetch('https://api.ruokaboksi.fi/api/recipes/FIN?country=FI&language=fi', {
         headers: { 'Authorization': `Bearer ${bearer}` }
       });
-      console.log('Recipe API status:', recipesRes.status);
       const debugText = await recipesRes.text();
-      console.log('Recipe API response:', debugText);
       if (!recipesRes.ok) return new Response(`Recipe fetch failed. Status: ${recipesRes.status}. Response: ${debugText}`, { status: 500 });
       let recipes;
       try {
         recipes = JSON.parse(debugText);
-        console.log('Parsed recipes object:', recipes);
         // Try to extract array if recipes is not an array
         if (!Array.isArray(recipes)) {
           if (Array.isArray(recipes.items)) {
             recipes = recipes.items;
-            console.log('Using recipes.items as array');
           } else if (Array.isArray(recipes.data)) {
             recipes = recipes.data;
-            console.log('Using recipes.data as array');
           } else {
-            console.log('No array found in recipes object');
             return new Response('No recipe array found in API response', { status: 500 });
           }
         }
