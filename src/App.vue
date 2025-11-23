@@ -66,33 +66,24 @@
         @close="drawerVisible = false"
       >
           <div class="drawer-menu">
-            <!-- Profile Selector -->
+            <!-- Change Profile Button -->
             <div class="profile-selector">
-              <label class="profile-label">Profiili:</label>
-              <el-select
-                v-model="selectedProfile"
-                placeholder="Valitse profiili"
-                @change="onProfileChange"
-                style="width: 100%"
-                :value-key="'profile_guid'"
+              <div class="current-profile-display">
+                <el-icon v-if="currentProfileIsAdmin" style="color: #F56C6C;">
+                  <Star />
+                </el-icon>
+                <el-icon v-else style="color: #909399;">
+                  <User />
+                </el-icon>
+                <span class="profile-name">{{ currentProfileName }}</span>
+              </div>
+              <el-button 
+                @click="openChangeProfileDialog" 
+                style="width: 100%; margin-top: 8px;"
+                type="primary"
               >
-                <el-option
-                  v-for="profile in profiles"
-                  :key="profile.profile_guid"
-                  :label="profile.display_name || profile.username"
-                  :value="profile.profile_guid || ''"
-                >
-                  <span style="display: flex; align-items: center; gap: 8px;">
-                    <el-icon v-if="profile.is_admin" style="color: #F56C6C;">
-                      <Star />
-                    </el-icon>
-                    <el-icon v-else style="color: #909399;">
-                      <User />
-                    </el-icon>
-                    <span>{{ profile.display_name || profile.username }}</span>
-                  </span>
-                </el-option>
-              </el-select>
+                Vaihda profiilia
+              </el-button>
             </div>
             
             <el-divider />
@@ -110,38 +101,18 @@
       </el-drawer>
     </el-main>
     
-    <!-- Profile Selection Dialog (First Visit) -->
+    <!-- Profile Selection Dialog (First Visit / Change Profile) -->
     <el-dialog
       v-model="showProfileSelectionDialog"
-      title="Valitse profiili"
-      width="500px"
+      :title="profileDialogTitle"
+      :width="profileDialogWidth"
       :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      :show-close="false"
+      class="profile-dialog"
+      :close-on-press-escape="isFirstVisit ? false : true"
+      :show-close="!isFirstVisit"
+      @close="cancelProfileSelection"
     >
-      <!-- Production: Email matched - show welcome -->
-      <div v-if="userEmailFromAuth && emailMatchedProfile" style="margin-bottom: 16px; padding: 12px; background-color: #D1ECF1; border-radius: 4px; color: #0C5460;">
-        <strong>Tervetuloa!</strong> Tunnistauduitte sähköpostiosoitteella: {{ userEmailFromAuth }}<br>
-        Valitse profiilisi alta.
-      </div>
-      
-      <!-- Production: Email NOT matched - access denied -->
-      <div v-if="userEmailFromAuth && !emailMatchedProfile" style="padding: 20px; text-align: center;">
-        <div style="margin-bottom: 16px; padding: 16px; background-color: #F8D7DA; border-radius: 4px; color: #721C24;">
-          <el-icon style="font-size: 48px; margin-bottom: 12px;"><CircleClose /></el-icon>
-          <h3 style="margin: 0 0 8px 0;">Ei käyttöoikeutta</h3>
-          <p style="margin: 0;">Sähköpostiosoitteellesi ({{ userEmailFromAuth }}) ei ole luotu profiilia.</p>
-          <p style="margin: 8px 0 0 0; font-size: 14px;">Ota yhteyttä ylläpitäjään profiilin luomiseksi.</p>
-        </div>
-      </div>
-      
-      <!-- Local Development mode -->
-      <div v-if="!userEmailFromAuth" style="margin-bottom: 16px; padding: 12px; background-color: #E2E3E5; border-radius: 4px; color: #383D41;">
-        <strong>Kehitystila:</strong> Valitse testausprofiili.
-      </div>
-      
-      <!-- Profile selector - only shown if user has access or in dev mode -->
-      <el-form v-if="!userEmailFromAuth || emailMatchedProfile" label-width="100px">
+      <el-form label-position="left" label-width="100px">
         <el-form-item label="Profiili">
           <el-select
             v-model="tempSelectedProfile"
@@ -150,7 +121,7 @@
             :value-key="'profile_guid'"
           >
             <el-option
-              v-for="profile in filteredProfilesForSelection"
+              v-for="profile in activeProfiles"
               :key="profile.profile_guid"
               :label="profile.display_name || profile.username"
               :value="profile.profile_guid || ''"
@@ -163,20 +134,31 @@
                   <User />
                 </el-icon>
                 <span>{{ profile.display_name || profile.username }}</span>
-                <span v-if="profile.email" style="color: #909399; font-size: 12px;">({{ profile.email }})</span>
               </span>
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="PIN-koodi">
+          <el-input 
+            v-model="tempPinInput" 
+            type="password"
+            placeholder=""
+            @keyup.enter="confirmProfileSelection"
+          ></el-input>
+          <div v-if="tempPinError" style="color: red; font-size: 12px; margin-top: 5px;">
+            {{ tempPinError }}
+          </div>
         </el-form-item>
       </el-form>
       
       <template #footer>
         <span class="dialog-footer">
+          <el-button v-if="!isFirstVisit" @click="cancelProfileSelection">Peruuta</el-button>
           <el-button 
-            v-if="!userEmailFromAuth || emailMatchedProfile"
             type="primary" 
             @click="confirmProfileSelection" 
             :disabled="!tempSelectedProfile"
+            :loading="verifyingTempPin"
           >
             OK
           </el-button>
@@ -236,6 +218,11 @@
         :currentProfileGuid="selectedProfile" 
         :currentProfile="currentProfile" 
       />
+      <ProfileSettings 
+        v-else-if="activeTab === 'profile'"
+        :currentProfile="currentProfile"
+        @profile-updated="onProfilesChanged"
+      />
       <AdminUsers 
         v-else-if="activeTab === 'admin-users'"
         :currentProfileGuid="selectedProfile" 
@@ -255,9 +242,10 @@ import Favorites from './views/Favorites.vue'
 import HiddenRecipes from './views/HiddenRecipes.vue'
 import ShoppingList from './views/ShoppingList.vue'
 import AdminUsers from './views/AdminUsers.vue'
-import { Menu, User, Star, Search, Close, CircleClose } from '@element-plus/icons-vue'
+import ProfileSettings from './views/ProfileSettings.vue'
+import { Menu, User, Star, Search, Close } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
-import { fetchProfiles, createProfile, getUserEmail } from './utils/api'
+import { fetchProfiles, createProfile, verifyPin } from './utils/api'
 
 export default {
   name: 'App',
@@ -269,12 +257,12 @@ export default {
     HiddenRecipes,
     ShoppingList,
     AdminUsers,
+    ProfileSettings,
     Menu,
     User,
     Star,
     Search,
     Close,
-    CircleClose,
     ElIcon
   },
   data() {
@@ -282,17 +270,20 @@ export default {
       activeTab: 'recipes',
       tabs: [],
       drawerVisible: false,
+      windowWidth: window.innerWidth,
       profiles: [],
       selectedProfile: undefined,
       showAddUserDialog: false,
       showProfileSelectionDialog: false,
       tempSelectedProfile: undefined,
-      userEmailFromAuth: null,
-      emailMatchedProfile: false,
+      tempPinInput: '',
+      tempPinError: '',
+      verifyingTempPin: false,
       creatingUser: false,
       searchExpanded: false,
       searchQueryInput: '',
       searchQuery: '',
+      isFirstVisit: false,
       newUserForm: {
         username: '',
         displayName: '',
@@ -303,6 +294,9 @@ export default {
   },
   async mounted() {
     this.updateTabs();
+    
+    // Track window width for responsive dialogs
+    window.addEventListener('resize', this.handleResize);
     
     // Load profiles
     await this.loadProfiles();
@@ -316,10 +310,14 @@ export default {
       this.updateTabs(); // Update tabs based on selected profile
     } else {
       // First visit or invalid cookie - show profile selection dialog
-      await this.showProfileSelectionForFirstVisit();
+      this.isFirstVisit = true;
+      this.showProfileSelectionDialog = true;
     }
   },
   computed: {
+    activeProfiles() {
+      return this.profiles.filter(p => p.is_active === 1 || p.is_active === true);
+    },
     activeTabComponent() {
       const tab = this.tabs.find(t => t.name === this.activeTab);
       return tab ? tab.component : null;
@@ -346,22 +344,12 @@ export default {
       }
       return this.currentProfile.is_admin === 1 || this.currentProfile.is_admin === true;
     },
-    filteredProfilesForSelection() {
-      // If we have a Cloudflare email, only show matching profiles
-      if (this.userEmailFromAuth) {
-        const matchingProfiles = this.profiles.filter(
-          p => p.email && p.email.toLowerCase() === this.userEmailFromAuth.toLowerCase()
-        );
-        
-        // If we found matching profiles, show only those
-        if (matchingProfiles.length > 0) {
-          return matchingProfiles;
-        }
-        // If no matches, show all profiles as fallback (with warning message shown)
-      }
-      
-      // No email or no matches - show all profiles
-      return this.profiles;
+    profileDialogTitle() {
+      return this.isFirstVisit ? 'Valitse profiili' : 'Vaihda profiilia';
+    },
+    profileDialogWidth() {
+      // Use 95% on mobile, but max 500px on desktop
+      return this.windowWidth < 600 ? '95%' : '500px';
     }
   },
   methods: {
@@ -370,7 +358,8 @@ export default {
         { label: 'Reseptit', name: 'recipes', component: 'Recipes' },
         { label: 'Suosikit', name: 'favorites', component: 'Favorites' },
         { label: 'Piilotetut', name: 'hidden', component: 'HiddenRecipes' },
-        { label: 'Ostoslista', name: 'shopping-list', component: 'ShoppingList' }
+        { label: 'Ostoslista', name: 'shopping-list', component: 'ShoppingList' },
+        { label: 'Profiili', name: 'profile', component: 'ProfileSettings' }
       ];
       
       // Add admin tab if current profile is admin
@@ -403,62 +392,67 @@ export default {
         this.$message.error('Profiilien lataus epäonnistui');
       }
     },
-    onProfilesChanged() {
-      // Reload profiles when AdminUsers emits profiles-changed event
-      this.loadProfiles();
-    },
-    async showProfileSelectionForFirstVisit() {
-      // Try to get user email from Cloudflare Access
-      try {
-        const authData = await getUserEmail();
-        this.userEmailFromAuth = authData.email;
-        
-        if (this.userEmailFromAuth) {
-          // Production: Check if email matches any profile
-          const matchingProfiles = this.profiles.filter(
-            p => p.email && p.email.toLowerCase() === this.userEmailFromAuth.toLowerCase()
-          );
-          
-          if (matchingProfiles.length > 0) {
-            this.emailMatchedProfile = true;
-            // Don't pre-select - user must choose explicitly
-            this.tempSelectedProfile = undefined;
-          } else {
-            // No match in production - security issue
-            this.emailMatchedProfile = false;
-            this.tempSelectedProfile = undefined;
-          }
-        } else {
-          // Local dev (no email) - show all profiles, no pre-selection
-          this.tempSelectedProfile = undefined;
-        }
-      } catch (error) {
-        console.error('Failed to get user email:', error);
-        // Error fetching email - no pre-selection
-        this.tempSelectedProfile = undefined;
+    async confirmProfileSelection() {
+      if (!this.tempSelectedProfile) {
+        return;
       }
+
+      // Clear any previous errors
+      this.tempPinError = '';
       
-      // Show the dialog
+      this.verifyingTempPin = true;
+      
+      try {
+        const result = await verifyPin(this.tempSelectedProfile, this.tempPinInput);
+        
+        if (result.valid) {
+          // PIN is correct or not set, allow profile selection
+          this.selectedProfile = this.tempSelectedProfile;
+          this.saveProfileToCookie(this.selectedProfile);
+          this.showProfileSelectionDialog = false;
+          this.updateTabs(); // Update tabs after profile selection
+          
+          const profile = this.profiles.find(p => p.profile_guid === this.tempSelectedProfile);
+          const displayName = profile?.display_name || profile?.username || 'tuntematon';
+          
+          if (this.isFirstVisit) {
+            this.$message.success(`Profiili valittu: ${displayName}`);
+          } else {
+            this.$message.success(`Vaihdettu profiiliin: ${displayName}`);
+          }
+          
+          // Reset form
+          this.tempPinInput = '';
+          this.tempPinError = '';
+          this.tempSelectedProfile = undefined;
+        } else {
+          // PIN is incorrect
+          this.tempPinError = 'Väärä PIN-koodi';
+          this.tempPinInput = '';
+        }
+      } catch (err) {
+        console.error('Failed to verify PIN:', err);
+        this.tempPinError = 'PIN-koodin tarkistus epäonnistui';
+      } finally {
+        this.verifyingTempPin = false;
+      }
+    },
+    openChangeProfileDialog() {
+      // Open the profile selection dialog for changing profile
+      this.isFirstVisit = false;
+      this.tempSelectedProfile = undefined;
+      this.tempPinInput = '';
+      this.tempPinError = '';
       this.showProfileSelectionDialog = true;
     },
-    confirmProfileSelection() {
-      if (this.tempSelectedProfile) {
-        this.selectedProfile = this.tempSelectedProfile;
-        this.saveProfileToCookie(this.selectedProfile);
+    cancelProfileSelection() {
+      // Only allow cancel if not first visit
+      if (!this.isFirstVisit) {
         this.showProfileSelectionDialog = false;
-        this.updateTabs(); // Update tabs after profile selection
-        
-        const profile = this.profiles.find(p => p.profile_guid === this.tempSelectedProfile);
-        const displayName = profile?.display_name || profile?.username || 'tuntematon';
-        this.$message.success(`Profiili valittu: ${displayName}`);
+        this.tempSelectedProfile = undefined;
+        this.tempPinInput = '';
+        this.tempPinError = '';
       }
-    },
-    onProfileChange(profileGuid) {
-      this.saveProfileToCookie(profileGuid);
-      this.updateTabs(); // Update tabs when profile changes
-      const profile = this.profiles.find(p => p.profile_guid === profileGuid);
-      const displayName = profile?.display_name || profile?.username || 'tuntematon';
-      this.$message.success(`Vaihdettu profiiliin: ${displayName}`);
     },
     saveProfileToCookie(profileGuid) {
       // Save for 365 days
@@ -471,6 +465,10 @@ export default {
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
       return null;
+    },
+    onProfilesChanged() {
+      // Reload profiles when AdminUsers emits profiles-changed event
+      this.loadProfiles();
     },
     async createUser() {
       if (!this.newUserForm.username || !this.newUserForm.displayName) {
@@ -528,7 +526,13 @@ export default {
       this.searchExpanded = false;
       this.searchQueryInput = '';
       this.searchQuery = '';
+    },
+    handleResize() {
+      this.windowWidth = window.innerWidth;
     }
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.handleResize);
   },
   watch: {
     searchExpanded(newVal) {
@@ -595,6 +599,20 @@ export default {
 
 .close-search {
   flex-shrink: 0;
+}
+
+.current-profile-display {
+  display: flex;
+  align-items: left;
+  gap: 8px;
+  padding: 8px;
+  background-color: #f5f7fa;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.profile-dialog :deep(.el-form-item__label) {
+  text-align: left !important;
 }
 
 /* Mobile responsive styles */

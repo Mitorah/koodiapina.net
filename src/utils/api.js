@@ -4,6 +4,16 @@ const API_BASE_URL = import.meta.env.DEV
   ? 'http://localhost:8787'
   : 'https://koodiapina-net.leinonen-op.workers.dev';
 
+// Simple hash function for PIN codes
+async function hashPin(pin) {
+  if (!pin) return null;
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pin);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export async function fetchRecipes(page = 1, limit = 20, searchQuery = '', profileGuid = null) {
   let url = `${API_BASE_URL}?page=${page}&limit=${limit}`;
   if (searchQuery && searchQuery.trim()) {
@@ -20,12 +30,6 @@ export async function fetchRecipes(page = 1, limit = 20, searchQuery = '', profi
 export async function fetchProfiles() {
   const res = await fetch(`${API_BASE_URL}/profiles`);
   if (!res.ok) throw new Error('Failed to fetch profiles');
-  return await res.json();
-}
-
-export async function getUserEmail() {
-  const res = await fetch(`${API_BASE_URL}/auth/user`);
-  if (!res.ok) throw new Error('Failed to fetch user email');
   return await res.json();
 }
 
@@ -107,7 +111,9 @@ export async function removeHidden(profileGuid, recipeGuid) {
   return await res.json();
 }
 
-export async function createProfile(username, displayName, email, isAdmin) {
+export async function createProfile(username, displayName, email, isAdmin, pin) {
+  const passwordHash = await hashPin(pin);
+  
   const res = await fetch(`${API_BASE_URL}/profiles`, {
     method: 'POST',
     headers: {
@@ -117,7 +123,8 @@ export async function createProfile(username, displayName, email, isAdmin) {
       username, 
       display_name: displayName, 
       email: email || null,
-      is_admin: isAdmin 
+      is_admin: isAdmin,
+      password_hash: passwordHash
     }),
   });
   if (!res.ok) {
@@ -127,7 +134,9 @@ export async function createProfile(username, displayName, email, isAdmin) {
   return await res.json();
 }
 
-export async function updateProfile(profileGuid, username, displayName, email, isAdmin) {
+export async function updateProfile(profileGuid, username, displayName, email, isAdmin, pin) {
+  const passwordHash = await hashPin(pin);
+  
   const res = await fetch(`${API_BASE_URL}/profiles/${profileGuid}`, {
     method: 'PUT',
     headers: {
@@ -137,7 +146,8 @@ export async function updateProfile(profileGuid, username, displayName, email, i
       username, 
       display_name: displayName, 
       email: email || null,
-      is_admin: isAdmin 
+      is_admin: isAdmin,
+      password_hash: passwordHash
     }),
   });
   if (!res.ok) {
@@ -154,6 +164,45 @@ export async function deleteProfile(profileGuid) {
   if (!res.ok) {
     const error = await res.json();
     throw new Error(error.error || 'Failed to delete profile');
+  }
+  return await res.json();
+}
+
+export async function verifyPin(profileGuid, pin) {
+  const passwordHash = await hashPin(pin);
+  
+  const res = await fetch(`${API_BASE_URL}/profiles/${profileGuid}/verify-pin`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ password_hash: passwordHash }),
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || 'Failed to verify PIN');
+  }
+  return await res.json();
+}
+
+export async function reactivateProfile(profileGuid) {
+  const res = await fetch(`${API_BASE_URL}/profiles/${profileGuid}/reactivate`, {
+    method: 'POST',
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || 'Failed to reactivate profile');
+  }
+  return await res.json();
+}
+
+export async function permanentDeleteProfile(profileGuid) {
+  const res = await fetch(`${API_BASE_URL}/profiles/${profileGuid}/permanent`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || 'Failed to permanently delete profile');
   }
   return await res.json();
 }
