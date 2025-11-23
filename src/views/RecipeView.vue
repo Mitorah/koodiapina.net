@@ -108,37 +108,35 @@ export default {
     },
     emits: ['favorite-added', 'favorite-removed', 'shopping-list-added', 'shopping-list-removed', 'hidden-added', 'hidden-removed'],
     props: {
-        recipe: {
-            type: Object,
-            required: true
-        },
-        recipe_title: {
-            type: String,
-            required: false,
-            default: ''
-        },
-        isFavorite: {
-            type: Boolean,
-            default: false
-        },
-        isInShoppingList: {
-            type: Boolean,
-            default: false
-        },
-        isHidden: {
-            type: Boolean,
-            default: false
-        },
-        currentProfileGuid: {
-            type: String,
-            required: false,
-            default: null
-        },
-        isExpanded: {
-            type: Boolean,
-            default: false
-        }
+    recipe: {
+      type: Object,
+      required: true
     },
+    recipe_title: {
+      type: String,
+      required: true
+    },
+    isFavorite: {
+      type: Boolean,
+      default: false
+    },
+    isInShoppingList: {
+      type: Boolean,
+      default: false
+    },
+    currentProfileGuid: {
+      type: String,
+      default: null
+    },
+    isExpanded: {
+      type: Boolean,
+      default: false
+    },
+    showCard: {
+      type: Boolean,
+      default: true
+    }
+  },
     data() {
         return {
             showCard: this.isExpanded,
@@ -146,14 +144,57 @@ export default {
             shoppingListLoading: false,
             hiddenLoading: false,
             longPressTimer: null,
-            longPressTriggered: false
+            longPressTriggered: false,
+            wakeLock: null
         };
+    },
+    mounted() {
+        // Request wake lock when recipe is expanded by default
+        if (this.isExpanded && this.showCard) {
+            this.requestWakeLock();
+        }
+    },
+    beforeUnmount() {
+        // Release wake lock when component is destroyed
+        this.releaseWakeLock();
     },
     methods: {
         toggleCard() {
             // If isExpanded is true, don't allow toggling
             if (!this.isExpanded) {
                 this.showCard = !this.showCard;
+                
+                // Request wake lock when expanding, release when collapsing
+                if (this.showCard) {
+                    this.requestWakeLock();
+                } else {
+                    this.releaseWakeLock();
+                }
+            }
+        },
+        async requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    this.wakeLock = await navigator.wakeLock.request('screen');
+                    
+                    // Re-acquire wake lock when page becomes visible again
+                    document.addEventListener('visibilitychange', async () => {
+                        if (this.wakeLock !== null && document.visibilityState === 'visible' && this.showCard) {
+                            this.wakeLock = await navigator.wakeLock.request('screen');
+                        }
+                    });
+                }
+            } catch (err) {
+                // Wake lock request failed - not critical, just continue
+                console.log('Wake lock request failed:', err);
+            }
+        },
+        releaseWakeLock() {
+            if (this.wakeLock !== null) {
+                this.wakeLock.release()
+                    .then(() => {
+                        this.wakeLock = null;
+                    });
             }
         },
         startLongPress(event) {

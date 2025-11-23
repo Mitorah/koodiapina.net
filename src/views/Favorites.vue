@@ -10,7 +10,17 @@
         <div v-else-if="favoriteRecipes.length === 0" style="padding: 20px; text-align: center;">
             <p>Ei suosikkeja vielä</p>
         </div>
-        <el-card v-else v-for="recipe in favoriteRecipes" :key="recipe.recipe_guid">
+        <el-card 
+            v-else 
+            v-for="recipe in favoriteRecipes" 
+            :key="recipe.recipe_guid"
+            @mousedown="startLongPress(recipe)"
+            @mouseup="cancelLongPress"
+            @mouseleave="cancelLongPress"
+            @touchstart="startLongPress(recipe)"
+            @touchend="cancelLongPress"
+            @touchcancel="cancelLongPress"
+        >
             <RecipeView 
                 :recipe="recipe" 
                 :recipe_title="recipe.title"
@@ -22,6 +32,30 @@
                 @shopping-list-removed="handleShoppingListRemoved"
             />
         </el-card>
+
+        <!-- Cooking View Dialog -->
+        <el-dialog 
+            v-model="showCookingDialog" 
+            width="90%"
+            style="max-width: 800px;"
+            top="2vh"
+        >
+            <template #header>
+                <span style="font-weight: bold;">{{ selectedRecipe?.title }}</span>
+            </template>
+            <RecipeView 
+                v-if="selectedRecipe"
+                :recipe="selectedRecipe" 
+                :recipe_title="selectedRecipe.title"
+                :isFavorite="true"
+                :isInShoppingList="shoppingListRecipeGuids.includes(selectedRecipe.recipe_guid)"
+                :currentProfileGuid="currentProfileGuid"
+                :isExpanded="true"
+                @favorite-removed="handleFavoriteRemoved"
+                @shopping-list-added="handleShoppingListAdded"
+                @shopping-list-removed="handleShoppingListRemoved"
+            />
+        </el-dialog>
     </el-container>
 </template>
 
@@ -43,8 +77,11 @@ export default {
     return {
       favoriteRecipes: [],
       shoppingListRecipeGuids: [],
-      loading: false
-    };
+      loading: false,
+      showCookingDialog: false,
+      selectedRecipe: null,
+      longPressTimer: null
+    }
   },
   watch: {
     currentProfileGuid: {
@@ -85,6 +122,7 @@ export default {
     },
     handleFavoriteRemoved(recipeGuid) {
       this.favoriteRecipes = this.favoriteRecipes.filter(recipe => recipe.recipe_guid !== recipeGuid);
+      this.showCookingDialog = false;
     },
     async fetchShoppingListItems() {
       if (!this.currentProfileGuid) return;
@@ -103,6 +141,18 @@ export default {
     },
     handleShoppingListRemoved(recipeGuid) {
       this.shoppingListRecipeGuids = this.shoppingListRecipeGuids.filter(guid => guid !== recipeGuid);
+    },
+    startLongPress(recipe) {
+      this.longPressTimer = setTimeout(() => {
+        this.selectedRecipe = recipe;
+        this.showCookingDialog = true;
+      }, 500); // 500ms long press
+    },
+    cancelLongPress() {
+      if (this.longPressTimer) {
+        clearTimeout(this.longPressTimer);
+        this.longPressTimer = null;
+      }
     }
   }
 };

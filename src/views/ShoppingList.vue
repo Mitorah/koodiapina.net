@@ -106,7 +106,6 @@
             width="90%"
             style="max-width: 800px;"
             top="2vh"
-            @close="releaseWakeLock"
         >
             <template #header>
                 <span style="font-weight: bold;">{{ selectedRecipe?.title }}</span>
@@ -161,8 +160,7 @@ export default {
       recipesExpanded: false,
       showRecipeDialog: false,
       selectedRecipe: null,
-      favoriteRecipeGuids: [],
-      wakeLock: null
+      favoriteRecipeGuids: []
     };
   },
   computed: {
@@ -521,34 +519,6 @@ export default {
     openRecipeDialog(recipe) {
       this.selectedRecipe = recipe;
       this.showRecipeDialog = true;
-      this.requestWakeLock();
-    },
-
-    async requestWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
-          this.wakeLock = await navigator.wakeLock.request('screen');
-          
-          // Re-acquire wake lock when page becomes visible again
-          document.addEventListener('visibilitychange', async () => {
-            if (this.wakeLock !== null && document.visibilityState === 'visible' && this.showRecipeDialog) {
-              this.wakeLock = await navigator.wakeLock.request('screen');
-            }
-          });
-        }
-      } catch (err) {
-        // Wake lock request failed - not critical, just continue
-        console.log('Wake lock request failed:', err);
-      }
-    },
-
-    releaseWakeLock() {
-      if (this.wakeLock !== null) {
-        this.wakeLock.release()
-          .then(() => {
-            this.wakeLock = null;
-          });
-      }
     },
 
     async loadFavorites() {
@@ -579,7 +549,6 @@ export default {
     handleShoppingListRemoved(recipeGuid) {
       this.showRecipeDialog = false;
       this.selectedRecipe = null;
-      this.releaseWakeLock();
       this.loadShoppingList();
     },
 
