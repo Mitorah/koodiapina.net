@@ -155,6 +155,32 @@ Every deployment automatically:
 - Updates service worker cache version (timestamp-based)
 - Purges Cloudflare edge cache
 - Forces fresh content delivery to users
+- **Generates unique asset filenames** with content hashes for cache-busting
+- **Auto-increments version number** displayed in the app
+
+### Versioning
+
+The app uses **automatic semantic versioning** based on commit messages:
+
+- **Patch** (0.0.0 → 0.0.1): Default for any commit
+  ```
+  fix: button alignment
+  chore: update dependencies
+  ```
+
+- **Minor** (0.0.0 → 0.1.0): Include `[minor]` or `feat:` in commit message
+  ```
+  feat: add shopping list feature
+  [minor] new recipe filter
+  ```
+
+- **Major** (0.0.0 → 1.0.0): Include `[major]` or `BREAKING CHANGE` in commit message
+  ```
+  [major] redesign UI
+  BREAKING CHANGE: remove old API
+  ```
+
+Version is stored as git tags (no files tracked) and displayed at the bottom of the app menu. Each deployment to `cloudflare` branch automatically increments the version.
 
 ## Development
 

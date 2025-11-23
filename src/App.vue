@@ -97,6 +97,11 @@
             >
               {{ tab.label }}
             </div>
+            
+            <!-- Version Info -->
+            <div class="version-info">
+              v{{ appVersion }}
+            </div>
           </div>
       </el-drawer>
     </el-main>
@@ -278,6 +283,7 @@ export default {
       tempSelectedProfile: undefined,
       tempPinInput: '',
       tempPinError: '',
+      appVersion: typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'dev',
       verifyingTempPin: false,
       creatingUser: false,
       searchExpanded: false,
@@ -609,6 +615,16 @@ export default {
   background-color: #f5f7fa;
   border-radius: 4px;
   font-weight: 500;
+}
+
+.version-info {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #909399;
+  font-size: 11px;
 }
 
 .profile-dialog :deep(.el-form-item__label) {
