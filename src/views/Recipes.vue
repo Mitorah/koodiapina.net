@@ -46,7 +46,8 @@
                 <span style="font-weight: bold;">{{ selectedRecipe?.title }}</span>
             </template>
             <div
-                @touchstart.passive="startDialogLongPress"
+                @touchstart.passive="handleDialogTouchStart"
+                @touchmove.passive="handleDialogTouchMove"
                 @touchend.passive="cancelDialogLongPress"
                 @touchcancel.passive="cancelDialogLongPress"
                 @contextmenu.prevent
@@ -100,7 +101,9 @@ export default {
       longPressTimer: null,
       dialogLongPressTimer: null,
       touchStartX: 0,
-      touchStartY: 0
+      touchStartY: 0,
+      dialogTouchStartX: 0,
+      dialogTouchStartY: 0
     };
   },
   computed: {
@@ -224,6 +227,22 @@ export default {
       this.dialogLongPressTimer = setTimeout(() => {
         this.showCookingDialog = false;
       }, 500); // 500ms long press to close
+    },
+    handleDialogTouchStart(event) {
+      const touch = event.touches[0];
+      this.dialogTouchStartX = touch.clientX;
+      this.dialogTouchStartY = touch.clientY;
+      this.startDialogLongPress();
+    },
+    handleDialogTouchMove(event) {
+      const touch = event.touches[0];
+      const deltaX = Math.abs(touch.clientX - this.dialogTouchStartX);
+      const deltaY = Math.abs(touch.clientY - this.dialogTouchStartY);
+      
+      // Cancel long press if moved more than 10px
+      if (deltaX > 10 || deltaY > 10) {
+        this.cancelDialogLongPress();
+      }
     },
     cancelDialogLongPress() {
       if (this.dialogLongPressTimer) {
