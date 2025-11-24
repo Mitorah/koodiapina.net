@@ -6,7 +6,8 @@
             @mousedown="startLongPress(recipe)"
             @mouseup="cancelLongPress"
             @mouseleave="cancelLongPress"
-            @touchstart.passive="startLongPress(recipe)"
+            @touchstart.passive="handleTouchStart(recipe, $event)"
+            @touchmove.passive="handleTouchMove"
             @touchend.passive="cancelLongPress"
             @touchcancel.passive="cancelLongPress"
         >
@@ -49,6 +50,7 @@
                 @touchend.passive="cancelDialogLongPress"
                 @touchcancel.passive="cancelDialogLongPress"
                 @contextmenu.prevent
+                style="user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;"
             >
                 <RecipeView 
                     v-if="selectedRecipe"
@@ -96,7 +98,9 @@ export default {
       showCookingDialog: false,
       selectedRecipe: null,
       longPressTimer: null,
-      dialogLongPressTimer: null
+      dialogLongPressTimer: null,
+      touchStartX: 0,
+      touchStartY: 0
     };
   },
   computed: {
@@ -186,6 +190,22 @@ export default {
       this.recipes = this.recipes.filter(recipe => recipe.recipe_guid !== recipeGuid);
       // Refetch to maintain page size
       this.fetchRecipes(this.page);
+    },
+    handleTouchStart(recipe, event) {
+      const touch = event.touches[0];
+      this.touchStartX = touch.clientX;
+      this.touchStartY = touch.clientY;
+      this.startLongPress(recipe);
+    },
+    handleTouchMove(event) {
+      const touch = event.touches[0];
+      const deltaX = Math.abs(touch.clientX - this.touchStartX);
+      const deltaY = Math.abs(touch.clientY - this.touchStartY);
+      
+      // Cancel long press if moved more than 10px
+      if (deltaX > 10 || deltaY > 10) {
+        this.cancelLongPress();
+      }
     },
     startLongPress(recipe) {
       this.longPressTimer = setTimeout(() => {
