@@ -115,6 +115,7 @@
                 @touchend.passive="cancelDialogLongPress"
                 @touchcancel.passive="cancelDialogLongPress"
                 @contextmenu.prevent
+                style="user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;"
             >
                 <RecipeView 
                     v-if="selectedRecipe"
