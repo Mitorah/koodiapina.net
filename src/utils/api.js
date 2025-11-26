@@ -15,7 +15,7 @@ async function hashPin(pin) {
 }
 
 export async function fetchRecipes(page = 1, limit = 20, searchQuery = '', profileGuid = null) {
-  let url = `${API_BASE_URL}?page=${page}&limit=${limit}`;
+  let url = `${API_BASE_URL}/recipes?page=${page}&limit=${limit}`;
   if (searchQuery && searchQuery.trim()) {
     url += `&search=${encodeURIComponent(searchQuery.trim())}`;
   }

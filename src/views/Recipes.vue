@@ -118,8 +118,9 @@ export default {
         if (newProfileGuid) {
           this.fetchFavoritesList();
           this.fetchShoppingListItems();
-          this.fetchRecipes(this.page);
         }
+        // Always fetch recipes, even without a profile
+        this.fetchRecipes(this.page);
       }
     },
     searchQuery(newQuery) {
