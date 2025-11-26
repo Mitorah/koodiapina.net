@@ -1,4 +1,4 @@
-const CACHE_NAME = 'koodiapina-ruoka-v4';
+const CACHE_NAME = 'koodiapina-ruoka-v5';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -34,51 +34,42 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Fetch event - cache first for all resources
+// Fetch event - network first for everything
 self.addEventListener('fetch', (event) => {
   // Skip service worker for:
-  // - Non-GET requests (POST, PUT, DELETE, etc.)
-  // - API requests (dynamic data, should not be cached)
   // - Chrome extension requests
   // - Vite HMR WebSocket connections
   // - Non-http(s) requests
   if (
-    event.request.method !== 'GET' ||
-    event.request.url.includes('/api/') ||
-    event.request.url.includes('/api?') ||
     event.request.url.startsWith('chrome-extension://') ||
     event.request.url.includes('/__vite') ||
     event.request.url.includes('@vite') ||
-    event.request.url.includes('?') && event.request.url.includes('token=') ||
     !event.request.url.startsWith('http')
   ) {
     return;
   }
 
-  // Cache-first strategy for all resources
+  // Network-first strategy: always try network, fallback to cache only for navigation
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then((response) => {
-        if (response) {
-          return response;
-        }
-        
-        const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then((response) => {
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-          
+        // Only cache successful GET requests for navigation (HTML)
+        if (event.request.method === 'GET' && 
+            event.request.mode === 'navigate' &&
+            response && response.status === 200) {
           const responseToCache = response.clone();
-          
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          
-          return response;
-        });
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return response;
+      })
+      .catch(() => {
+        // Only use cache as fallback for navigation requests
+        if (event.request.mode === 'navigate') {
+          return caches.match(event.request);
+        }
+        throw new Error('Network request failed');
       })
   );
 });
