@@ -28,6 +28,71 @@ REST API for recipes, profiles, favorites, and shopping lists:
 
 See [API.md](./API.md) for complete API documentation.
 
+## Security
+
+### Authentication & Authorization
+
+This application uses **Cloudflare Access** for authentication:
+
+- **Infrastructure-level protection**: All API endpoints are protected by Cloudflare Access
+- **No password management**: Uses your existing identity provider (Google, GitHub, etc.)
+- **Automatic authentication**: Access injects `CF-Access-Authenticated-User-Email` header
+- **Admin operations**: Profile creation/deletion/modification requires admin status
+
+### Profile System
+
+- **Profiles are for family members**: Mom, Dad, Kids, etc.
+- **PIN codes for profile switching**: Simple 4-digit codes prevent accidental switching
+- **Not for authentication**: Cloudflare Access handles real authentication
+- **Each profile has**: Individual favorites, shopping lists, and hidden recipes
+
+### Setting Up Cloudflare Access
+
+**Required for production deployment:**
+
+1. Go to **Cloudflare Zero Trust** → **Access** → **Applications**
+2. Create a new Self-hosted application:
+   - **Application name**: Koodiapina.net
+   - **Session duration**: 24 hours (or your preference)
+   - **Add public hostnames**:
+     - `ruoka.koodiapina.net` (frontend)
+     - `koodiapina-net.leinonen-op.workers.dev` (API worker)
+
+3. **Add Access Policy**:
+   - **Policy name**: Allow family members
+   - **Action**: Allow
+   - **Include**: Emails (add your family members' emails)
+
+4. **Configure Identity Provider** (if not already done):
+   - Go to **Access** → **Authentication** → **Login methods**
+   - Add: Google, GitHub, Microsoft, or One-time PIN
+
+5. **Test**: Access your app in incognito mode - you should be prompted to authenticate
+
+### Security Best Practices
+
+- ✅ **API protected by CF Access** - Only authenticated users can access
+- ✅ **CORS properly configured** - Only allows requests from authorized domains
+- ✅ **Credentials required** - All API calls include authentication cookies
+- ✅ **SQL injection prevented** - Using prepared statements with parameter binding
+- ✅ **Admin operations protected** - Only users with `is_admin = 1` can create/delete profiles
+- ✅ **Environment variables** - Secrets managed through Cloudflare dashboard, not in code
+
+### Local Development Security
+
+- **Localhost bypass**: Local development (`http://localhost:5173`) bypasses CF Access
+- **Local database only**: Uses separate `koodiapina_local` database
+- **No production data risk**: Local environment cannot affect production data
+
+### What's NOT Protected
+
+Since this is a **private family app**, certain features are intentionally simple:
+- **Profile PINs**: Use SHA-256 hashing (adequate for 4-digit codes preventing accidental switching)
+- **No rate limiting**: Small trusted user base doesn't require it
+- **No user isolation**: Family members can technically access each other's favorites (prevented by UI, not enforced by API)
+
+This trade-off is acceptable for a private family application protected by Cloudflare Access.
+
 ## Setup
 
 ### First-Time Setup
