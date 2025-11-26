@@ -1,6 +1,6 @@
 # koodiapina-net
 
-A modern Vue + Cloudflare D1 app for browsing, syncing, and displaying recipes from ruokaboksi.fi.
+A modern Vue + Cloudflare D1 app for browsing, syncing, and displaying recipes from ruokaboksi.fi. Protected by Cloudflare Access for family use.
 
 ## Tech Stack
 
@@ -8,6 +8,7 @@ A modern Vue + Cloudflare D1 app for browsing, syncing, and displaying recipes f
 - **Backend**: Cloudflare Workers
 - **Database**: Cloudflare D1 (SQLite)
 - **Deployment**: Cloudflare Pages, GitHub Actions
+- **Authentication**: Cloudflare Access
 - **Development**: Wrangler, Miniflare
 
 ## Features
