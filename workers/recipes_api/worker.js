@@ -13,7 +13,13 @@ function getCorsHeaders(allowedOrigin) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const pathname = url.pathname;
+    // Strip /api prefix when accessed via route
+    let pathname = url.pathname;
+    if (pathname.startsWith('/api/')) {
+      pathname = pathname.substring(4); // Remove '/api'
+    } else if (pathname === '/api') {
+      pathname = '/';
+    }
 
     // Optional: add filtering by title, diet, allergens, etc.
     // const title = url.searchParams.get('title');
@@ -29,6 +35,10 @@ export default {
       allowedOrigin = origin;
     } else if (origin && (allowedOrigins.includes(origin) || origin === env.ALLOWED_ORIGIN)) {
       allowedOrigin = origin;
+    } else if (!origin) {
+      // Same-origin request (no Origin header) - allow the request
+      // Use the request URL's origin as the allowed origin
+      allowedOrigin = new URL(request.url).origin;
     }
 
     // CORS preflight
@@ -705,9 +715,10 @@ export default {
       }
     }
 
-    // Handle /recipes endpoint (default)
-    const page = parseInt(url.searchParams.get('page') || '1', 10);
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 100); // max 100 per page
+    // Handle /recipes endpoint (or root /)
+    if (pathname === '/recipes' || pathname === '/') {
+      const page = parseInt(url.searchParams.get('page') || '1', 10);
+      const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 100); // max 100 per page
     const searchQuery = url.searchParams.get('search') || url.searchParams.get('q');
     const profileGuid = url.searchParams.get('profile_guid');
 
@@ -775,6 +786,10 @@ export default {
         ...getCorsHeaders(allowedOrigin),
       }
     });
+    }
+
+    // If no route matched, return 404
+    return new Response('Not Found', { status: 404 });
   }
 }
 

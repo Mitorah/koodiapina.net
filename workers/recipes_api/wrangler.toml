@@ -5,7 +5,8 @@ compatibility_date = "2025-09-08"
 # Route the worker to the same domain as the frontend
 # This ensures Cloudflare Access cookies work properly
 routes = [
-  { pattern = "ruoka.koodiapina.net/api/*", zone_name = "koodiapina.net" }
+  { pattern = "https://ruoka.koodiapina.net/api", zone_name = "koodiapina.net" },
+  { pattern = "https://ruoka.koodiapina.net/api/*", zone_name = "koodiapina.net" }
 ]
 
 [vars]
