@@ -138,7 +138,7 @@
 </template>
 
 <script>
-import { fetchShoppingList, removeFromShoppingList, fetchRecipes, fetchFavorites } from '../utils/api.js';
+import { fetchShoppingList, removeFromShoppingList, fetchFavorites } from '../utils/api.js';
 import { parseAmountWithUnit, getUnitForm } from '../utils/units.js';
 import { Loading, ArrowRight, ArrowDown, Close } from '@element-plus/icons-vue';
 import RecipeView from './RecipeView.vue';
@@ -222,22 +222,23 @@ export default {
       
       this.loading = true;
       try {
-        // Fetch shopping list recipe GUIDs
+        // Fetch shopping list with full recipe details from API
         const shoppingListData = await fetchShoppingList(this.currentProfileGuid);
-        const recipeGuids = (shoppingListData.shopping_list || []).map(item => item.recipe_guid);
         
-        if (recipeGuids.length === 0) {
-          this.shoppingListRecipes = [];
+        // The API now returns full recipe objects
+        this.shoppingListRecipes = (shoppingListData.shopping_list || []).map(item => ({
+          recipe_guid: item.recipe_guid,
+          title: item.title,
+          added_date: item.added_date,
+          details: item.details,
+          instructions: item.instructions
+        }));
+
+        if (this.shoppingListRecipes.length === 0) {
           this.aggregatedIngredients = [];
           this.aggregatedPantryItems = [];
           return;
         }
-
-        // Fetch all recipes
-        const recipesData = await fetchRecipes(1, 1000);
-        this.shoppingListRecipes = recipesData.recipes.filter(recipe => 
-          recipeGuids.includes(recipe.recipe_guid)
-        );
 
         // Aggregate pantry items first, then ingredients (excluding pantry items)
         this.aggregatePantryItems();

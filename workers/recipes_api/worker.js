@@ -511,12 +511,36 @@ export default {
     // Handle /hidden/:profile_guid endpoint - GET hidden recipes for a user
     if (pathname.startsWith('/hidden/') && request.method === 'GET') {
       const profileGuid = pathname.split('/')[2];
-      const hiddenRes = await env.DB.prepare(
-        'SELECT h.hidden_id, h.recipe_guid, h.hidden_at FROM hidden_recipes h WHERE h.profile_guid = ? ORDER BY h.hidden_at DESC'
-      ).bind(profileGuid).all();
+      
+      // Join with recipes table to get full recipe details
+      const hiddenRes = await env.DB.prepare(`
+        SELECT 
+          h.hidden_id, 
+          h.recipe_guid, 
+          h.hidden_at,
+          r.title,
+          r.added_date,
+          r.details,
+          r.instructions
+        FROM hidden_recipes h
+        INNER JOIN recipes r ON h.recipe_guid = r.recipe_guid
+        WHERE h.profile_guid = ? 
+        ORDER BY h.hidden_at DESC
+      `).bind(profileGuid).all();
+      
+      // Parse JSON fields for each recipe
+      const hidden = (hiddenRes.results || []).map(row => ({
+        hidden_id: row.hidden_id,
+        recipe_guid: row.recipe_guid,
+        hidden_at: row.hidden_at,
+        title: row.title,
+        added_date: row.added_date,
+        details: row.details ? JSON.parse(row.details) : {},
+        instructions: row.instructions ? JSON.parse(row.instructions) : []
+      }));
       
       return new Response(JSON.stringify({
-        hidden: hiddenRes.results || []
+        hidden: hidden
       }), {
         headers: {
           'Content-Type': 'application/json',
@@ -615,12 +639,36 @@ export default {
     // Handle /shopping-list/:profile_guid endpoint - GET shopping list for a user
     if (pathname.startsWith('/shopping-list/') && request.method === 'GET') {
       const profileGuid = pathname.split('/')[2];
-      const shoppingListRes = await env.DB.prepare(
-        'SELECT s.shopping_list_id, s.recipe_guid, s.added_at FROM shopping_list s WHERE s.profile_guid = ? ORDER BY s.added_at DESC'
-      ).bind(profileGuid).all();
+      
+      // Join with recipes table to get full recipe details
+      const shoppingListRes = await env.DB.prepare(`
+        SELECT 
+          s.shopping_list_id, 
+          s.recipe_guid, 
+          s.added_at,
+          r.title,
+          r.added_date,
+          r.details,
+          r.instructions
+        FROM shopping_list s
+        INNER JOIN recipes r ON s.recipe_guid = r.recipe_guid
+        WHERE s.profile_guid = ? 
+        ORDER BY s.added_at DESC
+      `).bind(profileGuid).all();
+      
+      // Parse JSON fields for each recipe
+      const shoppingList = (shoppingListRes.results || []).map(row => ({
+        shopping_list_id: row.shopping_list_id,
+        recipe_guid: row.recipe_guid,
+        added_at: row.added_at,
+        title: row.title,
+        added_date: row.added_date,
+        details: row.details ? JSON.parse(row.details) : {},
+        instructions: row.instructions ? JSON.parse(row.instructions) : []
+      }));
       
       return new Response(JSON.stringify({
-        shopping_list: shoppingListRes.results || []
+        shopping_list: shoppingList
       }), {
         headers: {
           'Content-Type': 'application/json',

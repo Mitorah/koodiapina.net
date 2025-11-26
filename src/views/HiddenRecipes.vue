@@ -40,7 +40,7 @@
 
 <script>
 import RecipeView from './RecipeView.vue';
-import { fetchHidden, fetchRecipes, fetchFavorites, fetchShoppingList } from '../utils/api.js';
+import { fetchHidden, fetchFavorites, fetchShoppingList } from '../utils/api.js';
 import { Loading } from '@element-plus/icons-vue';
 
 export default {
@@ -85,20 +85,17 @@ export default {
       
       this.loading = true;
       try {
-        // Fetch hidden recipe GUIDs
+        // Fetch hidden recipes with full recipe details from API
         const hiddenData = await fetchHidden(this.currentProfileGuid);
-        const hiddenGuids = (hiddenData.hidden || []).map(h => h.recipe_guid);
         
-        if (hiddenGuids.length === 0) {
-          this.hiddenRecipes = [];
-          return;
-        }
-
-        // Fetch all recipes and filter hidden ones
-        const recipesData = await fetchRecipes(1, 1000); // Fetch a large number to get all
-        this.hiddenRecipes = recipesData.recipes.filter(recipe => 
-          hiddenGuids.includes(recipe.recipe_guid)
-        );
+        // The API now returns full recipe objects
+        this.hiddenRecipes = (hiddenData.hidden || []).map(item => ({
+          recipe_guid: item.recipe_guid,
+          title: item.title,
+          added_date: item.added_date,
+          details: item.details,
+          instructions: item.instructions
+        }));
       } catch (err) {
         this.$message.error('Piilotettujen reseptien lataus epäonnistui');
       } finally {
