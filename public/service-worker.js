@@ -1,4 +1,4 @@
-const CACHE_NAME = 'koodiapina-ruoka-v2';
+const CACHE_NAME = 'koodiapina-ruoka-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -37,10 +37,12 @@ self.addEventListener('activate', (event) => {
 // Fetch event - cache first for all resources
 self.addEventListener('fetch', (event) => {
   // Skip service worker for:
+  // - Non-GET requests (POST, PUT, DELETE, etc.)
   // - Chrome extension requests
   // - Vite HMR WebSocket connections
   // - Non-http(s) requests
   if (
+    event.request.method !== 'GET' ||
     event.request.url.startsWith('chrome-extension://') ||
     event.request.url.includes('/__vite') ||
     event.request.url.includes('@vite') ||
