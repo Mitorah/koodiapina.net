@@ -1,4 +1,4 @@
-const CACHE_NAME = 'koodiapina-ruoka-v3';
+const CACHE_NAME = 'koodiapina-ruoka-v4';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -38,11 +38,14 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   // Skip service worker for:
   // - Non-GET requests (POST, PUT, DELETE, etc.)
+  // - API requests (dynamic data, should not be cached)
   // - Chrome extension requests
   // - Vite HMR WebSocket connections
   // - Non-http(s) requests
   if (
     event.request.method !== 'GET' ||
+    event.request.url.includes('/api/') ||
+    event.request.url.includes('/api?') ||
     event.request.url.startsWith('chrome-extension://') ||
     event.request.url.includes('/__vite') ||
     event.request.url.includes('@vite') ||
