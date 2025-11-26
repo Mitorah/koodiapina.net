@@ -128,10 +128,6 @@ async function checkVersion() {
  * Start periodic version checking
  */
 export function startVersionCheck() {
-  // Temporarily disabled to fix infinite update loop
-  // TODO: Re-enable once APP_VERSION environment variable is properly set
-  return;
-  
   // Only in production
   if (!import.meta.env.PROD) {
     return;
