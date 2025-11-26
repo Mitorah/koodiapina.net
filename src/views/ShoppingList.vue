@@ -129,6 +129,7 @@
                     :isExpanded="true"
                     @favorite-added="handleFavoriteAdded"
                     @favorite-removed="handleFavoriteRemoved"
+                    @shopping-list-added="handleShoppingListAdded"
                     @shopping-list-removed="handleShoppingListRemoved"
                 />
             </div>
@@ -588,6 +589,11 @@ export default {
 
     handleFavoriteRemoved(recipeGuid) {
       this.favoriteRecipeGuids = this.favoriteRecipeGuids.filter(guid => guid !== recipeGuid);
+    },
+
+    handleShoppingListAdded(recipeGuid) {
+      // Reload shopping list to show the newly added recipe
+      this.loadShoppingList();
     },
 
     handleShoppingListRemoved(recipeGuid) {
