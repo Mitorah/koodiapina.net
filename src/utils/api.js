@@ -2,7 +2,7 @@
 
 const API_BASE_URL = import.meta.env.DEV
   ? 'http://localhost:8787'
-  : 'https://koodiapina-net.leinonen-op.workers.dev';
+  : 'https://ruoka.koodiapina.net/api';
 
 // Simple hash function for PIN codes
 async function hashPin(pin) {

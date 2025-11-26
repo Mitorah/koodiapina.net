@@ -89,11 +89,12 @@ function showUpdateNotification() {
 async function checkVersion() {
   try {
     const apiUrl = import.meta.env.PROD 
-      ? 'https://koodiapina-net.leinonen-op.workers.dev/version'
+      ? 'https://ruoka.koodiapina.net/api/version'
       : 'http://localhost:8787/version';
     
     const response = await fetch(apiUrl, {
       cache: 'no-store',
+      credentials: 'include',
       headers: {
         'Cache-Control': 'no-cache'
       }
