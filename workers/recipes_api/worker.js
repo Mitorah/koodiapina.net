@@ -1,4 +1,15 @@
 // Cloudflare Worker: Paginated Recipes API with Profiles
+
+/**
+ * Helper to get CORS headers
+ */
+function getCorsHeaders(allowedOrigin) {
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Credentials': 'true',
+  };
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -24,9 +35,10 @@ export default {
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
-          'Access-Control-Allow-Origin': allowedOrigin,
+          ...getCorsHeaders(allowedOrigin),
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Cache-Control',
+          'Access-Control-Allow-Headers': 'Content-Type, Cache-Control, CF-Access-JWT-Assertion',
+          'Access-Control-Allow-Credentials': 'true',
           'Access-Control-Max-Age': '86400',
         }
       });
@@ -44,7 +56,7 @@ export default {
       }), {
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': versionOrigin,
+          ...getCorsHeaders(versionOrigin),
           'Cache-Control': 'no-cache, no-store, must-revalidate',
         }
       });
@@ -65,7 +77,7 @@ export default {
       }), {
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': allowedOrigin,
+          ...getCorsHeaders(allowedOrigin),
         }
       });
     }
@@ -81,7 +93,7 @@ export default {
       }), {
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': allowedOrigin,
+          ...getCorsHeaders(allowedOrigin),
         }
       });
     }
@@ -103,7 +115,7 @@ export default {
         }), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (err) {
@@ -111,7 +123,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -133,7 +145,7 @@ export default {
         }), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (err) {
@@ -141,7 +153,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -163,7 +175,7 @@ export default {
         }), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (err) {
@@ -171,7 +183,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -193,7 +205,7 @@ export default {
             status: 404,
             headers: {
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': allowedOrigin,
+              ...getCorsHeaders(allowedOrigin),
             }
           });
         }
@@ -203,7 +215,7 @@ export default {
           return new Response(JSON.stringify({ valid: true }), {
             headers: {
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': allowedOrigin,
+              ...getCorsHeaders(allowedOrigin),
             }
           });
         }
@@ -214,7 +226,7 @@ export default {
         return new Response(JSON.stringify({ valid }), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (err) {
@@ -222,7 +234,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -238,7 +250,7 @@ export default {
           status: 400,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -254,7 +266,7 @@ export default {
             status: 409,
             headers: {
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': allowedOrigin,
+              ...getCorsHeaders(allowedOrigin),
             }
           });
         }
@@ -279,7 +291,7 @@ export default {
           status: 201,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (err) {
@@ -287,7 +299,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -304,7 +316,7 @@ export default {
           status: 400,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -320,7 +332,7 @@ export default {
             status: 409,
             headers: {
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': allowedOrigin,
+              ...getCorsHeaders(allowedOrigin),
             }
           });
         }
@@ -344,7 +356,7 @@ export default {
         }), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (err) {
@@ -352,7 +364,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -394,7 +406,7 @@ export default {
       }), {
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': allowedOrigin,
+          ...getCorsHeaders(allowedOrigin),
         }
       });
     }
@@ -409,7 +421,7 @@ export default {
           status: 400,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -428,7 +440,7 @@ export default {
         }), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (error) {
@@ -439,7 +451,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -456,7 +468,7 @@ export default {
           status: 400,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -469,7 +481,7 @@ export default {
         return new Response(JSON.stringify({ success: true }), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (error) {
@@ -480,7 +492,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -498,7 +510,7 @@ export default {
       }), {
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': allowedOrigin,
+          ...getCorsHeaders(allowedOrigin),
         }
       });
     }
@@ -513,7 +525,7 @@ export default {
           status: 400,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -532,7 +544,7 @@ export default {
         }), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (error) {
@@ -543,7 +555,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -560,7 +572,7 @@ export default {
           status: 400,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -573,7 +585,7 @@ export default {
         return new Response(JSON.stringify({ success: true }), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (error) {
@@ -584,7 +596,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -602,7 +614,7 @@ export default {
       }), {
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': allowedOrigin,
+          ...getCorsHeaders(allowedOrigin),
         }
       });
     }
@@ -617,7 +629,7 @@ export default {
           status: 400,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -635,7 +647,7 @@ export default {
         }), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (error) {
@@ -646,7 +658,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -663,7 +675,7 @@ export default {
           status: 400,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -676,7 +688,7 @@ export default {
         return new Response(JSON.stringify({ success: true }), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       } catch (error) {
@@ -687,7 +699,7 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': allowedOrigin,
+            ...getCorsHeaders(allowedOrigin),
           }
         });
       }
@@ -760,7 +772,7 @@ export default {
     }), {
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': allowedOrigin,
+        ...getCorsHeaders(allowedOrigin),
       }
     });
   }

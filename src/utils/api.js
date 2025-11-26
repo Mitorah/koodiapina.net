@@ -22,19 +22,19 @@ export async function fetchRecipes(page = 1, limit = 20, searchQuery = '', profi
   if (profileGuid) {
     url += `&profile_guid=${encodeURIComponent(profileGuid)}`;
   }
-  const res = await fetch(url);
+  const res = await fetch(url, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch recipes');
   return await res.json();
 }
 
 export async function fetchProfiles() {
-  const res = await fetch(`${API_BASE_URL}/profiles`);
+  const res = await fetch(`${API_BASE_URL}/profiles`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch profiles');
   return await res.json();
 }
 
 export async function fetchFavorites(profileGuid) {
-  const res = await fetch(`${API_BASE_URL}/favorites/${profileGuid}`);
+  const res = await fetch(`${API_BASE_URL}/favorites/${profileGuid}`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch favorites');
   return await res.json();
 }
@@ -42,6 +42,7 @@ export async function fetchFavorites(profileGuid) {
 export async function addFavorite(profileGuid, recipeGuid) {
   const res = await fetch(`${API_BASE_URL}/favorites`, {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -54,13 +55,14 @@ export async function addFavorite(profileGuid, recipeGuid) {
 export async function removeFavorite(profileGuid, recipeGuid) {
   const res = await fetch(`${API_BASE_URL}/favorites/${profileGuid}/${recipeGuid}`, {
     method: 'DELETE',
+    credentials: 'include',
   });
   if (!res.ok) throw new Error('Failed to remove favorite');
   return await res.json();
 }
 
 export async function fetchShoppingList(profileGuid) {
-  const res = await fetch(`${API_BASE_URL}/shopping-list/${profileGuid}`);
+  const res = await fetch(`${API_BASE_URL}/shopping-list/${profileGuid}`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch shopping list');
   return await res.json();
 }
@@ -68,6 +70,7 @@ export async function fetchShoppingList(profileGuid) {
 export async function addToShoppingList(profileGuid, recipeGuid) {
   const res = await fetch(`${API_BASE_URL}/shopping-list`, {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -80,13 +83,14 @@ export async function addToShoppingList(profileGuid, recipeGuid) {
 export async function removeFromShoppingList(profileGuid, recipeGuid) {
   const res = await fetch(`${API_BASE_URL}/shopping-list/${profileGuid}/${recipeGuid}`, {
     method: 'DELETE',
+    credentials: 'include',
   });
   if (!res.ok) throw new Error('Failed to remove from shopping list');
   return await res.json();
 }
 
 export async function fetchHidden(profileGuid) {
-  const res = await fetch(`${API_BASE_URL}/hidden/${profileGuid}`);
+  const res = await fetch(`${API_BASE_URL}/hidden/${profileGuid}`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch hidden recipes');
   return await res.json();
 }
@@ -94,6 +98,7 @@ export async function fetchHidden(profileGuid) {
 export async function addHidden(profileGuid, recipeGuid) {
   const res = await fetch(`${API_BASE_URL}/hidden`, {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -106,6 +111,7 @@ export async function addHidden(profileGuid, recipeGuid) {
 export async function removeHidden(profileGuid, recipeGuid) {
   const res = await fetch(`${API_BASE_URL}/hidden/${profileGuid}/${recipeGuid}`, {
     method: 'DELETE',
+    credentials: 'include',
   });
   if (!res.ok) throw new Error('Failed to unhide recipe');
   return await res.json();
@@ -116,6 +122,7 @@ export async function createProfile(username, displayName, email, isAdmin, pin) 
   
   const res = await fetch(`${API_BASE_URL}/profiles`, {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -139,6 +146,7 @@ export async function updateProfile(profileGuid, username, displayName, email, i
   
   const res = await fetch(`${API_BASE_URL}/profiles/${profileGuid}`, {
     method: 'PUT',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -160,6 +168,7 @@ export async function updateProfile(profileGuid, username, displayName, email, i
 export async function deleteProfile(profileGuid) {
   const res = await fetch(`${API_BASE_URL}/profiles/${profileGuid}`, {
     method: 'DELETE',
+    credentials: 'include',
   });
   if (!res.ok) {
     const error = await res.json();
@@ -173,6 +182,7 @@ export async function verifyPin(profileGuid, pin) {
   
   const res = await fetch(`${API_BASE_URL}/profiles/${profileGuid}/verify-pin`, {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -188,6 +198,7 @@ export async function verifyPin(profileGuid, pin) {
 export async function reactivateProfile(profileGuid) {
   const res = await fetch(`${API_BASE_URL}/profiles/${profileGuid}/reactivate`, {
     method: 'POST',
+    credentials: 'include',
   });
   if (!res.ok) {
     const error = await res.json();
@@ -199,6 +210,7 @@ export async function reactivateProfile(profileGuid) {
 export async function permanentDeleteProfile(profileGuid) {
   const res = await fetch(`${API_BASE_URL}/profiles/${profileGuid}/permanent`, {
     method: 'DELETE',
+    credentials: 'include',
   });
   if (!res.ok) {
     const error = await res.json();
