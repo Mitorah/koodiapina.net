@@ -134,6 +134,9 @@ export default {
       }
     }
   },
+  mounted() {
+    window.scrollTo(0, 0);
+  },
   methods: {
     async fetchRecipes(page = 1) {
       this.loading = true;
@@ -171,6 +174,7 @@ export default {
     },
     handlePageChange(newPage) {
       this.fetchRecipes(newPage);
+      window.scrollTo(0, 0);
     },
     handleFavoriteAdded(recipeGuid) {
       if (!this.favoriteRecipeGuids.includes(recipeGuid)) {
