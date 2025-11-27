@@ -212,11 +212,32 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment documentation inclu
 For automatic deployment to work, configure these secrets at:
 **https://github.com/Mitorah/koodiapina.net/settings/secrets/actions**
 
-- `CLOUDFLARE_API_TOKEN` - Your Cloudflare API token
+- `CLOUDFLARE_API_TOKEN` - Your Cloudflare API token (see below for setup)
 - `CLOUDFLARE_ACCOUNT_ID` - Your Cloudflare account ID
 - `CLOUDFLARE_ZONE_ID` - Your domain's zone ID (for cache purging)
 
 Get these values from https://dash.cloudflare.com
+
+#### Setting up the Cloudflare API Token
+
+The deployment requires an **Account API Token** with specific permissions. Create it at:
+**https://dash.cloudflare.com/profile/api-tokens**
+
+**Required Permissions:**
+1. **Account** → **D1** → **Edit** (for database operations)
+2. **Account** → **Cloudflare Pages** → **Edit** (for Pages deployment)
+3. **Account** → **Workers Scripts** → **Edit** (for worker deployment)
+4. **Zone** → **Workers Routes** → **Edit** (for worker route configuration)
+5. **Zone** → **Zone** → **Read** (recommended for route operations)
+
+**Zone Resources:**
+- Set to **Include** → **Specific zone** → **koodiapina.net**
+
+**Important Notes:**
+- Use an **Account API Token**, not a User API Token
+- The Zone permissions are required because workers use routes attached to your zone
+- Make sure to specifically include the `koodiapina.net` zone in the token's zone resources
+- After creating the token, copy it immediately and save it to GitHub Secrets as `CLOUDFLARE_API_TOKEN`
 
 ### Cache Management
 
