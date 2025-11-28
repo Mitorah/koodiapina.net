@@ -130,6 +130,7 @@
 
 <script>
 import { fetchProfiles, createProfile, updateProfile, deleteProfile, reactivateProfile, permanentDeleteProfile } from '../utils/api.js';
+import { config } from '../config.js';
 
 export default {
   name: 'AdminUsers',
@@ -175,7 +176,7 @@ export default {
         const data = await fetchProfiles();
         this.profiles = data.profiles || [];
       } catch (err) {
-        this.$message.error('Käyttäjien lataus epäonnistui');
+        this.$message({ message: 'Käyttäjien lataus epäonnistui', type: 'error', duration: config.message.duration });
       }
     },
     selectUser(profile) {
@@ -208,7 +209,7 @@ export default {
     },
     async createUser() {
       if (!this.editForm.username || !this.editForm.displayName) {
-        this.$message.warning('Käyttäjänimi ja näyttönimi ovat pakollisia');
+        this.$message({ message: 'Käyttäjänimi ja näyttönimi ovat pakollisia', type: 'warning', duration: config.message.duration });
         return;
       }
 
@@ -226,7 +227,7 @@ export default {
           this.editForm.pin
         );
         
-        this.$message.success('Käyttäjä luotu onnistuneesti');
+        this.$message({ message: 'Käyttäjä luotu onnistuneesti', type: 'success', duration: config.message.duration });
         
         // Reload profiles
         await this.loadProfiles();
@@ -242,14 +243,14 @@ export default {
         // Emit event to parent
         this.$emit('profiles-changed');
       } catch (err) {
-        this.$message.error(err.message || 'Käyttäjän luonti epäonnistui');
+        this.$message({ message: err.message || 'Käyttäjän luonti epäonnistui', type: 'error', duration: config.message.duration });
       } finally {
         this.saving = false;
       }
     },
     async saveUser() {
       if (!this.editForm.username || !this.editForm.displayName) {
-        this.$message.warning('Käyttäjänimi ja näyttönimi ovat pakollisia');
+        this.$message({ message: 'Käyttäjänimi ja näyttönimi ovat pakollisia', type: 'warning', duration: config.message.duration });
         return;
       }
 
@@ -268,7 +269,7 @@ export default {
           this.editForm.pin
         );
         
-        this.$message.success('Käyttäjä päivitetty onnistuneesti');
+        this.$message({ message: 'Käyttäjä päivitetty onnistuneesti', type: 'success', duration: config.message.duration });
         
         // Reload profiles
         await this.loadProfiles();
@@ -284,7 +285,7 @@ export default {
         // Emit event to parent
         this.$emit('profiles-changed');
       } catch (err) {
-        this.$message.error(err.message || 'Käyttäjän päivitys epäonnistui');
+        this.$message({ message: err.message || 'Käyttäjän päivitys epäonnistui', type: 'error', duration: config.message.duration });
       } finally {
         this.saving = false;
       }
@@ -301,7 +302,7 @@ export default {
       ).then(async () => {
         try {
           await deleteProfile(profile.profile_guid);
-          this.$message.success('Käyttäjä poistettu onnistuneesti');
+          this.$message({ message: 'Käyttäjä poistettu onnistuneesti', type: 'success', duration: config.message.duration });
           
           // Reload profiles
           await this.loadProfiles();
@@ -317,7 +318,7 @@ export default {
           // Emit event to parent
           this.$emit('profiles-changed');
         } catch (err) {
-          this.$message.error(err.message || 'Käyttäjän poisto epäonnistui');
+          this.$message({ message: err.message || 'Käyttäjän poisto epäonnistui', type: 'error', duration: config.message.duration });
         }
       }).catch(() => {
         // User cancelled
@@ -335,7 +336,7 @@ export default {
       ).then(async () => {
         try {
           await reactivateProfile(profile.profile_guid);
-          this.$message.success('Käyttäjä aktivoitu onnistuneesti');
+          this.$message({ message: 'Käyttäjä aktivoitu onnistuneesti', type: 'success', duration: config.message.duration });
           
           // Reload profiles
           await this.loadProfiles();
@@ -351,7 +352,7 @@ export default {
           // Emit event to parent
           this.$emit('profiles-changed');
         } catch (err) {
-          this.$message.error(err.message || 'Käyttäjän aktivointi epäonnistui');
+          this.$message({ message: err.message || 'Käyttäjän aktivointi epäonnistui', type: 'error', duration: config.message.duration });
         }
       }).catch(() => {
         // User cancelled
@@ -369,7 +370,7 @@ export default {
       ).then(async () => {
         try {
           await permanentDeleteProfile(profile.profile_guid);
-          this.$message.success('Käyttäjä poistettu pysyvästi');
+          this.$message({ message: 'Käyttäjä poistettu pysyvästi', type: 'success', duration: config.message.duration });
           
           // Clear selection
           this.clearSelection();
@@ -380,7 +381,7 @@ export default {
           // Emit event to parent
           this.$emit('profiles-changed');
         } catch (err) {
-          this.$message.error(err.message || 'Käyttäjän pysyvä poisto epäonnistui');
+          this.$message({ message: err.message || 'Käyttäjän pysyvä poisto epäonnistui', type: 'error', duration: config.message.duration });
         }
       }).catch(() => {
         // User cancelled
@@ -395,17 +396,17 @@ export default {
       }
       
       if (!/^\d+$/.test(pin)) {
-        this.$message.error('PIN voi sisältää vain numeroita');
+        this.$message({ message: 'PIN voi sisältää vain numeroita', type: 'error', duration: config.message.duration });
         return false;
       }
       
       if (pin.length < 4 || pin.length > 6) {
-        this.$message.error('PIN:in tulee olla 4-6 numeroa');
+        this.$message({ message: 'PIN:in tulee olla 4-6 numeroa', type: 'error', duration: config.message.duration });
         return false;
       }
       
       if (pin && pinConfirm && pin !== pinConfirm) {
-        this.$message.error('PIN-koodit eivät täsmää');
+        this.$message({ message: 'PIN-koodit eivät täsmää', type: 'error', duration: config.message.duration });
         return false;
       }
       

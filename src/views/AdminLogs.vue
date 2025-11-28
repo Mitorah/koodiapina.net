@@ -71,6 +71,7 @@
 <script>
 import { fetchLogs } from '../utils/api.js';
 import { Refresh, Loading, ArrowDown } from '@element-plus/icons-vue';
+import { config } from '../config.js';
 
 export default {
     name: 'AdminLogs',
@@ -120,9 +121,8 @@ export default {
             try {
                 const data = await fetchLogs();
                 this.logs = data.logs || [];
-            } catch (error) {
-                console.error('Failed to load logs:', error);
-                this.$message.error('Lokien lataus epäonnistui');
+            } catch (err) {
+                this.$message({ message: 'Lokien lataus epäonnistui', type: 'error', duration: config.message.duration });
             } finally {
                 this.loading = false;
             }

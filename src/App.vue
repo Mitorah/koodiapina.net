@@ -270,6 +270,7 @@ import ProfileSettings from './views/ProfileSettings.vue'
 import { Menu, User, Star, Search, Close, ShoppingCart } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
 import { fetchProfiles, createProfile, verifyPin, fetchShoppingList } from './utils/api'
+import { config } from './config'
 
 export default {
   name: 'App',
@@ -418,7 +419,7 @@ export default {
           return a.profile_guid.localeCompare(b.profile_guid);
         });
       } catch (error) {
-        this.$message.error('Profiilien lataus epäonnistui');
+        this.$message({ message: 'Profiilien lataus epäonnistui', type: 'error', duration: config.message.duration });
       }
     },
     async confirmProfileSelection() {
@@ -432,6 +433,9 @@ export default {
       this.verifyingTempPin = true;
       
       try {
+        // Reload profiles to ensure we have the latest data
+        await this.loadProfiles();
+        
         const result = await verifyPin(this.tempSelectedProfile, this.tempPinInput);
         
         if (result.valid) {
@@ -442,13 +446,26 @@ export default {
           this.updateTabs(); // Update tabs after profile selection
           await this.loadShoppingListCount();
           
-          const profile = this.profiles.find(p => p.profile_guid === this.tempSelectedProfile);
-          const displayName = profile?.display_name || profile?.username || 'tuntematon';
+          // Use the profile data from the API response, or fall back to finding in profiles array
+          const displayName = result.display_name || result.username || 
+            this.profiles.find(p => p.profile_guid === this.tempSelectedProfile)?.display_name ||
+            this.profiles.find(p => p.profile_guid === this.tempSelectedProfile)?.username ||
+            'tuntematon';
           
           if (this.isFirstVisit) {
-            this.$message.success(`Profiili valittu: ${displayName}`);
+            this.$message({
+              message: `<div>Profiili valittu:<br/><strong>${displayName}</strong></div>`,
+              type: 'success',
+              dangerouslyUseHTMLString: true,
+              duration: config.message.duration
+            });
           } else {
-            this.$message.success(`Vaihdettu profiiliin: ${displayName}`);
+            this.$message({
+              message: `<div>Vaihdettu profiiliin:<br/><strong>${displayName}</strong></div>`,
+              type: 'success',
+              dangerouslyUseHTMLString: true,
+              duration: config.message.duration
+            });
           }
           
           // Reset form
@@ -501,7 +518,7 @@ export default {
     },
     async createUser() {
       if (!this.newUserForm.username || !this.newUserForm.displayName) {
-        this.$message.warning('Käyttäjänimi ja näyttönimi ovat pakollisia');
+        this.$message({ message: 'Käyttäjänimi ja näyttönimi ovat pakollisia', type: 'warning', duration: config.message.duration });
         return;
       }
 
@@ -514,7 +531,7 @@ export default {
           this.newUserForm.isAdmin
         );
         
-        this.$message.success('Käyttäjä luotu onnistuneesti');
+        this.$message({ message: 'Käyttäjä luotu onnistuneesti', type: 'success', duration: config.message.duration });
         
         // Reset form
         this.newUserForm = {
@@ -530,7 +547,7 @@ export default {
         // Reload profiles
         await this.loadProfiles();
       } catch (err) {
-        this.$message.error(err.message || 'Käyttäjän luonti epäonnistui');
+        this.$message({ message: err.message || 'Käyttäjän luonti epäonnistui', type: 'error', duration: config.message.duration });
       } finally {
         this.creatingUser = false;
       }

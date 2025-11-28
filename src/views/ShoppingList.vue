@@ -142,6 +142,7 @@ import { fetchShoppingList, removeFromShoppingList, fetchFavorites } from '../ut
 import { parseAmountWithUnit, getUnitForm } from '../utils/units.js';
 import { Loading, ArrowRight, ArrowDown, Close } from '@element-plus/icons-vue';
 import RecipeView from './RecipeView.vue';
+import { config } from '../config.js';
 
 export default {
   name: 'ShoppingList',
@@ -247,7 +248,7 @@ export default {
         // Clean up checked items that are no longer in the shopping list
         this.cleanupCheckedState();
       } catch (err) {
-        this.$message.error('Ostoslistan lataus epäonnistui');
+        this.$message({ message: 'Ostoslistan lataus epäonnistui', type: 'error', duration: config.message.duration });
       } finally {
         this.loading = false;
       }
@@ -436,10 +437,10 @@ export default {
     async removeRecipe(recipeGuid) {
       try {
         await removeFromShoppingList(this.currentProfileGuid, recipeGuid);
-        this.$message.success('Resepti poistettu ostoslistalta');
+        this.$message({ message: 'Resepti poistettu ostoslistalta', type: 'success', duration: config.message.duration });
         this.loadShoppingList();
       } catch (err) {
-        this.$message.error('Poisto epäonnistui');
+        this.$message({ message: 'Poisto epäonnistui', type: 'error', duration: config.message.duration });
       }
     },
 
@@ -533,7 +534,7 @@ export default {
     openRecipeDialog(recipe) {
       this.selectedRecipe = recipe;
       this.showRecipeDialog = true;
-      this.$message.info('Vihje: Paina pitkään sulkeaksesi');
+      this.$message({ message: 'Vihje: Paina pitkään sulkeaksesi', type: 'info', duration: config.message.duration });
     },
 
     startDialogLongPress() {
