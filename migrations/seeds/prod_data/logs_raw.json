@@ -1,0 +1,802 @@
+[
+  {
+    "id": 472,
+    "timestamp": "2025-11-28T04:00:37.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Intialainen yhden kattilan kanapasta (0e53b20f-6de0-4b6d-9eaa-052a3c00e842)"
+  },
+  {
+    "id": 471,
+    "timestamp": "2025-11-28T03:00:36.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Juustolla gratinoitu kermainen broilerivuoka & rucolaa (0555aecd-f319-4fc7-8d40-618f93760e65)"
+  },
+  {
+    "id": 470,
+    "timestamp": "2025-11-28T03:00:34.000Z",
+    "count": 2,
+    "status": "success",
+    "error": null,
+    "details": "Processed 2/2 recipes. Errors: []"
+  },
+  {
+    "id": 469,
+    "timestamp": "2025-11-28T02:01:07.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 468,
+    "timestamp": "2025-11-27T02:00:32.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 467,
+    "timestamp": "2025-11-26T02:00:38.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 466,
+    "timestamp": "2025-11-25T05:00:09.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Kermainen pasta pekonilla & parsakaalilla (1b2cfd91-06de-4492-96a8-4bc8c3a41fbc)"
+  },
+  {
+    "id": 465,
+    "timestamp": "2025-11-25T04:00:10.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Mausteinen pata vegaanisella chorizolla & kikherneillä (0d79d917-86bb-4a1a-a52f-4dd2fe84cbad)"
+  },
+  {
+    "id": 464,
+    "timestamp": "2025-11-25T03:00:10.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Aasialainen tofuwokki paprikoilla & riisiä (09e152d1-0eab-44d6-96ea-de4c2c5c46e6)"
+  },
+  {
+    "id": 463,
+    "timestamp": "2025-11-25T03:00:09.000Z",
+    "count": 3,
+    "status": "success",
+    "error": null,
+    "details": "Processed 3/3 recipes. Errors: []"
+  },
+  {
+    "id": 462,
+    "timestamp": "2025-11-25T02:00:16.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 461,
+    "timestamp": "2025-11-24T02:00:24.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 460,
+    "timestamp": "2025-11-23T03:00:17.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Perinteinen Italian pata (319236cf-452b-4572-94ec-cba0f29a1561)"
+  },
+  {
+    "id": 459,
+    "timestamp": "2025-11-23T03:00:16.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Processed 1/1 recipes. Errors: []"
+  },
+  {
+    "id": 458,
+    "timestamp": "2025-11-23T02:00:25.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 457,
+    "timestamp": "2025-11-22T06:00:19.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Pasta jättikatkaravuilla & kirsikkatomaateilla (200eea5f-11f6-47e6-a898-baa7f3d02cf8)"
+  },
+  {
+    "id": 456,
+    "timestamp": "2025-11-22T05:00:13.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Gluteeniton kermainen aglio e olio kanapasta (0d17e298-f4eb-447a-b711-be60fde00c9f)"
+  },
+  {
+    "id": 455,
+    "timestamp": "2025-11-22T04:00:13.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Kreikkalainen uunilohi fetajuustolla & paahdettuja kasviksia (0602ccbf-0aa6-4e81-9edc-1d93275a810e)"
+  },
+  {
+    "id": 454,
+    "timestamp": "2025-11-22T03:00:16.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Vietnamilaiset lihapullat, korianteri-kurkkusalaattia & riisiä (034431d1-03e5-4925-a4df-eca48072a2ae)"
+  },
+  {
+    "id": 453,
+    "timestamp": "2025-11-22T03:00:15.000Z",
+    "count": 4,
+    "status": "success",
+    "error": null,
+    "details": "Processed 4/4 recipes. Errors: []"
+  },
+  {
+    "id": 452,
+    "timestamp": "2025-11-22T02:01:05.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 451,
+    "timestamp": "2025-11-21T03:00:58.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Sitruunainen kikhernepasta (314e1d0e-076e-42e3-9147-88e321093091)"
+  },
+  {
+    "id": 450,
+    "timestamp": "2025-11-21T03:00:56.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Processed 1/1 recipes. Errors: []"
+  },
+  {
+    "id": 449,
+    "timestamp": "2025-11-21T02:01:04.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 448,
+    "timestamp": "2025-11-20T03:01:08.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Mureat naudan entrecote-pihvit, chimichurria & paahdettuja perunoita (31261a70-d601-47bf-a2bb-8901585bc680)"
+  },
+  {
+    "id": 447,
+    "timestamp": "2025-11-20T03:01:07.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Processed 1/1 recipes. Errors: []"
+  },
+  {
+    "id": 446,
+    "timestamp": "2025-11-20T02:01:17.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 445,
+    "timestamp": "2025-11-19T04:00:47.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Perinteinen kasvissosekeitto raejuustolla & tuoretta ruisleipää (237fe0e3-7fba-4f15-bf24-e1e8432d85c9)"
+  },
+  {
+    "id": 443,
+    "timestamp": "2025-11-19T03:00:47.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Ruokaboksin turkkilainen jauhelihapasta (207b51d0-65b9-4a47-8303-529904cfef2e)"
+  },
+  {
+    "id": 444,
+    "timestamp": "2025-11-19T03:00:45.000Z",
+    "count": 2,
+    "status": "success",
+    "error": null,
+    "details": "Processed 2/2 recipes. Errors: []"
+  },
+  {
+    "id": 442,
+    "timestamp": "2025-11-19T02:00:53.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 441,
+    "timestamp": "2025-11-18T02:00:21.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 440,
+    "timestamp": "2025-11-17T02:00:48.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 439,
+    "timestamp": "2025-11-16T02:00:42.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 437,
+    "timestamp": "2025-11-15T03:00:18.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Pannulla paistettua lohta, tilliperunoita & marinoituja kurkkuja (1b45fb9c-b565-49c0-8546-ef391a47683f)"
+  },
+  {
+    "id": 438,
+    "timestamp": "2025-11-15T03:00:16.000Z",
+    "count": 8,
+    "status": "success",
+    "error": null,
+    "details": "Processed 8/8 recipes. Errors: []"
+  },
+  {
+    "id": 436,
+    "timestamp": "2025-11-15T02:00:27.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 434,
+    "timestamp": "2025-11-14T03:00:55.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Intialainen kanakeitto tandooritahnalla (1bf71f43-89ee-429e-b3d2-7a56397cc9ce)"
+  },
+  {
+    "id": 435,
+    "timestamp": "2025-11-14T03:00:53.000Z",
+    "count": 100,
+    "status": "success",
+    "error": null,
+    "details": "Processed 100/100 recipes. Errors: []"
+  },
+  {
+    "id": 433,
+    "timestamp": "2025-11-14T02:01:04.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 432,
+    "timestamp": "2025-11-13T20:19:48.000Z",
+    "count": 100,
+    "status": "success",
+    "error": null,
+    "details": "Processed 100/100 recipes. Errors: []"
+  },
+  {
+    "id": 431,
+    "timestamp": "2025-11-13T02:00:35.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 430,
+    "timestamp": "2025-11-12T02:01:02.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 429,
+    "timestamp": "2025-11-11T02:00:33.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 428,
+    "timestamp": "2025-11-10T02:01:04.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 427,
+    "timestamp": "2025-11-09T02:00:52.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 426,
+    "timestamp": "2025-11-08T03:01:01.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Kermainen pepperonipasta & pinaattia (29042ae2-e628-495d-a09f-98968c2ddf99)"
+  },
+  {
+    "id": 425,
+    "timestamp": "2025-11-08T02:01:06.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 424,
+    "timestamp": "2025-11-07T02:00:47.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 423,
+    "timestamp": "2025-11-06T02:00:34.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 422,
+    "timestamp": "2025-11-05T02:00:42.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 421,
+    "timestamp": "2025-11-04T02:00:15.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 420,
+    "timestamp": "2025-11-03T02:00:27.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 419,
+    "timestamp": "2025-11-02T02:00:40.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 418,
+    "timestamp": "2025-11-01T03:00:02.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Ruokaboksin rosolli joulupöytään (1dd93e17-dca4-4fe6-87e3-a6eeeecf7460)"
+  },
+  {
+    "id": 417,
+    "timestamp": "2025-11-01T02:00:07.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 416,
+    "timestamp": "2025-10-31T04:00:14.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Perinteinen kylmäsavuporotartar & ruissipsejä (1bb8f7f4-77c8-47e3-83f6-289c21646dcd)"
+  },
+  {
+    "id": 415,
+    "timestamp": "2025-10-31T03:00:14.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Suklaabrownie saksanpähkinöillä & appelsiinivaahtoa (10e7ff6a-e583-47df-87ee-49543e848781)"
+  },
+  {
+    "id": 414,
+    "timestamp": "2025-10-31T02:00:23.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 413,
+    "timestamp": "2025-10-30T02:01:08.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 412,
+    "timestamp": "2025-10-29T02:00:18.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 411,
+    "timestamp": "2025-10-28T02:00:44.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 410,
+    "timestamp": "2025-10-27T02:00:51.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 409,
+    "timestamp": "2025-10-26T03:00:57.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 408,
+    "timestamp": "2025-10-25T04:00:21.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Gluteeniton katkarapupasta kirsikkatomaateilla & pinaatilla (0fc3a0b7-6ff3-47ef-a6bf-1c483db6b0f7)"
+  },
+  {
+    "id": 407,
+    "timestamp": "2025-10-25T03:00:27.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 406,
+    "timestamp": "2025-10-24T04:00:26.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Hoisinkastikkeella maustettu possuwokki & nuudeleita  (2df61568-522e-4250-8585-7a36e0881bc4)"
+  },
+  {
+    "id": 405,
+    "timestamp": "2025-10-24T03:00:33.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 404,
+    "timestamp": "2025-10-23T03:00:35.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 403,
+    "timestamp": "2025-10-22T03:00:40.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 402,
+    "timestamp": "2025-10-21T03:00:33.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 401,
+    "timestamp": "2025-10-20T04:01:00.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Paneroitua tofua, kurkkuraitaa & riisiä (3095f27c-ba06-4f42-ae65-8fed0ee6fd09)"
+  },
+  {
+    "id": 400,
+    "timestamp": "2025-10-20T03:01:11.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 399,
+    "timestamp": "2025-10-19T04:00:06.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Amerikkalainen Key lime pie (30817eca-5fb7-4147-8bbc-48fed1b80be5)"
+  },
+  {
+    "id": 398,
+    "timestamp": "2025-10-19T03:00:14.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 397,
+    "timestamp": "2025-10-18T04:00:27.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Gluteenitonta kookosbroileria & riisinuudeleita (30021ca0-fbc7-471c-a82a-2a9e58408014)"
+  },
+  {
+    "id": 396,
+    "timestamp": "2025-10-18T03:00:33.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 395,
+    "timestamp": "2025-10-17T04:00:28.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Larb moo possun jauhelihasta & riisiä  (2ff24290-799c-496d-92c2-d12aab36869c)"
+  },
+  {
+    "id": 394,
+    "timestamp": "2025-10-17T03:00:34.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 393,
+    "timestamp": "2025-10-16T04:00:09.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Mausteista kanaa, nuudeleita & marinoituja kasviksia (2fc63f6d-03ac-4b99-846f-8966571ee023)"
+  },
+  {
+    "id": 392,
+    "timestamp": "2025-10-16T03:00:13.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 391,
+    "timestamp": "2025-10-15T04:00:23.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Kermainen jauhelihakeitto & ruisleipää (2f986c68-a803-464b-b5d1-0e0040a46998)"
+  },
+  {
+    "id": 390,
+    "timestamp": "2025-10-15T03:00:30.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 389,
+    "timestamp": "2025-10-14T04:00:46.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Arjen pelastaja kanaviillokki & riisiä (2f644698-9cf7-4461-b8ce-fbcfac6299bd)"
+  },
+  {
+    "id": 388,
+    "timestamp": "2025-10-14T03:00:50.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 387,
+    "timestamp": "2025-10-13T04:00:21.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Ruokaboksin Shrimp Saganaki & riisiä (2f275cc6-0ce3-40bf-8d6e-0e28cc5da660)"
+  },
+  {
+    "id": 386,
+    "timestamp": "2025-10-13T03:00:28.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 385,
+    "timestamp": "2025-10-12T04:00:22.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Gluteeniton kanapasta tuoreella salvialla (2f192287-b02b-4da5-8cb5-e7040e9eddfb)"
+  },
+  {
+    "id": 384,
+    "timestamp": "2025-10-12T03:00:28.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 383,
+    "timestamp": "2025-10-11T04:00:26.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Raikas lime-minttuposset & keksimurua (2ed69ec7-c744-45ed-a3f8-77bc3e280f3a)"
+  },
+  {
+    "id": 382,
+    "timestamp": "2025-10-11T03:00:33.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 381,
+    "timestamp": "2025-10-10T04:00:38.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Aasialaista kanaa & nuudeleita (2ed2a1fd-8c76-408a-8989-fd12ffcecc83)"
+  },
+  {
+    "id": 380,
+    "timestamp": "2025-10-10T03:00:46.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 379,
+    "timestamp": "2025-10-09T05:00:36.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Kookoksinen curry Muu-suikaleesta & riisiä (2e4ee7fc-874b-4a8d-869d-9201b4750907)"
+  },
+  {
+    "id": 378,
+    "timestamp": "2025-10-09T04:00:36.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Yhden pannun nopea hernislasagne & rucolaa (2e12d24a-4c50-41c2-b08e-7da3b3e6273c)"
+  },
+  {
+    "id": 377,
+    "timestamp": "2025-10-09T03:00:43.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  },
+  {
+    "id": 376,
+    "timestamp": "2025-10-08T06:00:11.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Ylikypsää karitsan entrecotea, parmesanperunoita & kasviksia sekä valkosipulikastiketta (2db318fd-6cd0-4bf5-8772-d634a63738ce)"
+  },
+  {
+    "id": 375,
+    "timestamp": "2025-10-08T05:00:10.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Bowl kanalla, riisinuudeleilla & sataykastikkeella (2d9600a3-f689-4271-8f8f-316535959386)"
+  },
+  {
+    "id": 374,
+    "timestamp": "2025-10-08T04:00:10.000Z",
+    "count": 1,
+    "status": "success",
+    "error": null,
+    "details": "Updated instructions for recipe Nopeat pitaleipäpizzat pepperonilla & ananaksella (2d3ed10f-46bc-4357-825b-0091c973d9d1)"
+  },
+  {
+    "id": 373,
+    "timestamp": "2025-10-08T03:00:16.000Z",
+    "count": 20,
+    "status": "success",
+    "error": null,
+    "details": "Inserted 20 new recipes (batch size: 20)"
+  }
+]

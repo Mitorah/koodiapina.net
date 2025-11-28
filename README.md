@@ -120,38 +120,45 @@ This trade-off is acceptable for a private family application protected by Cloud
 
 4. **Run schema migrations:**
    ```bash
-   # Run schema migrations on local database
-   for migration in migrations/*.sql; do 
-     npx wrangler d1 execute koodiapina_local --env local --config workers/recipes_api/wrangler.toml --file "$migration"
+   # Run schema migrations on local database (only needed once per database)
+   cd workers/recipes_api
+   for migration in ../../migrations/*.sql; do 
+     npx wrangler d1 execute koodiapina_local --env local --file "$migration"
    done
    ```
+   
+   **Note:** If you see errors about existing columns/tables when re-running migrations, this is expected. Migrations are designed to run once. If you've already run them, you can skip this step.
 
 5. **Seed test data (local only):**
    ```bash
-   # Seed test recipes and profiles for development
-   for seed in migrations/seeds/*.sql; do 
-     npx wrangler d1 execute koodiapina_local --env local --config workers/recipes_api/wrangler.toml --file "$seed"
+   # Seed test recipes, profiles, and logs for development
+   cd workers/recipes_api
+   for seed in ../../migrations/seeds/*.sql; do 
+     echo "Loading $(basename $seed)..."
+     npx wrangler d1 execute koodiapina_local --env local --file "$seed"
    done
    ```
    
-   This creates test profiles (including an admin user) and seed recipes.
+   This creates test profiles (including an admin user), seed recipes, and fetch logs.
 
 6. **(Optional) Refresh test data from production:**
    
-   To fetch fresh recipe data from production, run:
+   To fetch fresh recipe data from production:
    
    ```bash
-   ./migrations/seeds/prod_data/fetch_prod_data.sh
+   cd migrations/seeds/prod_data
+   ./fetch_prod_data.sh 60  # Fetch 60 recipes (default: 20)
    ```
    
-   Or to fetch a different number of recipes (e.g., 50):
+   To fetch fresh log data from production:
    
    ```bash
-   ./migrations/seeds/prod_data/fetch_prod_data.sh 50
+   cd migrations/seeds/prod_data
+   ./fetch_logs.sh 100  # Fetch 100 logs (default: 100)
    ```
    
-   This script will:
-   - Fetch recipes from production database
+   These scripts will:
+   - Fetch data from production database
    - Convert JSON to SQL seed file
    - Load into local database
 
@@ -186,15 +193,18 @@ If you need to start fresh:
 
 3. Run schema migrations:
    ```bash
-   for migration in migrations/*.sql; do 
-     npx wrangler d1 execute koodiapina_local --env local --config workers/recipes_api/wrangler.toml --file "$migration"
+   cd workers/recipes_api
+   for migration in ../../migrations/*.sql; do 
+     npx wrangler d1 execute koodiapina_local --env local --file "$migration"
    done
    ```
 
 4. Seed test data:
    ```bash
-   for seed in migrations/seeds/*.sql; do 
-     npx wrangler d1 execute koodiapina_local --env local --config workers/recipes_api/wrangler.toml --file "$seed"
+   cd workers/recipes_api
+   for seed in ../../migrations/seeds/*.sql; do 
+     echo "Loading $(basename $seed)..."
+     npx wrangler d1 execute koodiapina_local --env local --file "$seed"
    done
    ```
 

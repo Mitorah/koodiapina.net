@@ -92,6 +92,34 @@ export default {
       });
     }
 
+    // Handle /logs endpoint - GET to fetch fetch_log entries (admin only)
+    if (pathname === '/logs' && request.method === 'GET') {
+      try {
+        const limit = url.searchParams.get('limit') || '100';
+        
+        const logsRes = await env.DB.prepare(
+          'SELECT * FROM fetch_log ORDER BY timestamp DESC LIMIT ?'
+        ).bind(parseInt(limit)).all();
+        
+        return new Response(JSON.stringify({
+          logs: logsRes.results || []
+        }), {
+          headers: {
+            'Content-Type': 'application/json',
+            ...getCorsHeaders(allowedOrigin),
+          }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            ...getCorsHeaders(allowedOrigin),
+          }
+        });
+      }
+    }
+
     // Handle /profiles endpoint
     if (pathname === '/profiles' && request.method === 'GET') {
       const profilesRes = await env.DB.prepare(
