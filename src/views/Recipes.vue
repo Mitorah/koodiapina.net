@@ -189,9 +189,11 @@ export default {
       if (!this.shoppingListRecipeGuids.includes(recipeGuid)) {
         this.shoppingListRecipeGuids.push(recipeGuid);
       }
+      this.$emit('shopping-list-updated');
     },
     handleShoppingListRemoved(recipeGuid) {
       this.shoppingListRecipeGuids = this.shoppingListRecipeGuids.filter(guid => guid !== recipeGuid);
+      this.$emit('shopping-list-updated');
     },
     handleHiddenAdded(recipeGuid) {
       // Close cooking dialog if the hidden recipe is currently shown

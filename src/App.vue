@@ -54,6 +54,15 @@
               <el-icon><Close /></el-icon>
             </el-button>
           </div>
+          <el-badge :value="shoppingListCount" :hidden="shoppingListCount === 0" class="shopping-badge">
+            <el-button 
+              @click="selectTab('shopping-list')" 
+              circle 
+              class="shopping-list-button"
+            >
+              <el-icon><ShoppingCart /></el-icon>
+            </el-button>
+          </el-badge>
         </div>
       </el-row>
     </el-header>
@@ -211,6 +220,7 @@
         :currentProfileGuid="selectedProfile" 
         :searchQuery="searchQuery"
         @search-cleared="searchQuery = ''"
+        @shopping-list-updated="loadShoppingListCount"
       />
       <Favorites 
         v-else-if="activeTab === 'favorites'"
@@ -252,9 +262,9 @@ import HiddenRecipes from './views/HiddenRecipes.vue'
 import ShoppingList from './views/ShoppingList.vue'
 import AdminUsers from './views/AdminUsers.vue'
 import ProfileSettings from './views/ProfileSettings.vue'
-import { Menu, User, Star, Search, Close } from '@element-plus/icons-vue'
+import { Menu, User, Star, Search, Close, ShoppingCart } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
-import { fetchProfiles, createProfile, verifyPin } from './utils/api'
+import { fetchProfiles, createProfile, verifyPin, fetchShoppingList } from './utils/api'
 
 export default {
   name: 'App',
@@ -272,6 +282,7 @@ export default {
     Star,
     Search,
     Close,
+    ShoppingCart,
     ElIcon
   },
   data() {
@@ -294,6 +305,7 @@ export default {
       searchQueryInput: '',
       searchQuery: '',
       isFirstVisit: false,
+      shoppingListCount: 0,
       newUserForm: {
         username: '',
         displayName: '',
@@ -318,6 +330,7 @@ export default {
       // User has a valid saved profile - use it
       this.selectedProfile = savedProfile;
       this.updateTabs(); // Update tabs based on selected profile
+      await this.loadShoppingListCount();
     } else {
       // First visit or invalid cookie - show profile selection dialog
       this.isFirstVisit = true;
@@ -420,6 +433,7 @@ export default {
           this.saveProfileToCookie(this.selectedProfile);
           this.showProfileSelectionDialog = false;
           this.updateTabs(); // Update tabs after profile selection
+          await this.loadShoppingListCount();
           
           const profile = this.profiles.find(p => p.profile_guid === this.tempSelectedProfile);
           const displayName = profile?.display_name || profile?.username || 'tuntematon';
@@ -536,6 +550,20 @@ export default {
     },
     handleResize() {
       this.windowWidth = window.innerWidth;
+    },
+    async loadShoppingListCount() {
+      if (!this.selectedProfile) {
+        this.shoppingListCount = 0;
+        return;
+      }
+      
+      try {
+        const data = await fetchShoppingList(this.selectedProfile);
+        this.shoppingListCount = (data.shopping_list || []).length;
+      } catch (err) {
+        // Failed to fetch shopping list count
+        this.shoppingListCount = 0;
+      }
     }
   },
   beforeUnmount() {
@@ -557,6 +585,10 @@ export default {
         this.searchQueryInput = '';
         this.searchQuery = '';
       }
+      // Reload shopping list count when returning to recipes tab
+      if (newTab === 'recipes') {
+        this.loadShoppingListCount();
+      }
     }
   }
 }
@@ -576,6 +608,14 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.shopping-badge {
+  line-height: 1;
+}
+
+.shopping-list-button {
+  transition: all 0.3s ease;
 }
 
 .search-toggle {
