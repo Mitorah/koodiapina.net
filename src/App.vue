@@ -17,14 +17,14 @@
         <span class="header-title">{{ currentHeader }}</span>
         <div v-if="activeTab === 'recipes'" class="search-container">
           <el-button 
-            v-if="!searchExpanded" 
-            @click="searchExpanded = true" 
+            @click="toggleSearch" 
             circle 
+            :type="searchQuery ? 'primary' : ''"
             class="search-toggle"
           >
             <el-icon><Search /></el-icon>
           </el-button>
-          <div v-else class="search-box">
+          <div v-if="searchExpanded" class="search-box">
             <el-input
               v-model="searchQueryInput"
               placeholder="Hae reseptejä..."
@@ -45,15 +45,14 @@
                 </el-button>
               </template>
             </el-input>
-            <el-button 
-              @click="closeSearch" 
-              circle 
-              size="small" 
-              class="close-search"
-            >
-              <el-icon><Close /></el-icon>
-            </el-button>
           </div>
+          <el-button 
+            @click="selectTab('favorites')" 
+            circle 
+            class="favorites-button"
+          >
+            <el-icon><Star /></el-icon>
+          </el-button>
           <el-badge :value="shoppingListCount" :hidden="shoppingListCount === 0" class="shopping-badge">
             <el-button 
               @click="selectTab('shopping-list')" 
@@ -65,6 +64,23 @@
           </el-badge>
         </div>
         <div v-else-if="activeTab === 'favorites' || activeTab === 'hidden' || activeTab === 'shopping-list'" class="search-container">
+          <el-button 
+            v-if="activeTab === 'shopping-list'"
+            @click="selectTab('favorites')" 
+            circle 
+            class="favorites-button"
+          >
+            <el-icon><Star /></el-icon>
+          </el-button>
+          <el-badge v-if="activeTab === 'favorites'" :value="shoppingListCount" :hidden="shoppingListCount === 0" class="shopping-badge">
+            <el-button 
+              @click="selectTab('shopping-list')" 
+              circle 
+              class="shopping-list-button"
+            >
+              <el-icon><ShoppingCart /></el-icon>
+            </el-button>
+          </el-badge>
           <el-button 
             @click="selectTab('recipes')" 
             circle 
@@ -577,10 +593,19 @@ export default {
       this.searchQueryInput = '';
       this.searchQuery = '';
     },
-    closeSearch() {
-      this.searchExpanded = false;
-      this.searchQueryInput = '';
-      this.searchQuery = '';
+    toggleSearch() {
+      if (this.searchExpanded) {
+        // Just close the search box, keep the search query
+        this.searchExpanded = false;
+      } else {
+        // Open search
+        this.searchExpanded = true;
+        this.$nextTick(() => {
+          if (this.$refs.searchInput) {
+            this.$refs.searchInput.focus();
+          }
+        });
+      }
     },
     handleResize() {
       this.windowWidth = window.innerWidth;
@@ -641,19 +666,19 @@ export default {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .shopping-badge {
   line-height: 1;
 }
 
-.shopping-list-button {
-  transition: all 0.3s ease;
-}
-
+.shopping-list-button,
+.favorites-button,
 .search-toggle {
   transition: all 0.3s ease;
+  margin: 0 !important;
+  padding: 8px !important;
 }
 
 .search-box {
