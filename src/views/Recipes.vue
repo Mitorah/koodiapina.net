@@ -194,6 +194,11 @@ export default {
       this.shoppingListRecipeGuids = this.shoppingListRecipeGuids.filter(guid => guid !== recipeGuid);
     },
     handleHiddenAdded(recipeGuid) {
+      // Close cooking dialog if the hidden recipe is currently shown
+      if (this.selectedRecipe && this.selectedRecipe.recipe_guid === recipeGuid) {
+        this.showCookingDialog = false;
+        this.selectedRecipe = null;
+      }
       // Remove recipe from current view when hidden
       this.recipes = this.recipes.filter(recipe => recipe.recipe_guid !== recipeGuid);
       // Refetch to maintain page size
