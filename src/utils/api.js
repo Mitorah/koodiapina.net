@@ -219,4 +219,12 @@ export async function permanentDeleteProfile(profileGuid) {
   return await res.json();
 }
 
+export async function fetchLogs(limit = 100) {
+  const res = await fetch(`${API_BASE_URL}/logs?limit=${limit}`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch logs');
+  return await res.json();
+}
+
 // Add more API functions here as needed

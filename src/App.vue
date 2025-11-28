@@ -248,6 +248,10 @@
         :currentProfile="currentProfile"
         @profiles-changed="onProfilesChanged"
       />
+      <AdminLogs 
+        v-else-if="activeTab === 'admin-logs'"
+        :currentProfile="currentProfile"
+      />
     </el-container>
   </el-container>
 </template>
@@ -261,6 +265,7 @@ import Favorites from './views/Favorites.vue'
 import HiddenRecipes from './views/HiddenRecipes.vue'
 import ShoppingList from './views/ShoppingList.vue'
 import AdminUsers from './views/AdminUsers.vue'
+import AdminLogs from './views/AdminLogs.vue'
 import ProfileSettings from './views/ProfileSettings.vue'
 import { Menu, User, Star, Search, Close, ShoppingCart } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
@@ -276,6 +281,7 @@ export default {
     HiddenRecipes,
     ShoppingList,
     AdminUsers,
+    AdminLogs,
     ProfileSettings,
     Menu,
     User,
@@ -388,6 +394,7 @@ export default {
       // Add admin tab if current profile is admin
       if (this.currentProfileIsAdmin) {
         baseTabs.push({ label: 'Käyttäjät', name: 'admin-users', component: 'AdminUsers' });
+        baseTabs.push({ label: 'Lokit', name: 'admin-logs', component: 'AdminLogs' });
       }
       
       this.tabs = baseTabs;
