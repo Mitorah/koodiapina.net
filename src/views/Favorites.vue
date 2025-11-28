@@ -78,11 +78,15 @@ import { config } from '../config.js';
 export default {
   name: 'Favorites',
   components: {
-    RecipeView,
-    Loading
+    Loading,
+    RecipeView
   },
   props: {
-    currentProfileGuid: String
+    currentProfileGuid: {
+      type: String,
+      required: false,
+      default: null
+    }
   },
   data() {
     return {

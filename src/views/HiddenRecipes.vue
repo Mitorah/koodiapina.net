@@ -45,14 +45,18 @@ import { Loading } from '@element-plus/icons-vue';
 import { config } from '../config.js';
 
 export default {
-  name: 'HiddenRecipes',
-  components: {
-    RecipeView,
-    Loading
-  },
-  props: {
-    currentProfileGuid: String
-  },
+    name: 'HiddenRecipes',
+    components: {
+        Loading,
+        RecipeView
+    },
+    props: {
+        currentProfileGuid: {
+            type: String,
+            required: false,
+            default: null
+        }
+    },
   data() {
     return {
       hiddenRecipes: [],
