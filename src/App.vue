@@ -19,8 +19,8 @@
           <el-button 
             @click="toggleSearch" 
             circle 
-            :type="searchQuery ? 'primary' : ''"
-            class="search-toggle"
+            :type="searchButtonType"
+            :class="['search-toggle', searchButtonClass]"
           >
             <el-icon><Search /></el-icon>
           </el-button>
@@ -409,6 +409,28 @@ export default {
     profileDialogWidth() {
       // Use 95% on mobile, but max 500px on desktop
       return this.windowWidth < 600 ? '95%' : '500px';
+    },
+    searchButtonType() {
+      // Dark blue when search box is open
+      if (this.searchExpanded) {
+        return 'primary';
+      }
+      // Light blue when closed but has search text
+      if (this.searchQueryInput.trim()) {
+        return 'primary';
+      }
+      // White otherwise
+      return '';
+    },
+    searchButtonClass() {
+      // Add a class to distinguish between dark and light blue
+      if (this.searchExpanded) {
+        return 'search-active';
+      }
+      if (this.searchQueryInput.trim()) {
+        return 'search-has-text';
+      }
+      return '';
     }
   },
   methods: {
@@ -689,6 +711,20 @@ export default {
   transition: all 0.3s ease;
   margin: 0 !important;
   padding: 8px !important;
+}
+
+/* Light blue when search has text but is closed */
+.search-toggle.search-has-text {
+  background-color: #a0cfff !important;
+  border-color: #a0cfff !important;
+  color: white !important;
+}
+
+/* Dark blue when search is active/open */
+.search-toggle.search-active {
+  background-color: #409eff !important;
+  border-color: #409eff !important;
+  color: white !important;
 }
 
 .search-box {
