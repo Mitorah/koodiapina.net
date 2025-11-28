@@ -353,6 +353,9 @@ export default {
     // Track window width for responsive dialogs
     window.addEventListener('resize', this.handleResize);
     
+    // Close keyboard on scroll for mobile
+    window.addEventListener('scroll', this.handleScroll, { passive: true });
+    
     // Load profiles
     await this.loadProfiles();
     
@@ -610,6 +613,12 @@ export default {
     handleResize() {
       this.windowWidth = window.innerWidth;
     },
+    handleScroll() {
+      // Close keyboard when scrolling on mobile
+      if (this.$refs.searchInput && document.activeElement === this.$refs.searchInput.$el.querySelector('input')) {
+        this.$refs.searchInput.blur();
+      }
+    },
     async loadShoppingListCount() {
       if (!this.selectedProfile) {
         this.shoppingListCount = 0;
@@ -627,6 +636,7 @@ export default {
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('scroll', this.handleScroll);
   },
   watch: {
     searchExpanded(newVal) {
