@@ -19,12 +19,13 @@
             <el-button 
                 v-if="!isHidden"
                 @click.stop="toggleFavorite"
-                @mousedown="startLongPress"
-                @mouseup="cancelLongPress"
+                @mousedown.stop="startLongPress"
+                @mouseup.stop="cancelLongPress"
                 @mouseleave="cancelLongPress"
-                @touchstart.passive="startLongPress"
-                @touchend.passive="cancelLongPress"
-                @touchcancel.passive="cancelLongPress"
+                @touchstart.stop.passive="startLongPress"
+                @touchmove.stop.passive="cancelLongPress"
+                @touchend.stop.passive="cancelLongPress"
+                @touchcancel.stop.passive="cancelLongPress"
                 :loading="favoriteLoading || hiddenLoading"
                 circle
                 :type="isFavorite ? 'warning' : 'default'"
@@ -205,6 +206,10 @@ export default {
         },
         startLongPress(event) {
             this.longPressTriggered = false;
+            // Clear any existing timer
+            if (this.longPressTimer) {
+                clearTimeout(this.longPressTimer);
+            }
             this.longPressTimer = setTimeout(() => {
                 this.longPressTriggered = true;
                 this.toggleHidden();
