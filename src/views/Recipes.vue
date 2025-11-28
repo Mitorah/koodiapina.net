@@ -76,6 +76,7 @@
 <script>
 import RecipeView from './RecipeView.vue';
 import { fetchRecipes as fetchRecipesApi, fetchFavorites, fetchShoppingList } from '../utils/api.js';
+import { config } from '../config.js';
 
 export default {
   name: 'Recipes',
@@ -226,7 +227,7 @@ export default {
       this.longPressTimer = setTimeout(() => {
         this.selectedRecipe = recipe;
         this.showCookingDialog = true;
-        this.$message.info('Vihje: Paina pitkään sulkeaksesi');
+        this.$message({ message: 'Vihje: Paina pitkään sulkeaksesi', type: 'info', duration: config.message.duration });
       }, 500); // 500ms long press
     },
     cancelLongPress() {

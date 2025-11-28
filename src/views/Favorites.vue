@@ -73,6 +73,7 @@
 import RecipeView from './RecipeView.vue';
 import { fetchFavorites, fetchShoppingList } from '../utils/api.js';
 import { Loading } from '@element-plus/icons-vue';
+import { config } from '../config.js';
 
 export default {
   name: 'Favorites',
@@ -133,7 +134,7 @@ export default {
           instructions: fav.instructions
         }));
       } catch (err) {
-        this.$message.error('Suosikkien lataus epäonnistui');
+        this.$message({ message: 'Suosikkien lataus epäonnistui', type: 'error', duration: config.message.duration });
       } finally {
         this.loading = false;
       }
@@ -180,7 +181,7 @@ export default {
       this.longPressTimer = setTimeout(() => {
         this.selectedRecipe = recipe;
         this.showCookingDialog = true;
-        this.$message.info('Vihje: Paina pitkään sulkeaksesi');
+        this.$message({ message: 'Vihje: Paina pitkään sulkeaksesi', type: 'info', duration: config.message.duration });
       }, 500); // 500ms long press
     },
     cancelLongPress() {

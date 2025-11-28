@@ -1,6 +1,7 @@
 // Version check utility to force PWA updates when backend version changes
 
-const VERSION_CHECK_INTERVAL = 5 * 60 * 1000; // Check every 5 minutes
+import { config } from '../config.js';
+
 const VERSION_STORAGE_KEY = 'app_version';
 
 let checkInterval = null;
@@ -140,7 +141,7 @@ export function startVersionCheck() {
   if (checkInterval) {
     clearInterval(checkInterval);
   }
-  checkInterval = setInterval(checkVersion, VERSION_CHECK_INTERVAL);
+  checkInterval = setInterval(checkVersion, config.version.checkInterval);
   
   // Check when page becomes visible
   document.addEventListener('visibilitychange', () => {

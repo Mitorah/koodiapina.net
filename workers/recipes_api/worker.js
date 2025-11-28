@@ -235,7 +235,7 @@ export default {
       
       try {
         const profile = await env.DB.prepare(
-          'SELECT password_hash FROM profiles WHERE profile_guid = ?'
+          'SELECT password_hash, username, display_name FROM profiles WHERE profile_guid = ?'
         ).bind(profileGuid).first();
         
         if (!profile) {
@@ -250,7 +250,11 @@ export default {
         
         // If profile has no PIN set, allow access
         if (!profile.password_hash) {
-          return new Response(JSON.stringify({ valid: true }), {
+          return new Response(JSON.stringify({ 
+            valid: true,
+            username: profile.username,
+            display_name: profile.display_name
+          }), {
             headers: {
               'Content-Type': 'application/json',
               ...getCorsHeaders(allowedOrigin),
@@ -261,7 +265,11 @@ export default {
         // Compare provided hash with stored hash
         const valid = password_hash === profile.password_hash;
         
-        return new Response(JSON.stringify({ valid }), {
+        return new Response(JSON.stringify({ 
+          valid,
+          username: valid ? profile.username : undefined,
+          display_name: valid ? profile.display_name : undefined
+        }), {
           headers: {
             'Content-Type': 'application/json',
             ...getCorsHeaders(allowedOrigin),

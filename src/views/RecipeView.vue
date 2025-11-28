@@ -96,6 +96,7 @@
 <script>
 import { addFavorite, removeFavorite, addToShoppingList, removeFromShoppingList, addHidden, removeHidden } from '../utils/api.js';
 import { Star, StarFilled, ShoppingCart, ShoppingCartFull, Hide, View } from '@element-plus/icons-vue';
+import { config } from '../config.js';
 
 export default {
     name: 'Recipe view',
@@ -229,7 +230,7 @@ export default {
             }
 
             if (!this.currentProfileGuid) {
-                this.$message.error('Profiilia ei valittu');
+                this.$message({ message: 'Profiilia ei valittu', type: 'error', duration: config.message.duration });
                 return;
             }
 
@@ -238,21 +239,21 @@ export default {
                 if (this.isFavorite) {
                     await removeFavorite(this.currentProfileGuid, this.recipe.recipe_guid);
                     this.$emit('favorite-removed', this.recipe.recipe_guid);
-                    this.$message.success('Poistettu suosikeista');
+                    this.$message({ message: 'Poistettu suosikeista', type: 'success', duration: config.message.duration });
                 } else {
                     await addFavorite(this.currentProfileGuid, this.recipe.recipe_guid);
                     this.$emit('favorite-added', this.recipe.recipe_guid);
-                    this.$message.success('Lisätty suosikkeihin');
+                    this.$message({ message: 'Lisätty suosikkeihin', type: 'success', duration: config.message.duration });
                 }
             } catch (error) {
-                this.$message.error('Suosikin päivitys epäonnistui');
+                this.$message({ message: 'Suosikin päivitys epäonnistui', type: 'error', duration: config.message.duration });
             } finally {
                 this.favoriteLoading = false;
             }
         },
         async toggleShoppingList() {
             if (!this.currentProfileGuid) {
-                this.$message.error('Profiilia ei valittu');
+                this.$message({ message: 'Profiilia ei valittu', type: 'error', duration: config.message.duration });
                 return;
             }
 
@@ -261,21 +262,21 @@ export default {
                 if (this.isInShoppingList) {
                     await removeFromShoppingList(this.currentProfileGuid, this.recipe.recipe_guid);
                     this.$emit('shopping-list-removed', this.recipe.recipe_guid);
-                    this.$message.success('Poistettu ostoslistalta');
+                    this.$message({ message: 'Poistettu ostoslistalta', type: 'success', duration: config.message.duration });
                 } else {
                     await addToShoppingList(this.currentProfileGuid, this.recipe.recipe_guid);
                     this.$emit('shopping-list-added', this.recipe.recipe_guid);
-                    this.$message.success('Lisätty ostoslistalle');
+                    this.$message({ message: 'Lisätty ostoslistalle', type: 'success', duration: config.message.duration });
                 }
             } catch (error) {
-                this.$message.error('Ostoslistan päivitys epäonnistui');
+                this.$message({ message: 'Ostoslistan päivitys epäonnistui', type: 'error', duration: config.message.duration });
             } finally {
                 this.shoppingListLoading = false;
             }
         },
         async toggleHidden() {
             if (!this.currentProfileGuid) {
-                this.$message.error('Profiilia ei valittu');
+                this.$message({ message: 'Profiilia ei valittu', type: 'error', duration: config.message.duration });
                 return;
             }
 
@@ -284,7 +285,7 @@ export default {
                 if (this.isHidden) {
                     await removeHidden(this.currentProfileGuid, this.recipe.recipe_guid);
                     this.$emit('hidden-removed', this.recipe.recipe_guid);
-                    this.$message.success('Resepti näytetään taas');
+                    this.$message({ message: 'Resepti näytetään taas', type: 'success', duration: config.message.duration });
                 } else {
                     // Remove from favorites if it's a favorite
                     if (this.isFavorite) {
@@ -293,10 +294,10 @@ export default {
                     }
                     await addHidden(this.currentProfileGuid, this.recipe.recipe_guid);
                     this.$emit('hidden-added', this.recipe.recipe_guid);
-                    this.$message.success('Resepti piilotettu');
+                    this.$message({ message: 'Resepti piilotettu', type: 'success', duration: config.message.duration });
                 }
             } catch (error) {
-                this.$message.error('Piilotuksen päivitys epäonnistui');
+                this.$message({ message: 'Piilotuksen päivitys epäonnistui', type: 'error', duration: config.message.duration });
             } finally {
                 this.hiddenLoading = false;
             }

@@ -42,6 +42,7 @@
 import RecipeView from './RecipeView.vue';
 import { fetchHidden, fetchFavorites, fetchShoppingList } from '../utils/api.js';
 import { Loading } from '@element-plus/icons-vue';
+import { config } from '../config.js';
 
 export default {
   name: 'HiddenRecipes',
@@ -97,7 +98,7 @@ export default {
           instructions: item.instructions
         }));
       } catch (err) {
-        this.$message.error('Piilotettujen reseptien lataus epäonnistui');
+        this.$message({ message: 'Piilotettujen reseptien lataus epäonnistui', type: 'error', duration: config.message.duration });
       } finally {
         this.loading = false;
       }
