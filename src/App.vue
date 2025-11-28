@@ -64,6 +64,15 @@
             </el-button>
           </el-badge>
         </div>
+        <div v-else-if="activeTab === 'favorites' || activeTab === 'hidden' || activeTab === 'shopping-list'" class="search-container">
+          <el-button 
+            @click="selectTab('recipes')" 
+            circle 
+            class="search-toggle"
+          >
+            <el-icon><Bowl /></el-icon>
+          </el-button>
+        </div>
       </el-row>
     </el-header>
     <el-main :class="['app-main', { 'search-expanded-mobile': searchExpanded && activeTab === 'recipes' }]">
@@ -267,7 +276,7 @@ import ShoppingList from './views/ShoppingList.vue'
 import AdminUsers from './views/AdminUsers.vue'
 import AdminLogs from './views/AdminLogs.vue'
 import ProfileSettings from './views/ProfileSettings.vue'
-import { Menu, User, Star, Search, Close, ShoppingCart } from '@element-plus/icons-vue'
+import { Menu, User, Star, Search, Close, ShoppingCart, Bowl } from '@element-plus/icons-vue'
 import { ElIcon } from 'element-plus'
 import { fetchProfiles, createProfile, verifyPin, fetchShoppingList } from './utils/api'
 import { config } from './config'
@@ -290,6 +299,7 @@ export default {
     Search,
     Close,
     ShoppingCart,
+    Bowl,
     ElIcon
   },
   data() {
