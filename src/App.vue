@@ -1,7 +1,7 @@
 <template>
   <el-container class="app-container">
-    <el-header>
-      <el-row type="flex" align="middle" class="header-row">
+    <el-header class="header-container">
+      <div class="header-row">
         <el-button @click="onMenuClick" class="menu-button">
           <el-icon><Menu /></el-icon>
         </el-button>
@@ -15,38 +15,7 @@
           <span class="profile-name">{{ currentProfileName }}</span>
         </div>
         <span class="header-title">{{ currentHeader }}</span>
-        <div v-if="activeTab === 'recipes' || activeTab === 'favorites' || activeTab === 'hidden' || activeTab === 'shopping-list'" class="search-container">
-          <el-button 
-            v-if="activeTab === 'recipes'"
-            @click="toggleSearch" 
-            circle 
-            :type="searchButtonType"
-            :class="['search-toggle', searchButtonClass]"
-          >
-            <el-icon><Search /></el-icon>
-          </el-button>
-          <div v-if="searchExpanded && activeTab === 'recipes'" class="search-box">
-            <el-input
-              v-model="searchQueryInput"
-              placeholder="Hae reseptejä..."
-              @keyup.enter="handleSearch"
-              @clear="handleClearSearch"
-              clearable
-              class="search-input"
-              ref="searchInput"
-            >
-              <template #suffix>
-                <el-button 
-                  @click="handleSearch" 
-                  type="primary" 
-                  size="small"
-                  :disabled="!searchQueryInput.trim()"
-                >
-                  Hae
-                </el-button>
-              </template>
-            </el-input>
-          </div>
+        <div class="nav-buttons">
           <el-button 
             @click="selectTab('recipes')" 
             circle 
@@ -71,7 +40,29 @@
             </el-button>
           </el-badge>
         </div>
-      </el-row>
+      </div>
+      <div v-if="activeTab === 'recipes'" class="search-row">
+        <el-input
+          v-model="searchQueryInput"
+          placeholder="Hae reseptejä..."
+          @keyup.enter="handleSearch"
+          @clear="handleClearSearch"
+          clearable
+          class="search-input"
+          ref="searchInput"
+        >
+          <template #suffix>
+            <el-button 
+              @click="handleSearch" 
+              type="primary" 
+              size="small"
+              :disabled="!searchQueryInput.trim()"
+            >
+              Hae
+            </el-button>
+          </template>
+        </el-input>
+      </div>
     </el-header>
     <el-main :class="['app-main', { 'search-expanded-mobile': searchExpanded && activeTab === 'recipes' }]">
       <el-drawer
@@ -669,22 +660,43 @@ export default {
 </script>
 
 <style scoped>
+.header-container {
+  height: auto !important;
+  display: flex;
+  flex-direction: column;
+}
+
 .header-row {
   display: flex;
   align-items: center;
   gap: 16px;
   width: 100%;
+  padding: 12px 20px;
+  flex-shrink: 0;
 }
 
-.search-container {
+.nav-buttons {
   margin-left: auto;
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
+.search-row {
+  width: 100%;
+  padding: 0 20px 12px 20px;
+  display: block;
+  padding-top: 12px;
+}
+
 .shopping-badge {
   line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.shopping-badge :deep(.el-badge__content) {
+  transform: translateY(-50%) translateX(50%);
 }
 
 .shopping-list-button,
@@ -694,6 +706,11 @@ export default {
   transition: all 0.3s ease;
   margin: 0 !important;
   padding: 8px !important;
+  height: 32px;
+  width: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Light blue when search has text but is closed */
@@ -710,26 +727,13 @@ export default {
   color: white !important;
 }
 
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  animation: expandSearch 0.3s ease;
-}
-
-@keyframes expandSearch {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
 .search-input {
-  width: 300px;
+  width: 100%;
+}
+
+/* Always show clear icon when input has text */
+.search-input :deep(.el-input__clear) {
+  opacity: 1 !important;
 }
 
 .close-search {
@@ -764,6 +768,7 @@ export default {
 @media (max-width: 768px) {
   .header-row {
     gap: 8px;
+    padding: 12px 16px;
   }
 
   .profile-indicator {
@@ -777,44 +782,8 @@ export default {
     white-space: nowrap;
   }
 
-  .search-container {
-    position: static;
-  }
-
-  .search-box {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background: white;
-    padding: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
-    animation: expandSearchMobile 0.3s ease;
-  }
-
-  @keyframes expandSearchMobile {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .search-input {
-    width: 100%;
-    flex: 1;
-  }
-
-  .close-search {
-    position: relative;
-  }
-
-  .app-main.search-expanded-mobile {
-    padding-top: 60px;
+  .search-row {
+    padding: 0 16px 12px 16px;
   }
 }
 </style>
