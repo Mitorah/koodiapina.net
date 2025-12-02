@@ -10,6 +10,25 @@ function getCorsHeaders(allowedOrigin) {
   };
 }
 
+/**
+ * Helper to log errors to database
+ */
+async function logError(env, status, error, details = {}) {
+  try {
+    await env.DB.prepare(
+      'INSERT INTO fetch_log (timestamp, count, status, error, details) VALUES (?, ?, ?, ?, ?)'
+    ).bind(
+      new Date().toISOString(),
+      null,
+      status,
+      error,
+      JSON.stringify(details)
+    ).run();
+  } catch (logErr) {
+    // Silently fail if logging fails
+  }
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -110,6 +129,7 @@ export default {
           }
         });
       } catch (err) {
+        await logError(env, 'api_error', err.message, { endpoint: '/logs', method: 'GET', error: err.message });
         return new Response(JSON.stringify({ error: err.message }), {
           status: 500,
           headers: {
@@ -157,6 +177,7 @@ export default {
           }
         });
       } catch (err) {
+        await logError(env, 'api_error', err.message, { endpoint: '/profiles/:guid', method: 'DELETE', profileGuid });
         return new Response(JSON.stringify({ error: err.message }), {
           status: 500,
           headers: {
@@ -187,6 +208,7 @@ export default {
           }
         });
       } catch (err) {
+        await logError(env, 'api_error', err.message, { endpoint: '/profiles/:guid/reactivate', method: 'POST', profileGuid });
         return new Response(JSON.stringify({ error: err.message }), {
           status: 500,
           headers: {
@@ -217,6 +239,7 @@ export default {
           }
         });
       } catch (err) {
+        await logError(env, 'api_error', err.message, { endpoint: '/profiles/:guid/permanent', method: 'DELETE', profileGuid });
         return new Response(JSON.stringify({ error: err.message }), {
           status: 500,
           headers: {
@@ -276,6 +299,7 @@ export default {
           }
         });
       } catch (err) {
+        await logError(env, 'api_error', err.message, { endpoint: '/profiles/:guid/verify-pin', method: 'POST', profileGuid });
         return new Response(JSON.stringify({ error: err.message }), {
           status: 500,
           headers: {
@@ -286,7 +310,7 @@ export default {
       }
     }
 
-    // Handle /profiles endpoint - POST to create a new profile (admin only)
+    // Handle /profiles endpoint - POST to create new profile
     if (pathname === '/profiles' && request.method === 'POST') {
       const body = await request.json();
       const { username, display_name, email, is_admin, password_hash } = body;
@@ -341,6 +365,7 @@ export default {
           }
         });
       } catch (err) {
+        await logError(env, 'api_error', err.message, { endpoint: '/profiles', method: 'POST', username });
         return new Response(JSON.stringify({ error: err.message }), {
           status: 500,
           headers: {
@@ -406,6 +431,7 @@ export default {
           }
         });
       } catch (err) {
+        await logError(env, 'api_error', err.message, { endpoint: '/profiles/:guid', method: 'PUT', profileGuid, username });
         return new Response(JSON.stringify({ error: err.message }), {
           status: 500,
           headers: {
@@ -490,6 +516,7 @@ export default {
           }
         });
       } catch (error) {
+        await logError(env, 'api_error', error.message, { endpoint: '/favorites', method: 'POST', profileGuid, recipeGuid });
         return new Response(JSON.stringify({ 
           error: 'Failed to add favorite',
           message: error.message 
@@ -531,6 +558,7 @@ export default {
           }
         });
       } catch (error) {
+        await logError(env, 'api_error', error.message, { endpoint: '/favorites/:guid/:recipe', method: 'DELETE', profileGuid, recipeGuid });
         return new Response(JSON.stringify({ 
           error: 'Failed to remove favorite',
           message: error.message 
@@ -618,6 +646,7 @@ export default {
           }
         });
       } catch (error) {
+        await logError(env, 'api_error', error.message, { endpoint: '/hidden', method: 'POST', profileGuid, recipeGuid });
         return new Response(JSON.stringify({ 
           error: 'Failed to hide recipe',
           message: error.message 
@@ -659,6 +688,7 @@ export default {
           }
         });
       } catch (error) {
+        await logError(env, 'api_error', error.message, { endpoint: '/hidden/:guid/:recipe', method: 'DELETE', profileGuid, recipeGuid });
         return new Response(JSON.stringify({ 
           error: 'Failed to unhide recipe',
           message: error.message 
@@ -745,6 +775,7 @@ export default {
           }
         });
       } catch (error) {
+        await logError(env, 'api_error', error.message, { endpoint: '/shopping-list', method: 'POST', profileGuid, recipeGuid });
         return new Response(JSON.stringify({ 
           error: 'Failed to add to shopping list',
           message: error.message 
@@ -786,6 +817,7 @@ export default {
           }
         });
       } catch (error) {
+        await logError(env, 'api_error', error.message, { endpoint: '/shopping-list/:guid/:recipe', method: 'DELETE', profileGuid, recipeGuid });
         return new Response(JSON.stringify({ 
           error: 'Failed to remove from shopping list',
           message: error.message 
