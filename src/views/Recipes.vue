@@ -25,15 +25,14 @@
                 @hidden-added="handleHiddenAdded"
             />
         </el-card>
-        <el-footer>
-            <el-pagination
-                :current-page="page"
-                :page-size="limit"
-                :total="total"
-                @current-change="handlePageChange"
-                layout="prev, pager, next"
-            />
-        </el-footer>
+        
+        <!-- Loading indicator for infinite scroll -->
+        <div v-if="loading" style="text-align: center; padding: 20px;">
+            <el-icon class="is-loading"><Loading /></el-icon>
+        </div>
+        <div v-else-if="!hasMore && recipes.length > 0" style="text-align: center; padding: 20px; color: #909399;">
+            Kaikki reseptit ladattu
+        </div>
 
         <!-- Cooking View Dialog -->
         <el-dialog 
@@ -74,6 +73,7 @@
 </template>
 
 <script>
+import { Loading } from '@element-plus/icons-vue';
 import RecipeView from './RecipeView.vue';
 import { fetchRecipes as fetchRecipesApi, fetchFavorites, fetchShoppingList } from '../utils/api.js';
 import { config } from '../config.js';
@@ -81,7 +81,8 @@ import { config } from '../config.js';
 export default {
   name: 'Recipes',
   components: {
-    RecipeView
+    RecipeView,
+    Loading
   },
   props: {
     currentProfileGuid: String,
@@ -94,6 +95,7 @@ export default {
       limit: 20,
       total: 0,
       loading: false,
+      hasMore: true,
       favoriteRecipeGuids: [],
       shoppingListRecipeGuids: [],
       activeSearchQuery: '',
@@ -138,16 +140,28 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
     async fetchRecipes(page = 1) {
       this.loading = true;
       try {
         const data = await fetchRecipesApi(page, this.limit, this.activeSearchQuery, this.currentProfileGuid);
-        this.recipes = data.recipes || [];
+        const newRecipes = data.recipes || [];
+        
+        if (page === 1) {
+          this.recipes = newRecipes;
+        } else {
+          this.recipes.push(...newRecipes);
+        }
+        
         this.page = data.page;
         this.limit = data.limit;
         this.total = data.total;
+        this.hasMore = newRecipes.length === this.limit;
       } catch (err) {
         // Failed to fetch recipes
       } finally {
@@ -174,9 +188,15 @@ export default {
         // Failed to fetch shopping list
       }
     },
-    handlePageChange(newPage) {
-      this.fetchRecipes(newPage);
-      window.scrollTo(0, 0);
+    handleScroll() {
+      if (this.loading || !this.hasMore) return;
+      
+      const bottomOfWindow = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200;
+      
+      if (bottomOfWindow) {
+        this.page++;
+        this.fetchRecipes(this.page);
+      }
     },
     handleFavoriteAdded(recipeGuid) {
       if (!this.favoriteRecipeGuids.includes(recipeGuid)) {
