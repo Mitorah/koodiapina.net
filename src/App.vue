@@ -15,8 +15,9 @@
           <span class="profile-name">{{ currentProfileName }}</span>
         </div>
         <span class="header-title">{{ currentHeader }}</span>
-        <div v-if="activeTab === 'recipes'" class="search-container">
+        <div v-if="activeTab === 'recipes' || activeTab === 'favorites' || activeTab === 'hidden' || activeTab === 'shopping-list'" class="search-container">
           <el-button 
+            v-if="activeTab === 'recipes'"
             @click="toggleSearch" 
             circle 
             :type="searchButtonType"
@@ -24,7 +25,7 @@
           >
             <el-icon><Search /></el-icon>
           </el-button>
-          <div v-if="searchExpanded" class="search-box">
+          <div v-if="searchExpanded && activeTab === 'recipes'" class="search-box">
             <el-input
               v-model="searchQueryInput"
               placeholder="Hae reseptejä..."
@@ -47,9 +48,16 @@
             </el-input>
           </div>
           <el-button 
+            @click="selectTab('recipes')" 
+            circle 
+            class="nav-button"
+          >
+            <el-icon><Bowl /></el-icon>
+          </el-button>
+          <el-button 
             @click="selectTab('favorites')" 
             circle 
-            class="favorites-button"
+            class="nav-button"
           >
             <el-icon><Star /></el-icon>
           </el-button>
@@ -57,37 +65,11 @@
             <el-button 
               @click="selectTab('shopping-list')" 
               circle 
-              class="shopping-list-button"
+              class="nav-button"
             >
               <el-icon><ShoppingCart /></el-icon>
             </el-button>
           </el-badge>
-        </div>
-        <div v-else-if="activeTab === 'favorites' || activeTab === 'hidden' || activeTab === 'shopping-list'" class="search-container">
-          <el-button 
-            v-if="activeTab === 'shopping-list'"
-            @click="selectTab('favorites')" 
-            circle 
-            class="favorites-button"
-          >
-            <el-icon><Star /></el-icon>
-          </el-button>
-          <el-badge v-if="activeTab === 'favorites'" :value="shoppingListCount" :hidden="shoppingListCount === 0" class="shopping-badge">
-            <el-button 
-              @click="selectTab('shopping-list')" 
-              circle 
-              class="shopping-list-button"
-            >
-              <el-icon><ShoppingCart /></el-icon>
-            </el-button>
-          </el-badge>
-          <el-button 
-            @click="selectTab('recipes')" 
-            circle 
-            class="search-toggle"
-          >
-            <el-icon><Bowl /></el-icon>
-          </el-button>
         </div>
       </el-row>
     </el-header>
@@ -707,7 +689,8 @@ export default {
 
 .shopping-list-button,
 .favorites-button,
-.search-toggle {
+.search-toggle,
+.nav-button {
   transition: all 0.3s ease;
   margin: 0 !important;
   padding: 8px !important;
