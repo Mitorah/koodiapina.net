@@ -2,13 +2,14 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    // Note: vite-plugin-vue-devtools disabled due to localStorage bug in v7.7.2
+    // See: https://github.com/advisories/GHSA-xxjr-mmjv-4gpg
+    // Re-enable when fixed: vueDevTools()
   ],
   resolve: {
     alias: {
