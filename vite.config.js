@@ -4,11 +4,12 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
-export default defineConfig(async ({ mode }) => ({
+export default defineConfig({
   plugins: [
     vue(),
-    // Only load devtools in development to avoid localStorage errors during build
-    ...(mode === 'development' ? [(await import('vite-plugin-vue-devtools')).default()] : []),
+    // Note: vite-plugin-vue-devtools disabled due to localStorage bug in v7.7.2
+    // See: https://github.com/advisories/GHSA-xxjr-mmjv-4gpg
+    // Re-enable when fixed: vueDevTools()
   ],
   resolve: {
     alias: {
@@ -38,4 +39,4 @@ export default defineConfig(async ({ mode }) => ({
       port: 5173,
     },
   },
-}))
+})
