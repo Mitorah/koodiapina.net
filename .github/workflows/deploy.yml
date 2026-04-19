@@ -126,14 +126,13 @@ jobs:
           echo "✅ All workers deployed"
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: koodiapina-net
-          directory: dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          branch: cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "🚀 Deploying frontend to Cloudflare Pages..."
+          npx wrangler pages deploy ./dist --project-name=koodiapina-net --branch=cloudflare
+          echo "✅ Frontend deployed"
 
       - name: Purge Cloudflare Cache
         env:
