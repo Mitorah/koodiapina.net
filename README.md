@@ -57,7 +57,8 @@ This application uses **Cloudflare Access** for authentication:
    - **Session duration**: 24 hours (or your preference)
    - **Add public hostnames**:
      - `ruoka.koodiapina.net` (frontend)
-     - `koodiapina-net.leinonen-op.workers.dev` (API worker)
+     - `ruoka.koodiapina.net/api` (API)
+     - `ruoka.koodiapina.net/api/*` (API wildcard)
 
 3. **Add Access Policy**:
    - **Policy name**: Allow family members
