@@ -212,7 +212,7 @@ If you need to start fresh:
 ## Deployment
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment documentation including:
-- Automatic deployment via GitHub Actions (merges to `cloudflare` branch)
+- Automatic deployment via GitHub Actions (merges to `main` branch)
 - Automatic cache invalidation on deployment
 - Manual deployment procedures  
 - Database migrations
@@ -281,7 +281,7 @@ The app uses **automatic semantic versioning** based on commit messages:
   BREAKING CHANGE: remove old API
   ```
 
-Version is stored as git tags (no files tracked) and displayed at the bottom of the app menu. Each deployment to `cloudflare` branch automatically increments the version.
+Version is stored as git tags (no files tracked) and displayed at the bottom of the app menu. Each deployment to `main` branch automatically increments the version.
 
 ## Development
 

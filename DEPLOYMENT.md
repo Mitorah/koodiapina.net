@@ -32,7 +32,7 @@ The application consists of three main components:
 
 ### How It Works
 
-When you merge a PR to the `cloudflare` branch, GitHub Actions automatically:
+When you merge a PR to the `main` branch, GitHub Actions automatically:
 
 1. ✅ Runs all database migrations (idempotent - safe to run multiple times)
 2. ✅ Builds the Vue.js frontend
@@ -130,7 +130,7 @@ The project uses two types of database files:
    npx wrangler d1 execute koodiapina_local --env local --file migrations/0007_add_new_feature.sql
    ```
 
-4. Commit and push - it will auto-deploy when merged to `cloudflare`
+4. Commit and push - it will auto-deploy when merged to `main`
 
 ### Creating Seed Data (Local Only)
 
@@ -210,7 +210,7 @@ Configures Cloudflare Worker and database bindings:
 - Local database binding (env.local)
 
 ### `.github/workflows/deploy.yml`
-GitHub Actions workflow that handles automatic deployment on merge to `cloudflare` branch.
+GitHub Actions workflow that handles automatic deployment on merge to `main` branch.
 
 ### `src/utils/api.js`
 API client that automatically switches between local and production API:

@@ -3,7 +3,7 @@ name: Deploy to Production
 on:
   push:
     branches:
-      - cloudflare  # Triggers on merge to cloudflare branch
+      - main
 
 jobs:
   deploy:
