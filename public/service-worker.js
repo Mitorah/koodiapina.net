@@ -1,7 +1,5 @@
-const CACHE_NAME = 'koodiapina-ruoka-v5';
+const CACHE_NAME = 'koodiapina-ruoka-v6';
 const urlsToCache = [
-  '/',
-  '/index.html',
   '/manifest.json'
 ];
 
@@ -53,14 +51,13 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Only cache successful GET requests for navigation (HTML)
-        if (event.request.method === 'GET' && 
-            event.request.mode === 'navigate' &&
-            response && response.status === 200) {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
+        // Detect stale asset requests that got SPA fallback HTML instead of JS/CSS
+        if (event.request.url.match(/\/assets\/.*\.(js|css)$/) &&
+            response.headers.get('content-type')?.includes('text/html')) {
+          self.clients.matchAll().then(clients => {
+            clients.forEach(client => client.postMessage({ type: 'FORCE_RELOAD' }));
           });
+          return new Response('', { status: 404 });
         }
         return response;
       })

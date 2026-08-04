@@ -18,6 +18,10 @@ A modern Vue + Cloudflare D1 app for browsing, syncing, and displaying recipes f
 - Vue frontend with grouped, styled ingredient display
 - Finnish localization for UI
 - Local development with Miniflare/Wrangler
+- User profiles with favorites, shopping lists, and hidden recipes
+- AI-powered recipe assistant
+- Full-text recipe search
+- Admin panel for logs and user management
 
 ## API Overview
 
@@ -290,12 +294,14 @@ Version is stored as git tags (no files tracked) and displayed at the bottom of 
 ```
 koodiapina.net/
 ├── src/                    # Vue frontend source
-│   ├── components/        # Vue components
 │   ├── views/            # Page views
 │   ├── utils/            # Utilities (API client, units parser)
 │   └── styles/           # CSS files
 ├── workers/              # Cloudflare Workers
-│   └── recipes_api/      # Main API worker
+│   ├── recipes_api/      # Main API worker
+│   ├── recipe_sync_ids/  # Recipe ID sync worker
+│   ├── recipe_sync_instructions/ # Instruction sync worker
+│   └── recipe_search_populate/   # Search index worker
 ├── migrations/           # Database migrations
 ├── public/              # Static assets
 └── dist/                # Build output (generated)
@@ -303,14 +309,17 @@ koodiapina.net/
 
 ### Code Structure
 - Frontend: Vue 3, Element Plus, global styles in `src/styles/styles.css`
-- Backend: Cloudflare Workers for sync and API
+- Backend: Cloudflare Workers for sync, search, and API
 - All recipe data is grouped and localized in Finnish
 - To update styles, edit `src/styles/styles.css`
 
 ## Usage
 - Browse recipes with grouped ingredients, pantry items, and steps
 - Click recipe headers to expand/collapse details
-- Only one recipe card is open at a time
+- Add recipes to favorites or hide unwanted ones
+- Manage shopping lists per profile
+- Use AI assistant for recipe-related questions
+- Admin users can view logs and manage profiles
 
 ## Contributing
 Pull requests and issues welcome!
