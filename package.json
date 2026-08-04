@@ -24,6 +24,7 @@
 	},
 	"overrides": {
 		"postcss": "^8.5.10",
-		"@babel/core": "^7.29.7"
+		"@babel/core": "^7.29.7",
+		"undici": "^7.29.0"
 	}
 }
